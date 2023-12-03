@@ -7,11 +7,12 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <ApplicationHighDpiMode>PerMonitorV2</ApplicationHighDpiMode>
+    <ApplicationIcon>Resources/app_icon.ico</ApplicationIcon>
     <AssemblyTitle>Airline Reservation System</AssemblyTitle>
     <AssemblyDescription>Aviation &amp; Flight Phases Desktop Reservation &amp; Analytics Platform</AssemblyDescription>
     <Company>Airline Reservation System</Company>
     <Product>Airline Reservation System</Product>
-    <Copyright>Copyright © 2023-2026 Airline Reservation System</Copyright>
+    <Copyright>Copyright © 2023-2026 Airline Reservation System Contributors</Copyright>
     <AssemblyVersion>6.0.0.0</AssemblyVersion>
     <FileVersion>6.0.0.0</FileVersion>
   </PropertyGroup>
