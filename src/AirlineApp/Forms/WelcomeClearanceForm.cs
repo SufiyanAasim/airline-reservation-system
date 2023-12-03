@@ -77,7 +77,7 @@ namespace AirlineApp.Forms
             AddInputField(grpPassenger, "Full Name:", ref txtFullName, "Capt. Sufiyan Aasim", ref y);
             AddInputField(grpPassenger, "Passport / CNIC No:", ref txtPassport, "PK-98234109", ref y);
             AddInputField(grpPassenger, "Phone Number:", ref txtPhone, "+92 300 1234567", ref y);
-            AddInputField(grpPassenger, "Email Address:", ref txtEmail, "sufiyan@aerotech.com", ref y);
+            AddInputField(grpPassenger, "Email Address:", ref txtEmail, "sufiyanaasim@outlook.com", ref y);
 
             // Right Section: Flight Selection & Clearance Status
             var grpFlight = new GroupBox

@@ -79,7 +79,7 @@ namespace AirlineApp.Forms
 
             txtEmail = new TextBox
             {
-                Text = "sufiyan@aerotech.com",
+                Text = "sufiyanaasim@outlook.com",
                 Font = new Font("Segoe UI", 11F),
                 Location = new Point(25, 55),
                 Size = new Size(380, 32),

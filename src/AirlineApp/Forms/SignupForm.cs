@@ -82,7 +82,7 @@ namespace AirlineApp.Forms
 
             // Email
             AddInputLabel(container, "Email Address:", y);
-            txtEmail = CreateTextBox("fahad@aerotech.com", y + 25, 400);
+            txtEmail = CreateTextBox("fahad@outlook.com", y + 25, 400);
             container.Controls.Add(txtEmail);
             y += 65;
 

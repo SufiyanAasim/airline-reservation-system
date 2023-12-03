@@ -4,4 +4,4 @@
 
 Airline Reservation System is a fully offline, single-user desktop application. No remote network calls or database servers are required.
 
-To report security vulnerabilities, please contact the maintainers at `sufiyan@aerotech.com`.
+To report security vulnerabilities, please contact the maintainer at `sufiyanaasim@outlook.com`.
