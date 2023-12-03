@@ -1,0 +1,13 @@
+bin/
+obj/
+packages/
+.vs/
+*.user
+*.suo
+*.cache
+*.pdb
+*.log
+*.tmp
+Airline Reservation History/
+*.zip
+temp_release_stage/

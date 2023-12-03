@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <ApplicationHighDpiMode>PerMonitorV2</ApplicationHighDpiMode>
+    <AssemblyTitle>Airline Reservation System</AssemblyTitle>
+    <AssemblyDescription>Aviation &amp; Flight Phases Desktop Reservation &amp; Analytics Platform</AssemblyDescription>
+    <Company>AeroTech Systems</Company>
+    <Product>Airline Reservation System</Product>
+    <Copyright>Copyright © 2023-2026 AeroTech Systems</Copyright>
+    <AssemblyVersion>6.0.0.0</AssemblyVersion>
+    <FileVersion>6.0.0.0</FileVersion>
+  </PropertyGroup>
+
+</Project>
