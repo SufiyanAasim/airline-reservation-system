@@ -256,7 +256,7 @@ namespace AirlineApp.Forms
             foreach (var btn in seatButtons)
             {
                 if (btn == null || !btn.Enabled) continue;
-                string bSeat = (string)btn.Tag;
+                string bSeat = btn.Tag?.ToString() ?? string.Empty;
                 if (bSeat == selectedSeat)
                 {
                     btn.BackColor = Color.FromArgb(14, 165, 233);
