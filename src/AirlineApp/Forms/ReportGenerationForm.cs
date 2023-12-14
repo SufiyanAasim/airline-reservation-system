@@ -248,7 +248,7 @@ namespace AirlineApp.Forms
         {
             var sb = new StringBuilder();
             sb.AppendLine("==================================================================");
-            sb.AppendLine("                 AEROTECH SYSTEMS FLIGHT REPORT                   ");
+            sb.AppendLine("            AIRLINE RESERVATION SYSTEM FLIGHT REPORT              ");
             sb.AppendLine("==================================================================");
             sb.AppendLine($"REPORT GENERATED : {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
             sb.AppendLine($"AUDIT PERIOD     : {dtStart.Value:yyyy-MM-dd} TO {dtEnd.Value:yyyy-MM-dd}");
@@ -294,7 +294,7 @@ namespace AirlineApp.Forms
 
             sb.AppendLine();
             sb.AppendLine("==================================================================");
-            sb.AppendLine("END OF REPORT — AEROTECH SYSTEMS OFFICIALLY VERIFIED REPORT");
+            sb.AppendLine("END OF REPORT — AIRLINE RESERVATION SYSTEM OFFICIALLY VERIFIED REPORT");
             sb.AppendLine("==================================================================");
 
             txtReportPreview.Text = sb.ToString();
