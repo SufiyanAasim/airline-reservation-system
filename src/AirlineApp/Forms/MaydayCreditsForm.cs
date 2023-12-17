@@ -2,6 +2,7 @@ namespace AirlineApp.Forms
 {
     using System;
     using System.Drawing;
+    using System.IO;
     using System.Windows.Forms;
     using AirlineApp.Models;
     using AirlineApp.Services;
@@ -181,7 +182,7 @@ namespace AirlineApp.Forms
 
             var lblTechDetails = new Label
             {
-                Text = "Built with C# & .NET 8.0 Windows Desktop Framework\nTheme: Aviation & Flight Phases (v1.0.0 to v6.0.0)\nMIT License © 2023-2026 AeroTech Systems",
+                Text = "Built with C# & .NET 8.0 Windows Desktop Framework\nTheme: Aviation & Flight Phases (v1.0.0 to v6.0.0)\nMIT License © 2023-2026 Airline Reservation System Contributors",
                 Font = new Font("Segoe UI", 9F, FontStyle.Italic),
                 ForeColor = Color.FromArgb(148, 163, 184),
                 Location = new Point(20, 310),

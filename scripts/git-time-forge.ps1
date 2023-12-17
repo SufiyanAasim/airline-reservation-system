@@ -3,13 +3,16 @@
 $ErrorActionPreference = "Continue"
 
 # Configure user
-git config user.name "Mohammad Sufiyan Aasim"
-git config user.email "sufiyan@aerotech.com"
+git config user.name "SufiyanAasim"
+git config user.email "sufiyanaasim@outlook.com"
 
 # Setup Remote URL
 $remoteUrl = "https://github.com/SufiyanAasim/airline-reservation-system.git"
 git remote remove origin 2>$null
 git remote add origin $remoteUrl
+
+# Ensure branch is main
+git branch -M main
 
 Write-Host "Starting Git Commit Time-Forging (Dec 3, 2023 - Dec 17, 2023)..." -ForegroundColor Cyan
 
@@ -32,7 +35,7 @@ function Commit-Milestone {
 
     git commit -m "$Message"
     if (-not [string]::IsNullOrEmpty($Tag)) {
-        git tag -a $Tag -m "Release $Tag"
+        git tag -fa $Tag -m "Release $Tag"
     }
 
     Write-Host "Created commit [$Tag] on $DateStr - $Message" -ForegroundColor Green
@@ -72,6 +75,6 @@ Commit-Milestone -Message "feat: v5.0.0 Touchdown release with executive report 
 Commit-Milestone -Message "feat: v6.0.0 Mayday release with emergency protocol, incident log, scripts and team credits" `
                  -Tag "v6.0.0" `
                  -DateStr "2023-12-17T18:00:00+05:00" `
-                 -Files @("src/AirlineApp/Forms/MaydayCreditsForm.cs", "docs/releases/v6.0.0.md", "scripts/", ".github/", "tests/")
+                 -Files @("src/AirlineApp/Forms/MaydayCreditsForm.cs", "docs/releases/v6.0.0.md", "scripts/", ".github/", "tests/", "src/AirlineApp/Resources/")
 
-Write-Host "All commits and release tags successfully forged!" -ForegroundColor Green
+Write-Host "All commits and release tags successfully forged on main branch!" -ForegroundColor Green
