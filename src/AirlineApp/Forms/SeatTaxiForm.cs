@@ -26,7 +26,7 @@ namespace AirlineApp.Forms
 
         private void InitializeComponent()
         {
-            this.Text = "Airline Reservation System — v2.0.0 [Taxi Phase - Seat Allocation]";
+            this.Text = "Airline Reservation System";
             this.Size = new Size(1150, 750);
             this.WindowState = FormWindowState.Maximized;
             this.StartPosition = FormStartPosition.CenterScreen;
@@ -45,13 +45,13 @@ namespace AirlineApp.Forms
 
             var lblBadge = new Label
             {
-                Text = "v2.0.0 TAXI & GROUND OPERATIONS",
-                Font = new Font("Segoe UI", 9F, FontStyle.Bold),
-                ForeColor = Color.FromArgb(245, 158, 11),
-                BackColor = Color.FromArgb(120, 53, 15),
+                Text = "v6.0.0 Mayday",
+                Font = new Font("Segoe UI", 9.5F, FontStyle.Bold),
+                ForeColor = Color.White,
+                BackColor = Color.FromArgb(225, 29, 72),
                 Location = new Point(25, 15),
                 AutoSize = true,
-                Padding = new Padding(6, 3, 6, 3)
+                Padding = new Padding(8, 4, 8, 4)
             };
 
             var lblHeader = new Label
@@ -72,15 +72,39 @@ namespace AirlineApp.Forms
                 FlatStyle = FlatStyle.Flat,
                 Size = new Size(170, 38),
                 Anchor = AnchorStyles.Right | AnchorStyles.Top,
-                Location = new Point(940, 25),
+                Location = new Point(780, 25),
                 Cursor = Cursors.Hand
             };
             btnCreditsHeader.FlatAppearance.BorderSize = 0;
-            btnCreditsHeader.Click += (s, e) => FormNavigator.Navigate(this, new MaydayCreditsForm(FlightService.CalculateFullBooking(currentFlight, currentPassenger)));
+            btnCreditsHeader.Click += (s, e) =>
+            {
+                SoundHelper.PlayTap();
+                FormNavigator.Navigate(this, new CreditsForm(this));
+            };
+
+            var btnExitHeader = new Button
+            {
+                Text = "❌ EXIT SYSTEM",
+                Font = new Font("Segoe UI", 9.5F, FontStyle.Bold),
+                ForeColor = Color.White,
+                BackColor = Color.FromArgb(225, 29, 72),
+                FlatStyle = FlatStyle.Flat,
+                Size = new Size(140, 38),
+                Anchor = AnchorStyles.Right | AnchorStyles.Top,
+                Location = new Point(965, 25),
+                Cursor = Cursors.Hand
+            };
+            btnExitHeader.FlatAppearance.BorderSize = 0;
+            btnExitHeader.Click += (s, e) =>
+            {
+                SoundHelper.PlayTap();
+                Application.Exit();
+            };
 
             headerPanel.Controls.Add(lblBadge);
             headerPanel.Controls.Add(lblHeader);
             headerPanel.Controls.Add(btnCreditsHeader);
+            headerPanel.Controls.Add(btnExitHeader);
 
             // Footer Navigation
             var pnlFooter = new Panel
@@ -102,7 +126,11 @@ namespace AirlineApp.Forms
                 Cursor = Cursors.Hand
             };
             btnBack.FlatAppearance.BorderSize = 0;
-            btnBack.Click += (s, e) => FormNavigator.Navigate(this, new WelcomeClearanceForm());
+            btnBack.Click += (s, e) =>
+            {
+                SoundHelper.PlayTap();
+                FormNavigator.Navigate(this, new WelcomeClearanceForm());
+            };
 
             var btnProceed = new Button
             {
@@ -113,19 +141,40 @@ namespace AirlineApp.Forms
                 FlatStyle = FlatStyle.Flat,
                 Size = new Size(310, 45),
                 Anchor = AnchorStyles.Right | AnchorStyles.Top,
-                Location = new Point(780, 20),
+                Location = new Point(600, 20),
                 Cursor = Cursors.Hand
             };
             btnProceed.FlatAppearance.BorderSize = 0;
             btnProceed.Click += BtnProceed_Click;
 
+            var btnExitFooter = new Button
+            {
+                Text = "❌ EXIT",
+                Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                ForeColor = Color.White,
+                BackColor = Color.FromArgb(225, 29, 72),
+                FlatStyle = FlatStyle.Flat,
+                Size = new Size(130, 45),
+                Anchor = AnchorStyles.Right | AnchorStyles.Top,
+                Location = new Point(950, 20),
+                Cursor = Cursors.Hand
+            };
+            btnExitFooter.FlatAppearance.BorderSize = 0;
+            btnExitFooter.Click += (s, e) =>
+            {
+                SoundHelper.PlayTap();
+                Application.Exit();
+            };
+
             pnlFooter.Resize += (s, e) =>
             {
-                btnProceed.Location = new Point(pnlFooter.Width - btnProceed.Width - 30, 20);
+                btnExitFooter.Location = new Point(pnlFooter.Width - btnExitFooter.Width - 25, 20);
+                btnProceed.Location = new Point(btnExitFooter.Left - btnProceed.Width - 15, 20);
             };
 
             pnlFooter.Controls.Add(btnBack);
             pnlFooter.Controls.Add(btnProceed);
+            pnlFooter.Controls.Add(btnExitFooter);
 
             // Main Layout Container
             var pnlMain = new TableLayoutPanel
@@ -139,7 +188,7 @@ namespace AirlineApp.Forms
             pnlMain.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 45F));
             pnlMain.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 55F));
 
-            // Left Section: Cabin Class & Seat Selector Summary
+            // Left Section: Cabin Class & Selection Summary
             var grpCabin = new GroupBox
             {
                 Text = "Cabin Class & Selection Summary",
@@ -147,8 +196,29 @@ namespace AirlineApp.Forms
                 ForeColor = Color.FromArgb(148, 163, 184),
                 Dock = DockStyle.Fill,
                 Margin = new Padding(0, 0, 15, 0),
-                Padding = new Padding(20),
+                Padding = new Padding(15),
                 BackColor = Color.FromArgb(30, 41, 59)
+            };
+
+            var pnlCabinRows = new TableLayoutPanel
+            {
+                Dock = DockStyle.Fill,
+                RowCount = 3,
+                ColumnCount = 1,
+                BackColor = Color.FromArgb(30, 41, 59)
+            };
+            pnlCabinRows.RowStyles.Add(new RowStyle(SizeType.Absolute, 150F));
+            pnlCabinRows.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
+            pnlCabinRows.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
+
+            // Row 1: Radio Buttons
+            var pnlRadioCard = new Panel
+            {
+                Dock = DockStyle.Fill,
+                BackColor = Color.FromArgb(15, 23, 42),
+                Padding = new Padding(15),
+                BorderStyle = BorderStyle.FixedSingle,
+                Margin = new Padding(0, 0, 0, 10)
             };
 
             var rbEconomy = new RadioButton
@@ -156,7 +226,7 @@ namespace AirlineApp.Forms
                 Text = "Economy Class (1.0x Base Fare)",
                 Font = new Font("Segoe UI", 10.5F, FontStyle.Bold),
                 ForeColor = Color.FromArgb(226, 232, 240),
-                Location = new Point(25, 35),
+                Location = new Point(15, 12),
                 AutoSize = true,
                 Checked = true
             };
@@ -167,7 +237,7 @@ namespace AirlineApp.Forms
                 Text = "Business Class (1.85x Base Fare)",
                 Font = new Font("Segoe UI", 10.5F, FontStyle.Bold),
                 ForeColor = Color.FromArgb(56, 189, 248),
-                Location = new Point(25, 75),
+                Location = new Point(15, 48),
                 AutoSize = true
             };
             rbBusiness.CheckedChanged += (s, e) => { if (rbBusiness.Checked) SetCabin(CabinClass.Business); };
@@ -177,34 +247,55 @@ namespace AirlineApp.Forms
                 Text = "First Class (3.20x Base Fare)",
                 Font = new Font("Segoe UI", 10.5F, FontStyle.Bold),
                 ForeColor = Color.FromArgb(251, 191, 36),
-                Location = new Point(25, 115),
+                Location = new Point(15, 84),
                 AutoSize = true
             };
             rbFirst.CheckedChanged += (s, e) => { if (rbFirst.Checked) SetCabin(CabinClass.FirstClass); };
 
-            grpCabin.Controls.Add(rbEconomy);
-            grpCabin.Controls.Add(rbBusiness);
-            grpCabin.Controls.Add(rbFirst);
+            pnlRadioCard.Controls.Add(rbEconomy);
+            pnlRadioCard.Controls.Add(rbBusiness);
+            pnlRadioCard.Controls.Add(rbFirst);
+
+            // Row 2: Selected Seat & Passenger Details Card
+            var pnlSeatDisplayCard = new Panel
+            {
+                Dock = DockStyle.Fill,
+                BackColor = Color.FromArgb(15, 23, 42),
+                Padding = new Padding(15),
+                BorderStyle = BorderStyle.FixedSingle,
+                Margin = new Padding(0, 0, 0, 10)
+            };
 
             lblSelectedSeatDisplay = new Label
             {
+                Dock = DockStyle.Fill,
                 Font = new Font("Consolas", 11.5F),
-                ForeColor = Color.FromArgb(14, 165, 233),
-                Location = new Point(25, 170),
-                Size = new Size(420, 100),
-                Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right
+                ForeColor = Color.FromArgb(14, 165, 233)
             };
-            grpCabin.Controls.Add(lblSelectedSeatDisplay);
+            pnlSeatDisplayCard.Controls.Add(lblSelectedSeatDisplay);
+
+            // Row 3: Fare Preview Calculation Card
+            var pnlFareCard = new Panel
+            {
+                Dock = DockStyle.Fill,
+                BackColor = Color.FromArgb(15, 23, 42),
+                Padding = new Padding(15),
+                BorderStyle = BorderStyle.FixedSingle
+            };
 
             lblFarePreview = new Label
             {
+                Dock = DockStyle.Fill,
                 Font = new Font("Consolas", 11.5F, FontStyle.Bold),
-                ForeColor = Color.FromArgb(16, 185, 129),
-                Location = new Point(25, 280),
-                Size = new Size(420, 140),
-                Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right
+                ForeColor = Color.FromArgb(16, 185, 129)
             };
-            grpCabin.Controls.Add(lblFarePreview);
+            pnlFareCard.Controls.Add(lblFarePreview);
+
+            pnlCabinRows.Controls.Add(pnlRadioCard, 0, 0);
+            pnlCabinRows.Controls.Add(pnlSeatDisplayCard, 0, 1);
+            pnlCabinRows.Controls.Add(pnlFareCard, 0, 2);
+
+            grpCabin.Controls.Add(pnlCabinRows);
 
             // Right Section: Interactive Seat Grid Map
             var grpSeatMap = new GroupBox
@@ -214,14 +305,25 @@ namespace AirlineApp.Forms
                 ForeColor = Color.FromArgb(148, 163, 184),
                 Dock = DockStyle.Fill,
                 Margin = new Padding(15, 0, 0, 0),
-                Padding = new Padding(20),
+                Padding = new Padding(15),
                 BackColor = Color.FromArgb(30, 41, 59)
             };
 
-            var pnlGrid = new Panel
+            var pnlSeatMapRows = new TableLayoutPanel
+            {
+                Dock = DockStyle.Fill,
+                RowCount = 2,
+                ColumnCount = 1,
+                BackColor = Color.FromArgb(30, 41, 59)
+            };
+            pnlSeatMapRows.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            pnlSeatMapRows.RowStyles.Add(new RowStyle(SizeType.Absolute, 50F));
+
+            var pnlGridCenter = new Panel
             {
                 Dock = DockStyle.Fill,
                 BackColor = Color.FromArgb(15, 23, 42),
+                BorderStyle = BorderStyle.FixedSingle,
                 Padding = new Padding(20)
             };
 
@@ -237,9 +339,9 @@ namespace AirlineApp.Forms
                     var btnSeat = new Button
                     {
                         Text = seatName,
-                        Font = new Font("Segoe UI", 10F, FontStyle.Bold),
-                        Size = new Size(72, 48),
-                        Location = new Point(40 + c * 90 + (c >= 2 ? 45 : 0), 25 + (r - 1) * 60),
+                        Font = new Font("Segoe UI", 11F, FontStyle.Bold),
+                        Size = new Size(85, 55),
+                        Location = new Point(45 + c * 100 + (c >= 2 ? 50 : 0), 20 + (r - 1) * 68),
                         Tag = seatName,
                         Cursor = isOccupied ? Cursors.No : Cursors.Hand,
                         Enabled = !isOccupied
@@ -264,12 +366,28 @@ namespace AirlineApp.Forms
                     string captSeat = seatName;
                     btnSeat.Click += (s, e) => SelectSeat(captSeat);
 
-                    pnlGrid.Controls.Add(btnSeat);
+                    pnlGridCenter.Controls.Add(btnSeat);
                     seatButtons[index++] = btnSeat;
                 }
             }
 
-            grpSeatMap.Controls.Add(pnlGrid);
+            // Legend Bar
+            var pnlLegend = new FlowLayoutPanel
+            {
+                Dock = DockStyle.Fill,
+                BackColor = Color.FromArgb(30, 41, 59),
+                FlowDirection = FlowDirection.LeftToRight,
+                Padding = new Padding(15, 10, 0, 0)
+            };
+
+            AddLegendItem(pnlLegend, "Selected", Color.FromArgb(14, 165, 233));
+            AddLegendItem(pnlLegend, "Occupied", Color.FromArgb(225, 29, 72));
+            AddLegendItem(pnlLegend, "Available", Color.FromArgb(51, 65, 85));
+
+            pnlSeatMapRows.Controls.Add(pnlGridCenter, 0, 0);
+            pnlSeatMapRows.Controls.Add(pnlLegend, 0, 1);
+
+            grpSeatMap.Controls.Add(pnlSeatMapRows);
 
             pnlMain.Controls.Add(grpCabin, 0, 0);
             pnlMain.Controls.Add(grpSeatMap, 1, 0);
@@ -279,6 +397,26 @@ namespace AirlineApp.Forms
             this.Controls.Add(headerPanel);
 
             UpdateCalculations();
+        }
+
+        private void AddLegendItem(Panel parent, string text, Color color)
+        {
+            var pnlColor = new Panel
+            {
+                Size = new Size(20, 20),
+                BackColor = color,
+                Margin = new Padding(0, 3, 6, 0)
+            };
+            var lblText = new Label
+            {
+                Text = text,
+                Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                ForeColor = Color.FromArgb(226, 232, 240),
+                AutoSize = true,
+                Margin = new Padding(0, 3, 25, 0)
+            };
+            parent.Controls.Add(pnlColor);
+            parent.Controls.Add(lblText);
         }
 
         private void SetCabin(CabinClass cabin)
@@ -321,12 +459,20 @@ namespace AirlineApp.Forms
             decimal cabinSurcharge = currentFlight.BaseFare * (mult - 1.0m);
             decimal total = currentFlight.BaseFare + cabinSurcharge;
 
-            lblSelectedSeatDisplay.Text = $"SELECTED SEAT : {selectedSeat}\n\nPASSENGER     : {currentPassenger.FullName}\n\nCABIN CLASS   : {selectedCabin}";
-            lblFarePreview.Text = $"BASE FARE       : ${currentFlight.BaseFare:F2}\n\nCABIN SURCHARGE : ${cabinSurcharge:F2}\n\nSUBTOTAL FARE   : ${total:F2}";
+            lblSelectedSeatDisplay.Text = 
+                $"SELECTED SEAT : {selectedSeat}\n\n" +
+                $"PASSENGER     : {currentPassenger.FullName}\n\n" +
+                $"CABIN CLASS   : {selectedCabin}";
+
+            lblFarePreview.Text = 
+                $"BASE FARE RATE  : ${currentFlight.BaseFare:F2}\n\n" +
+                $"CABIN SURCHARGE : ${cabinSurcharge:F2}\n\n" +
+                $"SUBTOTAL FARE   : ${total:F2}";
         }
 
         private void BtnProceed_Click(object? sender, EventArgs e)
         {
+            SoundHelper.PlayTap();
             FormNavigator.Navigate(this, new BaggageAscentForm(currentFlight, currentPassenger));
         }
     }

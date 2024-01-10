@@ -14,12 +14,13 @@ namespace AirlineApp.Forms
         {
             this.booking = booking;
             InitializeComponent();
+            IconHelper.ApplyIcon(this);
             BookingHistoryService.SaveBooking(booking);
         }
 
         private void InitializeComponent()
         {
-            this.Text = "Airline Reservation System — v5.0.0 [Touchdown Phase - Boarding Pass & Receipt]";
+            this.Text = "Airline Reservation System — Boarding Pass & Receipt";
             this.Size = new Size(1150, 750);
             this.WindowState = FormWindowState.Maximized;
             this.StartPosition = FormStartPosition.CenterScreen;
@@ -38,13 +39,13 @@ namespace AirlineApp.Forms
 
             var lblBadge = new Label
             {
-                Text = "v5.0.0 TOUCHDOWN & ELECTRONIC BOARDING PASS",
-                Font = new Font("Segoe UI", 9F, FontStyle.Bold),
-                ForeColor = Color.FromArgb(16, 185, 129),
-                BackColor = Color.FromArgb(6, 78, 59),
+                Text = "v6.0.0 Mayday",
+                Font = new Font("Segoe UI", 9.5F, FontStyle.Bold),
+                ForeColor = Color.White,
+                BackColor = Color.FromArgb(225, 29, 72),
                 Location = new Point(25, 15),
                 AutoSize = true,
-                Padding = new Padding(6, 3, 6, 3)
+                Padding = new Padding(8, 4, 8, 4)
             };
 
             var lblHeader = new Label
@@ -65,15 +66,31 @@ namespace AirlineApp.Forms
                 FlatStyle = FlatStyle.Flat,
                 Size = new Size(170, 38),
                 Anchor = AnchorStyles.Right | AnchorStyles.Top,
-                Location = new Point(940, 25),
+                Location = new Point(780, 25),
                 Cursor = Cursors.Hand
             };
             btnCreditsHeader.FlatAppearance.BorderSize = 0;
-            btnCreditsHeader.Click += (s, e) => FormNavigator.Navigate(this, new MaydayCreditsForm(booking));
+            btnCreditsHeader.Click += (s, e) => FormNavigator.Navigate(this, new CreditsForm());
+
+            var btnExitHeader = new Button
+            {
+                Text = "❌ EXIT SYSTEM",
+                Font = new Font("Segoe UI", 9.5F, FontStyle.Bold),
+                ForeColor = Color.White,
+                BackColor = Color.FromArgb(225, 29, 72),
+                FlatStyle = FlatStyle.Flat,
+                Size = new Size(140, 38),
+                Anchor = AnchorStyles.Right | AnchorStyles.Top,
+                Location = new Point(965, 25),
+                Cursor = Cursors.Hand
+            };
+            btnExitHeader.FlatAppearance.BorderSize = 0;
+            btnExitHeader.Click += (s, e) => Application.Exit();
 
             headerPanel.Controls.Add(lblBadge);
             headerPanel.Controls.Add(lblHeader);
             headerPanel.Controls.Add(btnCreditsHeader);
+            headerPanel.Controls.Add(btnExitHeader);
 
             // Footer Navigation
             var pnlFooter = new Panel
@@ -99,7 +116,7 @@ namespace AirlineApp.Forms
 
             var btnMayday = new Button
             {
-                Text = "PROCEED TO MAYDAY & CREDITS 🚨",
+                Text = "PROCEED TO MAYDAY CONTROL 🚨",
                 Font = new Font("Segoe UI", 10.5F, FontStyle.Bold),
                 ForeColor = Color.White,
                 BackColor = Color.FromArgb(225, 29, 72),
@@ -110,7 +127,7 @@ namespace AirlineApp.Forms
                 Cursor = Cursors.Hand
             };
             btnMayday.FlatAppearance.BorderSize = 0;
-            btnMayday.Click += (s, e) => FormNavigator.Navigate(this, new MaydayCreditsForm(booking));
+            btnMayday.Click += (s, e) => FormNavigator.Navigate(this, new MaydayForm(booking));
 
             pnlFooter.Resize += (s, e) =>
             {
@@ -124,15 +141,13 @@ namespace AirlineApp.Forms
             var pnlMain = new Panel
             {
                 Dock = DockStyle.Fill,
-                Padding = new Padding(35, 20, 35, 20),
+                Padding = new Padding(25, 15, 25, 15),
                 BackColor = Color.FromArgb(15, 23, 42)
             };
 
             var pnlTicketCard = new Panel
             {
-                Location = new Point(40, 15),
-                Size = new Size(1000, 440),
-                Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right,
+                Dock = DockStyle.Fill,
                 BackColor = Color.FromArgb(30, 41, 59),
                 BorderStyle = BorderStyle.FixedSingle
             };
@@ -140,26 +155,26 @@ namespace AirlineApp.Forms
             var pnlTicketHeader = new Panel
             {
                 Dock = DockStyle.Top,
-                Height = 60,
+                Height = 65,
                 BackColor = Color.FromArgb(14, 165, 233)
             };
 
             var lblAirlineTitle = new Label
             {
                 Text = $"✈  {booking.FlightDetails.Airline.ToUpper()}  —  ELECTRONIC BOARDING PASS",
-                Font = new Font("Segoe UI", 13F, FontStyle.Bold),
+                Font = new Font("Segoe UI", 14F, FontStyle.Bold),
                 ForeColor = Color.White,
-                Location = new Point(20, 16),
+                Location = new Point(25, 18),
                 AutoSize = true
             };
 
             var lblPnrDisplay = new Label
             {
                 Text = $"PNR: {booking.PnrReference}",
-                Font = new Font("Consolas", 13F, FontStyle.Bold),
+                Font = new Font("Consolas", 14F, FontStyle.Bold),
                 ForeColor = Color.FromArgb(245, 158, 11),
                 Anchor = AnchorStyles.Right | AnchorStyles.Top,
-                Location = new Point(800, 16),
+                Location = new Point(850, 18),
                 AutoSize = true
             };
 
@@ -168,38 +183,37 @@ namespace AirlineApp.Forms
 
             var lblTicketBody = new Label
             {
-                Font = new Font("Consolas", 10.5F),
+                Dock = DockStyle.Fill,
+                Font = new Font("Consolas", 11.5F),
                 ForeColor = Color.FromArgb(226, 232, 240),
-                Location = new Point(25, 75),
-                Size = new Size(950, 270),
-                Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right
+                Padding = new Padding(30, 25, 30, 20)
             };
 
             lblTicketBody.Text = 
-                $"PASSENGER NAME : {booking.PassengerDetails.FullName.ToUpper()}\n" +
-                $"PASSPORT / CNIC: {booking.PassengerDetails.PassportOrId}\n" +
-                $"FLIGHT NUMBER  : {booking.FlightDetails.FlightNumber} ({booking.FlightDetails.AircraftType})\n" +
-                $"ORIGIN ➔ DEST   : {booking.FlightDetails.Origin} ({booking.FlightDetails.OriginCode}) ➔ {booking.FlightDetails.Destination} ({booking.FlightDetails.DestinationCode})\n" +
-                $"DEPARTURE TIME : {booking.FlightDetails.DepartureTime}\n" +
-                $"SEAT ALLOCATION: {booking.PassengerDetails.SeatNumber} ({booking.PassengerDetails.Cabin} Class)\n" +
-                $"BAGGAGE WEIGHT : {booking.PassengerDetails.BaggageWeightKg:F1} KG (Excess Fee: ${booking.ExcessBaggageFee:F2})\n" +
-                $"MEAL PREFERENCE: {booking.PassengerDetails.MealPreference}\n" +
-                $"TAX & CHARGES  : ${booking.AirportTax:F2} (12% Airport Tax Included)\n" +
-                $"GRAND TOTAL    : ${booking.TotalFare:F2} (PAID IN FULL)\n" +
-                $"STATUS         : TOUCHDOWN / CONFIRMED & LOGGED";
+                $"PASSENGER NAME : {booking.PassengerDetails.FullName.ToUpper()}\n\n" +
+                $"PASSPORT / CNIC: {booking.PassengerDetails.PassportOrId}\n\n" +
+                $"FLIGHT NUMBER  : {booking.FlightDetails.FlightNumber} ({booking.FlightDetails.AircraftType})\n\n" +
+                $"ORIGIN ➔ DEST   : {booking.FlightDetails.Origin} ({booking.FlightDetails.OriginCode}) ➔ {booking.FlightDetails.Destination} ({booking.FlightDetails.DestinationCode})\n\n" +
+                $"DEPARTURE TIME : {booking.FlightDetails.DepartureTime}\n\n" +
+                $"SEAT ALLOCATION: {booking.PassengerDetails.SeatNumber} ({booking.PassengerDetails.Cabin} Class)\n\n" +
+                $"BAGGAGE WEIGHT : {booking.PassengerDetails.BaggageWeightKg:F1} KG (Excess Fee: ${booking.ExcessBaggageFee:F2})\n\n" +
+                $"MEAL PREFERENCE: {booking.PassengerDetails.MealPreference}\n\n" +
+                $"TAX & CHARGES  : ${booking.AirportTax:F2} (12% Airport Tax Included)\n\n" +
+                $"GRAND TOTAL    : ${booking.TotalFare:F2} (PAID IN FULL)\n\n" +
+                $"BOOKING STATUS : CONFIRMED & LOGGED";
 
             var lblBarcode = new Label
             {
-                Text = "||| | ||||| || | |||| ||| |||| | ||||| ||| ||| |||| || | |||| |||",
-                Font = new Font("Consolas", 16F, FontStyle.Bold),
+                Text = "||| | ||||| || | |||| ||| |||| | ||||| ||| ||| |||| || | |||| ||| ||| ||| |||||",
+                Font = new Font("Consolas", 18F, FontStyle.Bold),
                 ForeColor = Color.FromArgb(148, 163, 184),
                 Dock = DockStyle.Bottom,
-                Height = 40,
+                Height = 45,
                 TextAlign = ContentAlignment.MiddleCenter
             };
 
-            pnlTicketCard.Controls.Add(pnlTicketHeader);
             pnlTicketCard.Controls.Add(lblTicketBody);
+            pnlTicketCard.Controls.Add(pnlTicketHeader);
             pnlTicketCard.Controls.Add(lblBarcode);
 
             pnlMain.Controls.Add(pnlTicketCard);
@@ -211,7 +225,7 @@ namespace AirlineApp.Forms
 
         private void BtnPrint_Click(object? sender, EventArgs e)
         {
-            SoundHelper.PlayTap();
+            SoundHelper.PlaySuccess();
             CustomMessageBox.Show("PRINT SPOOLER TRIGGERED", $"Boarding pass ticket for PNR {booking.PnrReference} sent to Windows Print Spooler.\nLocal copy persisted to disk.");
         }
     }

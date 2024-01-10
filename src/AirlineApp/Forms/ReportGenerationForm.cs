@@ -17,8 +17,22 @@ namespace AirlineApp.Forms
 
         public ReportGenerationForm(Booking booking)
         {
-            this.booking = booking;
+            this.booking = booking ?? CreateFallbackBooking();
             InitializeComponent();
+            IconHelper.ApplyIcon(this);
+        }
+
+        private static Booking CreateFallbackBooking()
+        {
+            var flight = FlightService.GetFlights()[0];
+            var passenger = new Passenger
+            {
+                FullName = "Capt. Sufiyan Aasim",
+                PassportOrId = "42101-9876543-1",
+                Cabin = CabinClass.Economy,
+                SeatNumber = "03A"
+            };
+            return FlightService.CalculateFullBooking(flight, passenger);
         }
 
         private void InitializeComponent()
@@ -60,8 +74,40 @@ namespace AirlineApp.Forms
                 AutoSize = true
             };
 
+            var btnCreditsHeader = new Button
+            {
+                Text = "⭐ SYSTEM CREDITS",
+                Font = new Font("Segoe UI", 9.5F, FontStyle.Bold),
+                ForeColor = Color.White,
+                BackColor = Color.FromArgb(139, 92, 246),
+                FlatStyle = FlatStyle.Flat,
+                Size = new Size(170, 38),
+                Anchor = AnchorStyles.Right | AnchorStyles.Top,
+                Location = new Point(780, 25),
+                Cursor = Cursors.Hand
+            };
+            btnCreditsHeader.FlatAppearance.BorderSize = 0;
+            btnCreditsHeader.Click += (s, e) => FormNavigator.Navigate(this, new CreditsForm(this));
+
+            var btnExitHeader = new Button
+            {
+                Text = "❌ EXIT SYSTEM",
+                Font = new Font("Segoe UI", 9.5F, FontStyle.Bold),
+                ForeColor = Color.White,
+                BackColor = Color.FromArgb(225, 29, 72),
+                FlatStyle = FlatStyle.Flat,
+                Size = new Size(140, 38),
+                Anchor = AnchorStyles.Right | AnchorStyles.Top,
+                Location = new Point(965, 25),
+                Cursor = Cursors.Hand
+            };
+            btnExitHeader.FlatAppearance.BorderSize = 0;
+            btnExitHeader.Click += (s, e) => Application.Exit();
+
             headerPanel.Controls.Add(lblBadge);
             headerPanel.Controls.Add(lblHeader);
+            headerPanel.Controls.Add(btnCreditsHeader);
+            headerPanel.Controls.Add(btnExitHeader);
 
             // Controls Toolbar Panel
             var toolbarPanel = new Panel
@@ -173,12 +219,12 @@ namespace AirlineApp.Forms
                 Dock = DockStyle.Fill,
                 Multiline = true,
                 ReadOnly = true,
-                ScrollBars = ScrollBars.Vertical,
-                Font = new Font("Consolas", 10.5F),
+                WordWrap = false,
+                ScrollBars = ScrollBars.Both,
+                Font = new Font("Consolas", 11F),
                 BackColor = Color.FromArgb(15, 23, 42),
                 ForeColor = Color.FromArgb(56, 189, 248),
-                BorderStyle = BorderStyle.None,
-                Padding = new Padding(25)
+                BorderStyle = BorderStyle.FixedSingle
             };
 
             // Footer
@@ -196,14 +242,41 @@ namespace AirlineApp.Forms
                 ForeColor = Color.White,
                 BackColor = Color.FromArgb(51, 65, 85),
                 FlatStyle = FlatStyle.Flat,
-                Size = new Size(220, 40),
-                Location = new Point(25, 18),
+                Size = new Size(220, 42),
+                Location = new Point(25, 16),
                 Cursor = Cursors.Hand
             };
             btnClose.FlatAppearance.BorderSize = 0;
-            btnClose.Click += (s, e) => this.Close();
+            btnClose.Click += (s, e) =>
+            {
+                SoundHelper.PlayTap();
+                var flight = booking?.FlightDetails ?? FlightService.GetFlights()[0];
+                var passenger = booking?.PassengerDetails ?? new Passenger { FullName = "Capt. Sufiyan Aasim" };
+                FormNavigator.Navigate(this, new AnalyticsCruisingForm(flight, passenger));
+            };
+
+            var btnExitFooter = new Button
+            {
+                Text = "❌ EXIT",
+                Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                ForeColor = Color.White,
+                BackColor = Color.FromArgb(225, 29, 72),
+                FlatStyle = FlatStyle.Flat,
+                Size = new Size(130, 42),
+                Anchor = AnchorStyles.Right | AnchorStyles.Top,
+                Location = new Point(965, 16),
+                Cursor = Cursors.Hand
+            };
+            btnExitFooter.FlatAppearance.BorderSize = 0;
+            btnExitFooter.Click += (s, e) => Application.Exit();
+
+            pnlFooter.Resize += (s, e) =>
+            {
+                btnExitFooter.Location = new Point(pnlFooter.Width - btnExitFooter.Width - 25, 16);
+            };
 
             pnlFooter.Controls.Add(btnClose);
+            pnlFooter.Controls.Add(btnExitFooter);
 
             this.Controls.Add(txtReportPreview);
             this.Controls.Add(toolbarPanel);
@@ -215,61 +288,67 @@ namespace AirlineApp.Forms
 
         private void GenerateReportPreview()
         {
+            string nl = Environment.NewLine;
             int selected = comboReportType.SelectedIndex;
+
+            var f = booking?.FlightDetails ?? FlightService.GetFlights()[0];
+            var p = booking?.PassengerDetails ?? new Passenger { FullName = "Capt. Sufiyan Aasim", SeatNumber = "03A", BaggageWeightKg = 28 };
+
             if (selected == 0)
             {
                 txtReportPreview.Text = 
-                    "=========================================================================\n" +
-                    "               AIRLINE RESERVATION SYSTEM — PASSENGER MANIFEST\n" +
-                    "=========================================================================\n" +
-                    $"GENERATED ON     : {DateTime.Now:yyyy-MM-dd HH:mm:ss}\n" +
-                    $"FLIGHT NUMBER    : {booking.FlightDetails.FlightNumber}\n" +
-                    $"AIRLINE OPERATOR : {booking.FlightDetails.Airline}\n" +
-                    $"ROUTE            : {booking.FlightDetails.Origin} ({booking.FlightDetails.OriginCode}) ➔ {booking.FlightDetails.Destination} ({booking.FlightDetails.DestinationCode})\n" +
-                    "-------------------------------------------------------------------------\n" +
-                    "SEAT | PASSENGER NAME         | PASSPORT / CNIC | CABIN CLASS | BAGGAGE\n" +
-                    "-------------------------------------------------------------------------\n" +
-                    $"{booking.PassengerDetails.SeatNumber,-4} | {booking.PassengerDetails.FullName,-22} | {booking.PassengerDetails.PassportOrId,-15} | {booking.PassengerDetails.Cabin,-11} | {booking.PassengerDetails.BaggageWeightKg} KG\n" +
-                    "01A  | Capt. Sufiyan Aasim    | PK-98234109     | FirstClass  | 42 KG\n" +
-                    "02B  | Tariq Mehmood          | PK-11029384     | Business    | 30 KG\n" +
-                    "04C  | Ayesha Khan            | PK-77625149     | Economy     | 18 KG\n" +
-                    "-------------------------------------------------------------------------\n" +
-                    "TOTAL MANIFEST PASSENGERS: 4 | SEAT CAPACITY LOAD: 88.4%";
+                    "==========================================================================================" + nl +
+                    "               AIRLINE RESERVATION SYSTEM — PASSENGER MANIFEST REPORT" + nl +
+                    "==========================================================================================" + nl +
+                    $"GENERATED ON     : {DateTime.Now:yyyy-MM-dd HH:mm:ss}" + nl +
+                    $"FLIGHT NUMBER    : {f.FlightNumber}" + nl +
+                    $"AIRLINE OPERATOR : {f.Airline}" + nl +
+                    $"ROUTE            : {f.Origin} ({f.OriginCode}) ➔ {f.Destination} ({f.DestinationCode})" + nl +
+                    "------------------------------------------------------------------------------------------" + nl +
+                    "SEAT | PASSENGER NAME         | PASSPORT / CNIC | CABIN CLASS | BAGGAGE WEIGHT | STATUS" + nl +
+                    "------------------------------------------------------------------------------------------" + nl +
+                    $"{p.SeatNumber,-4} | {p.FullName,-22} | {p.PassportOrId,-15} | {p.Cabin,-11} | {p.BaggageWeightKg,5:F1} KG       | CONFIRMED" + nl +
+                    "01A  | Mohammad Sufiyan Aasim | PK-98234109     | FirstClass  |  42.0 KG       | CONFIRMED" + nl +
+                    "02B  | Tariq Mehmood          | PK-11029384     | Business    |  30.0 KG       | CONFIRMED" + nl +
+                    "04C  | Ayesha Khan            | PK-77625149     | Economy     |  18.0 KG       | CONFIRMED" + nl +
+                    "------------------------------------------------------------------------------------------" + nl +
+                    "TOTAL MANIFEST PASSENGERS: 4 | SEAT CAPACITY LOAD: 88.4% | AUDIT STATUS: COMPLIANT";
             }
             else if (selected == 1)
             {
                 txtReportPreview.Text = 
-                    "=========================================================================\n" +
-                    "          AIRLINE RESERVATION SYSTEM — FINANCIAL REVENUE AUDIT LEDGER\n" +
-                    "=========================================================================\n" +
-                    $"AUDIT PERIOD     : {dtPickerFrom.Value:yyyy-MM-dd} TO {dtPickerTo.Value:yyyy-MM-dd}\n" +
-                    $"PNR REFERENCE    : {booking.PnrReference}\n" +
-                    "-------------------------------------------------------------------------\n" +
-                    "ITEM DESCRIPTION                            | CALCULATION   | AMOUNT\n" +
-                    "-------------------------------------------------------------------------\n" +
-                    $"BASE ROUTE FARE                             | {booking.FlightDetails.FlightNumber,-13} | ${booking.BaseFare,10:F2}\n" +
-                    $"CABIN CLASS SURCHARGE                       | {booking.PassengerDetails.Cabin,-13} | ${booking.CabinSurcharge,10:F2}\n" +
-                    $"EXCESS BAGGAGE SURCHARGE                    | {booking.PassengerDetails.BaggageWeightKg} KG        | ${booking.ExcessBaggageFee,10:F2}\n" +
-                    $"AIRPORT INFRASTRUCTURE TAX                  | 12.0% RATE    | ${booking.AirportTax,10:F2}\n" +
-                    "-------------------------------------------------------------------------\n" +
-                    $"TOTAL REVENUE AUDITED                       |               | ${booking.TotalFare,10:F2}";
+                    "==========================================================================================" + nl +
+                    "          AIRLINE RESERVATION SYSTEM — FINANCIAL REVENUE AUDIT LEDGER" + nl +
+                    "==========================================================================================" + nl +
+                    $"AUDIT PERIOD     : {dtPickerFrom.Value:yyyy-MM-dd} TO {dtPickerTo.Value:yyyy-MM-dd}" + nl +
+                    $"PNR REFERENCE    : {booking?.PnrReference ?? "PNR-FALLBACK"}" + nl +
+                    "------------------------------------------------------------------------------------------" + nl +
+                    "ITEM DESCRIPTION                            | CALCULATION RATE  | AUDITED AMOUNT" + nl +
+                    "------------------------------------------------------------------------------------------" + nl +
+                    $"BASE ROUTE FARE RATE                        | {f.FlightNumber,-17} | ${booking?.BaseFare ?? f.BaseFare,12:F2}" + nl +
+                    $"CABIN CLASS SURCHARGE                       | {p.Cabin,-17} | ${booking?.CabinSurcharge ?? 0m,12:F2}" + nl +
+                    $"EXCESS BAGGAGE FEE                          | {p.BaggageWeightKg,5:F1} KG          | ${booking?.ExcessBaggageFee ?? 0m,12:F2}" + nl +
+                    $"IN-FLIGHT SERVICE ADD-ONS                   | OPTIONAL PASS     | ${booking?.AddonServicesFee ?? 0m,12:F2}" + nl +
+                    $"AIRPORT INFRASTRUCTURE TAX                  | 12.0% RATE        | ${booking?.AirportTax ?? 0m,12:F2}" + nl +
+                    "------------------------------------------------------------------------------------------" + nl +
+                    $"TOTAL REVENUE AUDITED                       | GRAND TOTAL       | ${booking?.TotalFare ?? 180m,12:F2}";
             }
             else
             {
                 txtReportPreview.Text = 
-                    "=========================================================================\n" +
-                    "            AIRLINE RESERVATION SYSTEM — SAFETY & TELEMETRY LOG\n" +
-                    "=========================================================================\n" +
-                    $"SAFETY MONITOR   : ACTIVE SQUAWK 7000 (NORMAL OPERATIONS)\n" +
-                    $"AIRCRAFT TYPE    : {booking.FlightDetails.AircraftType}\n" +
-                    "-------------------------------------------------------------------------\n" +
-                    "TIMESTAMP           | EVENT CODE | STATUS      | DIAGNOSTIC DETAILS\n" +
-                    "-------------------------------------------------------------------------\n" +
-                    $"{DateTime.Now.AddMinutes(-45):HH:mm:ss}            | FL-CLR-01  | NOMINAL     | Departure clearance verified for {booking.FlightDetails.OriginCode}\n" +
-                    $"{DateTime.Now.AddMinutes(-30):HH:mm:ss}            | FL-TAXI-02 | NOMINAL     | Seat {booking.PassengerDetails.SeatNumber} locked & confirmed\n" +
-                    $"{DateTime.Now.AddMinutes(-15):HH:mm:ss}            | FL-CRUI-04 | NOMINAL     | Cruising FL380 airspeed Mach 0.82\n" +
-                    "-------------------------------------------------------------------------\n" +
-                    "SYSTEM INCIDENTS    : 0 DETECTED | HARDWARE HEALTH: 100% EXCELLENT";
+                    "==========================================================================================" + nl +
+                    "            AIRLINE RESERVATION SYSTEM — SAFETY & TELEMETRY AUDIT REPORT" + nl +
+                    "==========================================================================================" + nl +
+                    $"SAFETY MONITOR   : SQUAWK 7000 (NORMAL FLIGHT OPERATIONS)" + nl +
+                    $"AIRCRAFT TYPE    : {f.AircraftType}" + nl +
+                    "------------------------------------------------------------------------------------------" + nl +
+                    "TIMESTAMP           | EVENT CODE | STATUS      | DIAGNOSTIC TELEMETRY DETAILS" + nl +
+                    "------------------------------------------------------------------------------------------" + nl +
+                    $"{DateTime.Now.AddMinutes(-45):HH:mm:ss}            | FL-CLR-01  | NOMINAL     | Departure clearance verified for {f.OriginCode}" + nl +
+                    $"{DateTime.Now.AddMinutes(-30):HH:mm:ss}            | FL-TAXI-02 | NOMINAL     | Seat {p.SeatNumber} locked & passenger manifest confirmed" + nl +
+                    $"{DateTime.Now.AddMinutes(-15):HH:mm:ss}            | FL-CRUI-04 | NOMINAL     | Cruising FL380 airspeed Mach 0.82 OAT -54°C" + nl +
+                    "------------------------------------------------------------------------------------------" + nl +
+                    "SYSTEM INCIDENTS    : 0 DETECTED | HARDWARE HEALTH: 100% EXCELLENT | BLACK BOX RECORD: LOGGED";
             }
         }
 
@@ -277,9 +356,11 @@ namespace AirlineApp.Forms
         {
             try
             {
+                SoundHelper.PlayTap();
                 string dir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Airline Reservation History");
                 if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
-                string file = Path.Combine(dir, $"Report_{booking.PnrReference}_{DateTime.Now:yyyyMMdd_HHmmss}.txt");
+                string pnr = booking?.PnrReference ?? "PNR-FALLBACK";
+                string file = Path.Combine(dir, $"Report_{pnr}_{DateTime.Now:yyyyMMdd_HHmmss}.txt");
                 File.WriteAllText(file, txtReportPreview.Text);
                 CustomMessageBox.Show("REPORT EXPORTED", $"Executive report exported successfully to:\n{file}");
             }
@@ -293,12 +374,17 @@ namespace AirlineApp.Forms
         {
             try
             {
+                SoundHelper.PlayTap();
                 string dir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Airline Reservation History");
                 if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
-                string file = Path.Combine(dir, $"Report_{booking.PnrReference}_{DateTime.Now:yyyyMMdd_HHmmss}.csv");
+                string pnr = booking?.PnrReference ?? "PNR-FALLBACK";
+                string file = Path.Combine(dir, $"Report_{pnr}_{DateTime.Now:yyyyMMdd_HHmmss}.csv");
+
+                var f = booking?.FlightDetails ?? FlightService.GetFlights()[0];
+                var p = booking?.PassengerDetails ?? new Passenger { FullName = "Capt. Sufiyan Aasim" };
 
                 string csvContent = "PNR,FlightNo,Passenger,Passport,Origin,Destination,Cabin,BaggageKg,TotalFare,Timestamp\n" +
-                                   $"\"{booking.PnrReference}\",\"{booking.FlightDetails.FlightNumber}\",\"{booking.PassengerDetails.FullName}\",\"{booking.PassengerDetails.PassportOrId}\",\"{booking.FlightDetails.OriginCode}\",\"{booking.FlightDetails.DestinationCode}\",\"{booking.PassengerDetails.Cabin}\",{booking.PassengerDetails.BaggageWeightKg},{booking.TotalFare},\"{booking.BookingTimestamp:yyyy-MM-dd HH:mm:ss}\"";
+                                   $"\"{pnr}\",\"{f.FlightNumber}\",\"{p.FullName}\",\"{p.PassportOrId}\",\"{f.OriginCode}\",\"{f.DestinationCode}\",\"{p.Cabin}\",{p.BaggageWeightKg},{booking?.TotalFare ?? 180m},\"{DateTime.Now:yyyy-MM-dd HH:mm:ss}\"";
 
                 File.WriteAllText(file, csvContent);
                 CustomMessageBox.Show("CSV EXPORTED", $"Spreadsheet ledger exported successfully to:\n{file}");

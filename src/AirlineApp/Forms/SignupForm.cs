@@ -23,6 +23,7 @@ namespace AirlineApp.Forms
         public SignupForm()
         {
             InitializeComponent();
+            IconHelper.ApplyIcon(this);
         }
 
         private void InitializeComponent()
@@ -41,19 +42,19 @@ namespace AirlineApp.Forms
             var headerPanel = new Panel
             {
                 Dock = DockStyle.Top,
-                Height = 100,
+                Height = 90,
                 BackColor = Color.FromArgb(30, 41, 59)
             };
 
             var lblBadge = new Label
             {
-                Text = "ACCOUNT REGISTRATION",
-                Font = new Font("Segoe UI", 9F, FontStyle.Bold),
-                ForeColor = Color.FromArgb(16, 185, 129),
-                BackColor = Color.FromArgb(6, 78, 59),
-                Location = new Point(30, 18),
+                Text = "v6.0.0 Mayday",
+                Font = new Font("Segoe UI", 9.5F, FontStyle.Bold),
+                ForeColor = Color.White,
+                BackColor = Color.FromArgb(225, 29, 72),
+                Location = new Point(30, 15),
                 AutoSize = true,
-                Padding = new Padding(6, 3, 6, 3)
+                Padding = new Padding(8, 4, 8, 4)
             };
 
             var lblHeader = new Label
@@ -61,33 +62,57 @@ namespace AirlineApp.Forms
                 Text = "Register New Passenger / Operations Staff Profile",
                 Font = new Font("Segoe UI", 16F, FontStyle.Bold),
                 ForeColor = Color.White,
-                Location = new Point(27, 48),
+                Location = new Point(27, 45),
                 AutoSize = true
-            };
-
-            var btnCreditsHeader = new Button
-            {
-                Text = "⭐ SYSTEM CREDITS",
-                Font = new Font("Segoe UI", 9.5F, FontStyle.Bold),
-                ForeColor = Color.White,
-                BackColor = Color.FromArgb(139, 92, 246),
-                FlatStyle = FlatStyle.Flat,
-                Size = new Size(170, 38),
-                Anchor = AnchorStyles.Right | AnchorStyles.Top,
-                Location = new Point(940, 28),
-                Cursor = Cursors.Hand
-            };
-            btnCreditsHeader.FlatAppearance.BorderSize = 0;
-            btnCreditsHeader.Click += (s, e) =>
-            {
-                var dummyFlight = FlightService.GetFlights()[0];
-                var dummyPassenger = new Passenger { FullName = "Capt. Sufiyan Aasim", PassportOrId = "PK-98234109" };
-                FormNavigator.Navigate(this, new MaydayCreditsForm(FlightService.CalculateFullBooking(dummyFlight, dummyPassenger)));
             };
 
             headerPanel.Controls.Add(lblBadge);
             headerPanel.Controls.Add(lblHeader);
-            headerPanel.Controls.Add(btnCreditsHeader);
+
+            // Footer Navigation Bar (Dock = Bottom)
+            var pnlFooter = new Panel
+            {
+                Dock = DockStyle.Bottom,
+                Height = 75,
+                BackColor = Color.FromArgb(30, 41, 59)
+            };
+
+            var btnCreditsFooter = new Button
+            {
+                Text = "⭐ SYSTEM CREDITS",
+                Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                ForeColor = Color.White,
+                BackColor = Color.FromArgb(139, 92, 246),
+                FlatStyle = FlatStyle.Flat,
+                Size = new Size(190, 42),
+                Location = new Point(25, 16),
+                Cursor = Cursors.Hand
+            };
+            btnCreditsFooter.FlatAppearance.BorderSize = 0;
+            btnCreditsFooter.Click += (s, e) => FormNavigator.Navigate(this, new CreditsForm());
+
+            var btnExitFooter = new Button
+            {
+                Text = "❌ EXIT APPLICATION",
+                Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                ForeColor = Color.White,
+                BackColor = Color.FromArgb(225, 29, 72),
+                FlatStyle = FlatStyle.Flat,
+                Size = new Size(180, 42),
+                Anchor = AnchorStyles.Right | AnchorStyles.Top,
+                Location = new Point(940, 16),
+                Cursor = Cursors.Hand
+            };
+            btnExitFooter.FlatAppearance.BorderSize = 0;
+            btnExitFooter.Click += (s, e) => Application.Exit();
+
+            pnlFooter.Resize += (s, e) =>
+            {
+                btnExitFooter.Location = new Point(pnlFooter.Width - btnExitFooter.Width - 25, 16);
+            };
+
+            pnlFooter.Controls.Add(btnCreditsFooter);
+            pnlFooter.Controls.Add(btnExitFooter);
 
             // Centered Main Content Panel
             var pnlMain = new Panel
@@ -133,7 +158,7 @@ namespace AirlineApp.Forms
             container.Controls.Add(comboRole);
             y += 65;
 
-            // Password + Eye Button 1 (ALIGNED INLINE!)
+            // Password + Eye Button 1
             AddInputLabel(container, "Password:", y);
             txtPassword = CreateTextBox("pass123", y + 24, 410);
             txtPassword.UseSystemPasswordChar = true;
@@ -151,7 +176,7 @@ namespace AirlineApp.Forms
             container.Controls.Add(btnEyePassword1);
             y += 65;
 
-            // Confirm Password + Eye Button 2 (ALIGNED INLINE!)
+            // Confirm Password + Eye Button 2
             AddInputLabel(container, "Confirm Password:", y);
             txtConfirmPassword = CreateTextBox("pass123", y + 24, 410);
             txtConfirmPassword.UseSystemPasswordChar = true;
@@ -205,6 +230,7 @@ namespace AirlineApp.Forms
             pnlMain.Controls.Add(container);
 
             this.Controls.Add(pnlMain);
+            this.Controls.Add(pnlFooter);
             this.Controls.Add(headerPanel);
 
             CenterSignupCard();

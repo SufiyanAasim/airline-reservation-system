@@ -8,22 +8,32 @@ namespace AirlineApp.Forms
 
     public class WelcomeClearanceForm : Form
     {
-        private ComboBox comboFlights = null!;
         private TextBox txtFullName = null!;
         private TextBox txtPassport = null!;
-        private TextBox txtPhone = null!;
-        private TextBox txtEmail = null!;
-        private Label lblRouteDetails = null!;
+        private ComboBox comboFlights = null!;
+        private Label lblFlightDetails = null!;
+        private Label lblTicker = null!;
+        private System.Windows.Forms.Timer tickerTimer = null!;
+        private int tickerIndex = 0;
+
+        private static readonly string[] TickerMessages = new string[]
+        {
+            "🟢 ALL DEPARTURE GATES OPERATIONAL",
+            "✈️ PK-301 KARACHI TO ISLAMABAD BOARDING NOW",
+            "🌤️ EN-ROUTE WEATHER: CLEAR / SMOOTH CRUISING",
+            "🛡️ AUTOMATED FLIGHT DATA RECORDER SYNCED"
+        };
 
         public WelcomeClearanceForm()
         {
             InitializeComponent();
             IconHelper.ApplyIcon(this);
+            StartTickerAnimation();
         }
 
         private void InitializeComponent()
         {
-            this.Text = "Airline Reservation System — v1.0.0 [Clearance Phase]";
+            this.Text = "Airline Reservation System";
             this.Size = new Size(1150, 750);
             this.WindowState = FormWindowState.Maximized;
             this.StartPosition = FormStartPosition.CenterScreen;
@@ -32,31 +42,40 @@ namespace AirlineApp.Forms
             this.FormBorderStyle = FormBorderStyle.Sizable;
             this.MaximizeBox = true;
 
-            // Header Banner (Dock = Top)
+            // Header Banner
             var headerPanel = new Panel
             {
                 Dock = DockStyle.Top,
-                Height = 90,
+                Height = 95,
                 BackColor = Color.FromArgb(30, 41, 59)
             };
 
             var lblBadge = new Label
             {
-                Text = "v1.0.0 CLEARANCE PHASE",
-                Font = new Font("Segoe UI", 9F, FontStyle.Bold),
-                ForeColor = Color.FromArgb(14, 165, 233),
-                BackColor = Color.FromArgb(12, 74, 110),
-                Location = new Point(25, 15),
+                Text = "v6.0.0 Mayday",
+                Font = new Font("Segoe UI", 9.5F, FontStyle.Bold),
+                ForeColor = Color.White,
+                BackColor = Color.FromArgb(225, 29, 72),
+                Location = new Point(25, 12),
                 AutoSize = true,
-                Padding = new Padding(6, 3, 6, 3)
+                Padding = new Padding(8, 4, 8, 4)
             };
 
             var lblHeader = new Label
             {
-                Text = "Flight Registration & Departure Clearance Engine",
-                Font = new Font("Segoe UI", 16F, FontStyle.Bold),
+                Text = "Flight Departure Clearance & Passenger Manifest Dispatch",
+                Font = new Font("Segoe UI", 15F, FontStyle.Bold),
                 ForeColor = Color.White,
-                Location = new Point(22, 45),
+                Location = new Point(22, 40),
+                AutoSize = true
+            };
+
+            lblTicker = new Label
+            {
+                Text = TickerMessages[0],
+                Font = new Font("Consolas", 9.5F, FontStyle.Bold),
+                ForeColor = Color.FromArgb(14, 165, 233),
+                Location = new Point(24, 70),
                 AutoSize = true
             };
 
@@ -69,22 +88,42 @@ namespace AirlineApp.Forms
                 FlatStyle = FlatStyle.Flat,
                 Size = new Size(170, 38),
                 Anchor = AnchorStyles.Right | AnchorStyles.Top,
-                Location = new Point(940, 25),
+                Location = new Point(780, 25),
                 Cursor = Cursors.Hand
             };
             btnCreditsHeader.FlatAppearance.BorderSize = 0;
             btnCreditsHeader.Click += (s, e) =>
             {
-                var flight = (Flight)comboFlights.SelectedItem!;
-                var passenger = new Passenger { FullName = txtFullName.Text.Trim(), PassportOrId = txtPassport.Text.Trim() };
-                FormNavigator.Navigate(this, new MaydayCreditsForm(FlightService.CalculateFullBooking(flight, passenger)));
+                SoundHelper.PlayTap();
+                FormNavigator.Navigate(this, new CreditsForm(this));
+            };
+
+            var btnExitHeader = new Button
+            {
+                Text = "❌ EXIT SYSTEM",
+                Font = new Font("Segoe UI", 9.5F, FontStyle.Bold),
+                ForeColor = Color.White,
+                BackColor = Color.FromArgb(225, 29, 72),
+                FlatStyle = FlatStyle.Flat,
+                Size = new Size(140, 38),
+                Anchor = AnchorStyles.Right | AnchorStyles.Top,
+                Location = new Point(965, 25),
+                Cursor = Cursors.Hand
+            };
+            btnExitHeader.FlatAppearance.BorderSize = 0;
+            btnExitHeader.Click += (s, e) =>
+            {
+                SoundHelper.PlayTap();
+                Application.Exit();
             };
 
             headerPanel.Controls.Add(lblBadge);
             headerPanel.Controls.Add(lblHeader);
+            headerPanel.Controls.Add(lblTicker);
             headerPanel.Controls.Add(btnCreditsHeader);
+            headerPanel.Controls.Add(btnExitHeader);
 
-            // Navigation Bar / Action Button Footer (Dock = Bottom)
+            // Footer Navigation Bar (Dock = Bottom)
             var pnlFooter = new Panel
             {
                 Dock = DockStyle.Bottom,
@@ -94,42 +133,68 @@ namespace AirlineApp.Forms
 
             var btnLogout = new Button
             {
-                Text = "⇦ LOGOUT / PORTAL HOME",
+                Text = "🚪 LOGOUT / RETURN TO LOGIN",
                 Font = new Font("Segoe UI", 10F, FontStyle.Bold),
                 ForeColor = Color.White,
                 BackColor = Color.FromArgb(51, 65, 85),
                 FlatStyle = FlatStyle.Flat,
-                Size = new Size(230, 45),
+                Size = new Size(260, 45),
                 Location = new Point(25, 20),
                 Cursor = Cursors.Hand
             };
             btnLogout.FlatAppearance.BorderSize = 0;
-            btnLogout.Click += (s, e) => FormNavigator.Navigate(this, new LoginForm());
+            btnLogout.Click += (s, e) =>
+            {
+                SoundHelper.PlayTap();
+                AuthService.Logout();
+                FormNavigator.Navigate(this, new LoginForm());
+            };
 
             var btnProceed = new Button
             {
-                Text = "PROCEED TO TAXI & SEAT SELECTION ➔",
-                Font = new Font("Segoe UI", 11F, FontStyle.Bold),
+                Text = "PROCEED TO TAXI & SEAT ALLOCATION ➔",
+                Font = new Font("Segoe UI", 10.5F, FontStyle.Bold),
                 ForeColor = Color.White,
                 BackColor = Color.FromArgb(14, 165, 233),
                 FlatStyle = FlatStyle.Flat,
-                Size = new Size(340, 45),
+                Size = new Size(330, 45),
                 Anchor = AnchorStyles.Right | AnchorStyles.Top,
-                Location = new Point(760, 20),
+                Location = new Point(600, 20),
                 Cursor = Cursors.Hand
             };
             btnProceed.FlatAppearance.BorderSize = 0;
             btnProceed.Click += BtnProceed_Click;
 
+            var btnExitFooter = new Button
+            {
+                Text = "❌ EXIT",
+                Font = new Font("Segoe UI", 10.5F, FontStyle.Bold),
+                ForeColor = Color.White,
+                BackColor = Color.FromArgb(225, 29, 72),
+                FlatStyle = FlatStyle.Flat,
+                Size = new Size(130, 45),
+                Anchor = AnchorStyles.Right | AnchorStyles.Top,
+                Location = new Point(950, 20),
+                Cursor = Cursors.Hand
+            };
+            btnExitFooter.FlatAppearance.BorderSize = 0;
+            btnExitFooter.Click += (s, e) =>
+            {
+                SoundHelper.PlayTap();
+                Application.Exit();
+            };
+
             pnlFooter.Resize += (s, e) =>
             {
-                btnProceed.Location = new Point(pnlFooter.Width - btnProceed.Width - 30, 20);
+                btnExitFooter.Location = new Point(pnlFooter.Width - btnExitFooter.Width - 25, 20);
+                btnProceed.Location = new Point(btnExitFooter.Left - btnProceed.Width - 15, 20);
             };
 
             pnlFooter.Controls.Add(btnLogout);
             pnlFooter.Controls.Add(btnProceed);
+            pnlFooter.Controls.Add(btnExitFooter);
 
-            // Main Content Panel (Dock = Fill)
+            // Main Content Layout Container (Dock = Fill)
             var pnlMain = new TableLayoutPanel
             {
                 Dock = DockStyle.Fill,
@@ -138,13 +203,13 @@ namespace AirlineApp.Forms
                 Padding = new Padding(25, 15, 25, 15),
                 BackColor = Color.FromArgb(15, 23, 42)
             };
-            pnlMain.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 48F));
-            pnlMain.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 52F));
+            pnlMain.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            pnlMain.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
 
-            // Left Section: Passenger Registration
+            // Left Section: Passenger Identification Form
             var grpPassenger = new GroupBox
             {
-                Text = "Passenger Information",
+                Text = "Passenger Identification & Clearance Manifest",
                 Font = new Font("Segoe UI", 10.5F, FontStyle.Bold),
                 ForeColor = Color.FromArgb(148, 163, 184),
                 Dock = DockStyle.Fill,
@@ -153,16 +218,57 @@ namespace AirlineApp.Forms
                 BackColor = Color.FromArgb(30, 41, 59)
             };
 
-            int y = 35;
-            AddInputField(grpPassenger, "Full Name:", ref txtFullName, "Capt. Sufiyan Aasim", ref y);
-            AddInputField(grpPassenger, "Passport / CNIC No:", ref txtPassport, "PK-98234109", ref y);
-            AddInputField(grpPassenger, "Phone Number:", ref txtPhone, "+92 300 1234567", ref y);
-            AddInputField(grpPassenger, "Email Address:", ref txtEmail, "sufiyanaasim@outlook.com", ref y);
+            var lblName = new Label
+            {
+                Text = "Passenger Full Legal Name:",
+                Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                ForeColor = Color.FromArgb(226, 232, 240),
+                Location = new Point(20, 35),
+                AutoSize = true
+            };
 
-            // Right Section: Flight Selection & Clearance Status
+            txtFullName = new TextBox
+            {
+                Text = AuthService.CurrentUser?.FullName ?? "Capt. Sufiyan Aasim",
+                Font = new Font("Segoe UI", 11F),
+                Location = new Point(20, 65),
+                Size = new Size(460, 32),
+                Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right,
+                BackColor = Color.FromArgb(15, 23, 42),
+                ForeColor = Color.White,
+                BorderStyle = BorderStyle.FixedSingle
+            };
+
+            var lblPassport = new Label
+            {
+                Text = "CNIC / Passport Identification Number:",
+                Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                ForeColor = Color.FromArgb(226, 232, 240),
+                Location = new Point(20, 120),
+                AutoSize = true
+            };
+
+            txtPassport = new TextBox
+            {
+                Text = "42101-9876543-1",
+                Font = new Font("Segoe UI", 11F),
+                Location = new Point(20, 150),
+                Size = new Size(460, 32),
+                Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right,
+                BackColor = Color.FromArgb(15, 23, 42),
+                ForeColor = Color.White,
+                BorderStyle = BorderStyle.FixedSingle
+            };
+
+            grpPassenger.Controls.Add(lblName);
+            grpPassenger.Controls.Add(txtFullName);
+            grpPassenger.Controls.Add(lblPassport);
+            grpPassenger.Controls.Add(txtPassport);
+
+            // Right Section: Flight Schedule Selection
             var grpFlight = new GroupBox
             {
-                Text = "Flight Clearance & Aircraft Info",
+                Text = "Available Scheduled Commercial Flights",
                 Font = new Font("Segoe UI", 10.5F, FontStyle.Bold),
                 ForeColor = Color.FromArgb(148, 163, 184),
                 Dock = DockStyle.Fill,
@@ -174,59 +280,56 @@ namespace AirlineApp.Forms
             var pnlFlightContainer = new Panel
             {
                 Dock = DockStyle.Fill,
-                BackColor = Color.FromArgb(30, 41, 59)
+                BackColor = Color.FromArgb(15, 23, 42),
+                Padding = new Padding(15),
+                BorderStyle = BorderStyle.FixedSingle
             };
 
             var lblSelectFlight = new Label
             {
-                Text = "Select Available Flight:",
+                Text = "Select Active Commercial Route:",
                 Font = new Font("Segoe UI", 10F, FontStyle.Bold),
                 ForeColor = Color.FromArgb(226, 232, 240),
-                Dock = DockStyle.Top,
-                Height = 25
+                Location = new Point(15, 10),
+                AutoSize = true
             };
 
             comboFlights = new ComboBox
             {
-                Dock = DockStyle.Top,
-                Height = 32,
+                Location = new Point(15, 38),
+                Size = new Size(420, 30),
+                Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right,
                 Font = new Font("Segoe UI", 10.5F),
                 DropDownStyle = ComboBoxStyle.DropDownList,
-                BackColor = Color.FromArgb(15, 23, 42),
+                BackColor = Color.FromArgb(30, 41, 59),
                 ForeColor = Color.White
             };
 
-            foreach (var f in FlightService.GetFlights())
+            pnlFlightContainer.Resize += (s, e) =>
             {
-                comboFlights.Items.Add(f);
+                comboFlights.Width = pnlFlightContainer.Width - 30;
+            };
+
+            var flights = FlightService.GetFlights();
+            foreach (var f in flights)
+            {
+                comboFlights.Items.Add($"{f.FlightNumber} — {f.Airline} ({f.OriginCode} ➔ {f.DestinationCode})");
             }
             comboFlights.SelectedIndex = 0;
             comboFlights.SelectedIndexChanged += ComboFlights_SelectedIndexChanged;
 
-            // Spacing label
-            var pnlSpacer = new Panel { Dock = DockStyle.Top, Height = 15, BackColor = Color.Transparent };
-
-            // Details Container (STRETCHES FULLY TO FILL RIGHT GROUPBOX!)
-            var pnlFlightDetails = new Panel
+            lblFlightDetails = new Label
             {
-                Dock = DockStyle.Fill,
-                BackColor = Color.FromArgb(15, 23, 42),
-                BorderStyle = BorderStyle.FixedSingle,
-                Padding = new Padding(20)
+                Font = new Font("Consolas", 11F),
+                ForeColor = Color.FromArgb(56, 189, 248),
+                Location = new Point(15, 85),
+                Size = new Size(450, 260),
+                Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right
             };
 
-            lblRouteDetails = new Label
-            {
-                Dock = DockStyle.Fill,
-                Font = new Font("Consolas", 11.5F),
-                ForeColor = Color.FromArgb(56, 189, 248)
-            };
-            pnlFlightDetails.Controls.Add(lblRouteDetails);
-
-            pnlFlightContainer.Controls.Add(pnlFlightDetails);
-            pnlFlightContainer.Controls.Add(pnlSpacer);
-            pnlFlightContainer.Controls.Add(comboFlights);
             pnlFlightContainer.Controls.Add(lblSelectFlight);
+            pnlFlightContainer.Controls.Add(comboFlights);
+            pnlFlightContainer.Controls.Add(lblFlightDetails);
 
             grpFlight.Controls.Add(pnlFlightContainer);
 
@@ -237,74 +340,65 @@ namespace AirlineApp.Forms
             this.Controls.Add(pnlFooter);
             this.Controls.Add(headerPanel);
 
-            UpdateFlightSummary();
+            UpdateFlightDetailsCard();
         }
 
-        private void AddInputField(GroupBox parent, string labelText, ref TextBox txt, string defaultVal, ref int y)
+        private void StartTickerAnimation()
         {
-            var lbl = new Label
+            tickerTimer = new System.Windows.Forms.Timer { Interval = 3000 };
+            tickerTimer.Tick += (s, e) =>
             {
-                Text = labelText,
-                Font = new Font("Segoe UI", 10F, FontStyle.Bold),
-                ForeColor = Color.FromArgb(226, 232, 240),
-                Location = new Point(20, y),
-                AutoSize = true
+                tickerIndex = (tickerIndex + 1) % TickerMessages.Length;
+                lblTicker.Text = TickerMessages[tickerIndex];
             };
-            txt = new TextBox
-            {
-                Text = defaultVal,
-                Font = new Font("Segoe UI", 11F),
-                Location = new Point(20, y + 26),
-                Size = new Size( parent.Width - 40, 32),
-                Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right,
-                BackColor = Color.FromArgb(15, 23, 42),
-                ForeColor = Color.White,
-                BorderStyle = BorderStyle.FixedSingle
-            };
-            parent.Controls.Add(lbl);
-            parent.Controls.Add(txt);
-            y += 72;
+            tickerTimer.Start();
+
+            this.FormClosing += (s, e) => tickerTimer.Stop();
         }
 
         private void ComboFlights_SelectedIndexChanged(object? sender, EventArgs e)
         {
-            UpdateFlightSummary();
+            SoundHelper.PlayTap();
+            UpdateFlightDetailsCard();
         }
 
-        private void UpdateFlightSummary()
+        private void UpdateFlightDetailsCard()
         {
-            if (comboFlights.SelectedItem is Flight f)
+            var flights = FlightService.GetFlights();
+            if (comboFlights.SelectedIndex >= 0 && comboFlights.SelectedIndex < flights.Count)
             {
-                lblRouteDetails.Text = 
-                    $"AIRLINE OPERATOR : {f.Airline}\n\n" +
-                    $"FLIGHT NUMBER    : {f.FlightNumber}\n\n" +
-                    $"ORIGIN DEPARTURE : {f.Origin} ({f.OriginCode})\n\n" +
-                    $"DESTINATION      : {f.Destination} ({f.DestinationCode})\n\n" +
-                    $"SCHEDULED DEPART : {f.DepartureTime}\n\n" +
-                    $"AIRCRAFT MODEL   : {f.AircraftType}\n\n" +
-                    $"FLIGHT DISTANCE  : {f.DistanceKm} KM\n\n" +
-                    $"BASE FARE RATE   : ${f.BaseFare:F2}\n\n" +
-                    $"DEPART CLEARANCE : APPROVED / READY FOR TAXI";
+                var f = flights[comboFlights.SelectedIndex];
+                lblFlightDetails.Text = 
+                    $"AIRLINE        : {f.Airline}\n\n" +
+                    $"FLIGHT NUMBER  : {f.FlightNumber}\n\n" +
+                    $"AIRCRAFT MODEL : {f.AircraftType}\n\n" +
+                    $"ORIGIN         : {f.Origin} ({f.OriginCode})\n\n" +
+                    $"DESTINATION    : {f.Destination} ({f.DestinationCode})\n\n" +
+                    $"SCHEDULED DEP  : {f.DepartureTime}\n\n" +
+                    $"BASE FARE RATE : ${f.BaseFare:F2}";
             }
         }
 
         private void BtnProceed_Click(object? sender, EventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(txtFullName.Text) || string.IsNullOrWhiteSpace(txtPassport.Text))
+            if (string.IsNullOrWhiteSpace(txtFullName.Text))
             {
-                CustomMessageBox.Show("CLEARANCE ERROR", "Passenger Full Name and Passport/ID are required for departure clearance.", true);
+                CustomMessageBox.Show("VALIDATION ERROR", "Please enter passenger legal name.", true);
                 return;
             }
+
+            var flights = FlightService.GetFlights();
+            var selectedFlight = flights[comboFlights.SelectedIndex];
 
             var passenger = new Passenger
             {
                 FullName = txtFullName.Text.Trim(),
                 PassportOrId = txtPassport.Text.Trim(),
-                Phone = txtPhone.Text.Trim(),
-                Email = txtEmail.Text.Trim()
+                Cabin = CabinClass.Economy,
+                SeatNumber = "01A"
             };
 
-            var selectedFlight = (Flight)comboFlights.SelectedItem!;
+            SoundHelper.PlayTap();
             FormNavigator.Navigate(this, new SeatTaxiForm(selectedFlight, passenger));
         }
     }

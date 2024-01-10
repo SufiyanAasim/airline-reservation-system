@@ -12,7 +12,12 @@ namespace AirlineApp.Services
             new User { FullName = "Capt. Sufiyan Aasim", Email = "sufiyanaasim@outlook.com", Password = "admin123", Role = "Flight Operations Manager" }
         };
 
-        public static User? CurrentUser { get; set; } = RegisteredUsers[0];
+        public static User? CurrentUser { get; set; } = null;
+
+        public static void Logout()
+        {
+            CurrentUser = null;
+        }
 
         public static (bool Success, string Message, User? User) Login(string email, string password, string selectedRole)
         {
