@@ -19,6 +19,7 @@ namespace AirlineApp.Forms
         private Label lblFuelStatus = null!;
         private Panel pnlRadarBeacon = null!;
         private Label lblBeaconStatus = null!;
+        private Label lblTelemetryCard = null!;
 
         private System.Windows.Forms.Timer beaconTimer = null!;
         private System.Windows.Forms.Timer fuelDumpTimer = null!;
@@ -212,7 +213,7 @@ namespace AirlineApp.Forms
             pnlMain.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
             pnlMain.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
 
-            // Left Section: Emergency Controls & Fuel Jettison Panel
+            // Left Section: Emergency Controls & Fuel Jettison Panel (Structured TableLayoutPanel Dock = Fill!)
             var grpControls = new GroupBox
             {
                 Text = "Aircraft Emergency Action Controls",
@@ -220,25 +221,31 @@ namespace AirlineApp.Forms
                 ForeColor = Color.FromArgb(244, 63, 94),
                 Dock = DockStyle.Fill,
                 Margin = new Padding(0, 0, 15, 0),
-                Padding = new Padding(20),
+                Padding = new Padding(15),
                 BackColor = Color.FromArgb(30, 41, 59)
             };
 
-            grpControls.Resize += (s, e) =>
+            var pnlControlsTable = new TableLayoutPanel
             {
-                if (comboDiversionAirport != null) comboDiversionAirport.Width = grpControls.Width - 40;
+                Dock = DockStyle.Fill,
+                ColumnCount = 1,
+                RowCount = 6,
+                BackColor = Color.FromArgb(30, 41, 59)
             };
+            pnlControlsTable.RowStyles.Add(new RowStyle(SizeType.Absolute, 52F));  // Radar Beacon Card
+            pnlControlsTable.RowStyles.Add(new RowStyle(SizeType.Absolute, 56F));  // Squawk 7700 Button
+            pnlControlsTable.RowStyles.Add(new RowStyle(SizeType.Absolute, 68F));  // Diversion Airport Selector
+            pnlControlsTable.RowStyles.Add(new RowStyle(SizeType.Absolute, 68F));  // Fuel Gauge & Jettison
+            pnlControlsTable.RowStyles.Add(new RowStyle(SizeType.Absolute, 55F));  // Fire Extinguishers
+            pnlControlsTable.RowStyles.Add(new RowStyle(SizeType.Percent, 100F)); // Cockpit Telemetry Card
 
-            int y = 25;
-
-            // Live Radar / Transponder Pulsing Beacon Animation Card
+            // Row 0: Live Radar / Transponder Beacon Card
             var pnlBeaconCard = new Panel
             {
-                Location = new Point(20, y),
-                Size = new Size(460, 45),
-                Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right,
+                Dock = DockStyle.Fill,
                 BackColor = Color.FromArgb(15, 23, 42),
-                BorderStyle = BorderStyle.FixedSingle
+                BorderStyle = BorderStyle.FixedSingle,
+                Margin = new Padding(0, 0, 0, 8)
             };
 
             pnlRadarBeacon = new Panel
@@ -259,10 +266,8 @@ namespace AirlineApp.Forms
 
             pnlBeaconCard.Controls.Add(pnlRadarBeacon);
             pnlBeaconCard.Controls.Add(lblBeaconStatus);
-            grpControls.Controls.Add(pnlBeaconCard);
-            y += 55;
 
-            // 1. Transponder Squawk Switch
+            // Row 1: Transponder Squawk Switch
             btnSquawk = new Button
             {
                 Text = "TRANSPONDER: SQUAWK 7000 (NORMAL) 🟢",
@@ -270,36 +275,38 @@ namespace AirlineApp.Forms
                 ForeColor = Color.White,
                 BackColor = Color.FromArgb(16, 185, 129),
                 FlatStyle = FlatStyle.Flat,
-                Location = new Point(20, y),
-                Size = new Size(460, 48),
-                Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right,
+                Dock = DockStyle.Fill,
+                Margin = new Padding(0, 0, 0, 8),
                 Cursor = Cursors.Hand
             };
             btnSquawk.FlatAppearance.BorderSize = 0;
             btnSquawk.Click += BtnSquawk_Click;
-            grpControls.Controls.Add(btnSquawk);
-            y += 65;
 
-            // 2. Emergency Diversion Airport Selector
+            // Row 2: Emergency Diversion Airport Selector Panel
+            var pnlDiversionCard = new Panel
+            {
+                Dock = DockStyle.Fill,
+                BackColor = Color.FromArgb(15, 23, 42),
+                Padding = new Padding(10),
+                BorderStyle = BorderStyle.FixedSingle,
+                Margin = new Padding(0, 0, 0, 8)
+            };
+
             var lblDiversion = new Label
             {
                 Text = "Select Emergency Diversion Field:",
-                Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                Font = new Font("Segoe UI", 9.5F, FontStyle.Bold),
                 ForeColor = Color.FromArgb(226, 232, 240),
-                Location = new Point(20, y),
-                AutoSize = true
+                Dock = DockStyle.Top,
+                Height = 20
             };
-            grpControls.Controls.Add(lblDiversion);
-            y += 26;
 
             comboDiversionAirport = new ComboBox
             {
-                Location = new Point(20, y),
-                Size = new Size(460, 32),
-                Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right,
-                Font = new Font("Segoe UI", 10.5F),
+                Dock = DockStyle.Fill,
+                Font = new Font("Segoe UI", 10F),
                 DropDownStyle = ComboBoxStyle.DropDownList,
-                BackColor = Color.FromArgb(15, 23, 42),
+                BackColor = Color.FromArgb(30, 41, 59),
                 ForeColor = Color.White
             };
             comboDiversionAirport.Items.AddRange(new object[] { 
@@ -314,58 +321,87 @@ namespace AirlineApp.Forms
                 SoundHelper.PlayTap();
                 LogEvent($"ATC REROUTE: Diversion field updated to {comboDiversionAirport.SelectedItem}");
             };
-            grpControls.Controls.Add(comboDiversionAirport);
-            y += 50;
 
-            // 3. Fuel Jettison Controls
+            pnlDiversionCard.Controls.Add(comboDiversionAirport);
+            pnlDiversionCard.Controls.Add(lblDiversion);
+
+            // Row 3: Fuel Gauge & Jettison Controls Panel
+            var pnlFuelCard = new Panel
+            {
+                Dock = DockStyle.Fill,
+                BackColor = Color.FromArgb(15, 23, 42),
+                Padding = new Padding(10),
+                BorderStyle = BorderStyle.FixedSingle,
+                Margin = new Padding(0, 0, 0, 8)
+            };
+
             lblFuelStatus = new Label
             {
                 Text = $"Fuel Quantity: {currentFuelPct}% (Jettison Ready for Max Landing Weight)",
-                Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                Font = new Font("Segoe UI", 9.5F, FontStyle.Bold),
                 ForeColor = Color.FromArgb(245, 158, 11),
-                Location = new Point(20, y),
-                AutoSize = true
+                Dock = DockStyle.Top,
+                Height = 20
             };
-            grpControls.Controls.Add(lblFuelStatus);
-            y += 26;
+
+            var pnlFuelControls = new TableLayoutPanel
+            {
+                Dock = DockStyle.Fill,
+                ColumnCount = 2,
+                RowCount = 1,
+                BackColor = Color.FromArgb(15, 23, 42)
+            };
+            pnlFuelControls.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 68F));
+            pnlFuelControls.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 32F));
 
             pbFuelGauge = new ProgressBar
             {
-                Location = new Point(20, y),
-                Size = new Size(310, 32),
-                Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right,
+                Dock = DockStyle.Fill,
                 Value = currentFuelPct,
-                Maximum = 100
+                Maximum = 100,
+                Margin = new Padding(0, 3, 10, 3)
             };
-            grpControls.Controls.Add(pbFuelGauge);
 
             btnDumpFuel = new Button
             {
                 Text = "JETTISON FUEL ⛽",
-                Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                Font = new Font("Segoe UI", 9.5F, FontStyle.Bold),
                 ForeColor = Color.White,
                 BackColor = Color.FromArgb(245, 158, 11),
                 FlatStyle = FlatStyle.Flat,
-                Location = new Point(340, y),
-                Size = new Size(140, 32),
-                Anchor = AnchorStyles.Top | AnchorStyles.Right,
+                Dock = DockStyle.Fill,
                 Cursor = Cursors.Hand
             };
             btnDumpFuel.FlatAppearance.BorderSize = 0;
             btnDumpFuel.Click += BtnDumpFuel_Click;
-            grpControls.Controls.Add(btnDumpFuel);
-            y += 55;
 
-            // 4. Engine Fire Extinguisher Switches
+            pnlFuelControls.Controls.Add(pbFuelGauge, 0, 0);
+            pnlFuelControls.Controls.Add(btnDumpFuel, 1, 0);
+
+            pnlFuelCard.Controls.Add(pnlFuelControls);
+            pnlFuelCard.Controls.Add(lblFuelStatus);
+
+            // Row 4: Engine Fire Extinguisher Switches
+            var pnlEngControls = new TableLayoutPanel
+            {
+                Dock = DockStyle.Fill,
+                ColumnCount = 2,
+                RowCount = 1,
+                Margin = new Padding(0, 0, 0, 8),
+                BackColor = Color.FromArgb(30, 41, 59)
+            };
+            pnlEngControls.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            pnlEngControls.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+
             btnExtinguishEng1 = new Button
             {
                 Text = "DISCHARGE ENG 1 FIRE BOTTLE 🔥",
-                Font = new Font("Segoe UI", 9.5F, FontStyle.Bold),
+                Font = new Font("Segoe UI", 9F, FontStyle.Bold),
                 ForeColor = Color.White,
                 BackColor = Color.FromArgb(225, 29, 72),
                 FlatStyle = FlatStyle.Flat,
-                Location = new Point(20, y),
-                Size = new Size(225, 42),
+                Dock = DockStyle.Fill,
+                Margin = new Padding(0, 0, 5, 0),
                 Cursor = Cursors.Hand
             };
             btnExtinguishEng1.FlatAppearance.BorderSize = 0;
@@ -374,20 +410,47 @@ namespace AirlineApp.Forms
             btnExtinguishEng2 = new Button
             {
                 Text = "DISCHARGE ENG 2 FIRE BOTTLE 🔥",
-                Font = new Font("Segoe UI", 9.5F, FontStyle.Bold),
+                Font = new Font("Segoe UI", 9F, FontStyle.Bold),
                 ForeColor = Color.White,
                 BackColor = Color.FromArgb(225, 29, 72),
                 FlatStyle = FlatStyle.Flat,
-                Location = new Point(255, y),
-                Size = new Size(225, 42),
-                Anchor = AnchorStyles.Top | AnchorStyles.Right,
+                Dock = DockStyle.Fill,
+                Margin = new Padding(5, 0, 0, 0),
                 Cursor = Cursors.Hand
             };
             btnExtinguishEng2.FlatAppearance.BorderSize = 0;
             btnExtinguishEng2.Click += (s, e) => ToggleEngineExtinguisher(2);
 
-            grpControls.Controls.Add(btnExtinguishEng1);
-            grpControls.Controls.Add(btnExtinguishEng2);
+            pnlEngControls.Controls.Add(btnExtinguishEng1, 0, 0);
+            pnlEngControls.Controls.Add(btnExtinguishEng2, 1, 0);
+
+            // Row 5: Emergency Cockpit Telemetry Log Card (Fills 100% bottom area matching console height!)
+            var pnlTelemetryCard = new Panel
+            {
+                Dock = DockStyle.Fill,
+                BackColor = Color.FromArgb(15, 23, 42),
+                Padding = new Padding(15),
+                BorderStyle = BorderStyle.FixedSingle
+            };
+
+            lblTelemetryCard = new Label
+            {
+                Dock = DockStyle.Fill,
+                Font = new Font("Consolas", 10.5F),
+                ForeColor = Color.FromArgb(56, 189, 248)
+            };
+
+            UpdateCockpitTelemetryCard();
+            pnlTelemetryCard.Controls.Add(lblTelemetryCard);
+
+            pnlControlsTable.Controls.Add(pnlBeaconCard, 0, 0);
+            pnlControlsTable.Controls.Add(btnSquawk, 0, 1);
+            pnlControlsTable.Controls.Add(pnlDiversionCard, 0, 2);
+            pnlControlsTable.Controls.Add(pnlFuelCard, 0, 3);
+            pnlControlsTable.Controls.Add(pnlEngControls, 0, 4);
+            pnlControlsTable.Controls.Add(pnlTelemetryCard, 0, 5);
+
+            grpControls.Controls.Add(pnlControlsTable);
 
             // Right Section: ATC Black Box Console Log
             var grpConsole = new GroupBox
@@ -426,9 +489,22 @@ namespace AirlineApp.Forms
             LogEvent($"PASSENGER : {currentBooking.PassengerDetails.FullName} (PNR: {currentBooking.PnrReference})");
         }
 
+        private void UpdateCockpitTelemetryCard()
+        {
+            var f = currentBooking.FlightDetails;
+            var p = currentBooking.PassengerDetails;
+
+            lblTelemetryCard.Text = 
+                $"EMERGENCY DECK  : OPERATIONAL\n\n" +
+                $"FLIGHT / ROUTE  : {f.FlightNumber} ({f.OriginCode} ➔ {f.DestinationCode})\n\n" +
+                $"PASSENGER PNR   : {currentBooking.PnrReference} ({p.FullName})\n\n" +
+                $"SQLITE DB LOG   : AirlineSystem.db (PERSISTED)\n\n" +
+                $"TRANSPONDER MODE: {(isSquawkActive ? "SQUAWK 7700 (MAYDAY)" : "SQUAWK 7000 (NORMAL)")}\n\n" +
+                $"ENGINE STATUS   : ENG 1 {(isEng1Extinguished ? "[OFF/HALON]" : "[NORM]")} | ENG 2 {(isEng2Extinguished ? "[OFF/HALON]" : "[NORM]")}";
+        }
+
         private void StartLiveAnimations()
         {
-            // 1. Radar Pulsing Beacon Live Timer (400ms pulse)
             beaconTimer = new System.Windows.Forms.Timer { Interval = 400 };
             beaconTimer.Tick += (s, e) =>
             {
@@ -448,7 +524,6 @@ namespace AirlineApp.Forms
             };
             beaconTimer.Start();
 
-            // 2. Animated Smooth Fuel Jettison Timer
             fuelDumpTimer = new System.Windows.Forms.Timer { Interval = 150 };
             fuelDumpTimer.Tick += (s, e) =>
             {
@@ -478,6 +553,7 @@ namespace AirlineApp.Forms
         private void BtnSquawk_Click(object? sender, EventArgs e)
         {
             isSquawkActive = !isSquawkActive;
+            UpdateCockpitTelemetryCard();
 
             if (isSquawkActive)
             {
@@ -534,6 +610,7 @@ namespace AirlineApp.Forms
                 btnExtinguishEng2.BackColor = isEng2Extinguished ? Color.FromArgb(16, 185, 129) : Color.FromArgb(225, 29, 72);
                 LogEvent(isEng2Extinguished ? "ENG 2: Halon extinguisher bottle discharged. Fire suppressed." : "ENG 2: Fire bottle reset.");
             }
+            UpdateCockpitTelemetryCard();
         }
 
         private void LogEvent(string msg)

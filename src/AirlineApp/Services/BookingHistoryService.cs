@@ -15,6 +15,10 @@ namespace AirlineApp.Services
         {
             try
             {
+                // 1. Store in SQLite Database (AirlineSystem.db)
+                DatabaseService.SaveBookingToSqlite(booking);
+
+                // 2. Append to Flat-File Audit Log
                 if (!Directory.Exists(LogDirectory))
                 {
                     Directory.CreateDirectory(LogDirectory);
@@ -61,9 +65,11 @@ namespace AirlineApp.Services
 
         public static AnalyticsMetrics GenerateAnalytics(Booking? currentBooking = null)
         {
+            int dbCount = DatabaseService.GetBookingCount();
+
             var metrics = new AnalyticsMetrics
             {
-                TotalBookings = 142,
+                TotalBookings = 142 + dbCount,
                 GrossRevenue = 48250.00m,
                 AverageLoadFactorPercent = 84.6,
                 EconomyCount = 98,
