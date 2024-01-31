@@ -1,11 +1,10 @@
-# Troubleshooting Guide
+# Troubleshooting & FAQ
 
-## Common Issues
+### Q1: App crashes on launching Mayday Emergency Control Deck
+**Solution**: Ensure `ReceiptTouchdownForm` passes a non-null `Booking` object. Fallback constructors have been added in `MaydayForm` and `ReportGenerationForm` to gracefully generate default booking contexts.
 
-### 1. High DPI / Scaling Issues
-- **Symptom**: Form elements look blurry or misplaced.
-- **Solution**: The application uses `<ApplicationHighDpiMode>PerMonitorV2</ApplicationHighDpiMode>`. Ensure Windows scaling is set to 100% or 125%.
+### Q2: Audio clicks/taps are silent
+**Solution**: `SoundHelper` synthesizes 44.1kHz 16-bit PCM WAV audio buffers directly into `System.Media.SoundPlayer`. Ensure audio playback devices are enabled in Windows Sound Settings.
 
-### 2. Permission Denied Writing Travel History
-- **Symptom**: Error popup when saving boarding pass log.
-- **Solution**: Ensure write permissions are granted to `<app directory>/Airline Reservation History/`.
+### Q3: Where is booking data stored?
+**Solution**: All bookings are stored in `AirlineSystem.db` (SQLite database) in the application directory, as well as `Airline Reservation History/Boarding Passes.txt`.

@@ -1,24 +1,24 @@
-# Development Guide
+# Developer Setup & Build Guide
 
-## Build Prerequisites
+## Prerequisites
+- .NET 8.0 SDK (Windows Forms support enabled)
+- Visual Studio 2022 or VS Code with C# Dev Kit
+- Git
 
-- Windows 10/11 OS
-- .NET 8.0 SDK or Visual Studio 2022+
-
-## Command Line Build
-
-```bash
-dotnet build "src/AirlineApp/AirlineApp.csproj" -c Release
-```
-
-## Running the Application
-
-```bash
-dotnet run --project "src/AirlineApp/AirlineApp.csproj"
-```
-
-## Packaging Release Bundles
+## Building & Running
 
 ```powershell
-./scripts/package-release.ps1 -Version "6.0.0"
+# Restore dependencies and build solution
+dotnet build src/AirlineApp/AirlineApp.csproj -c Release
+
+# Run application locally
+dotnet run --project src/AirlineApp/AirlineApp.csproj
+```
+
+## Packaging & GitHub Release Publishing
+
+To build binaries, create standalone zip archives, and publish release assets to GitHub:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File "scripts/publish-releases.ps1"
 ```

@@ -213,7 +213,7 @@ namespace AirlineApp.Forms
             pnlMain.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
             pnlMain.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
 
-            // Left Section: Emergency Controls & Fuel Jettison Panel (Structured TableLayoutPanel Dock = Fill!)
+            // Left Section: Emergency Controls & Fuel Jettison Panel
             var grpControls = new GroupBox
             {
                 Text = "Aircraft Emergency Action Controls",
@@ -232,11 +232,11 @@ namespace AirlineApp.Forms
                 RowCount = 6,
                 BackColor = Color.FromArgb(30, 41, 59)
             };
-            pnlControlsTable.RowStyles.Add(new RowStyle(SizeType.Absolute, 52F));  // Radar Beacon Card
-            pnlControlsTable.RowStyles.Add(new RowStyle(SizeType.Absolute, 56F));  // Squawk 7700 Button
-            pnlControlsTable.RowStyles.Add(new RowStyle(SizeType.Absolute, 68F));  // Diversion Airport Selector
-            pnlControlsTable.RowStyles.Add(new RowStyle(SizeType.Absolute, 68F));  // Fuel Gauge & Jettison
-            pnlControlsTable.RowStyles.Add(new RowStyle(SizeType.Absolute, 55F));  // Fire Extinguishers
+            pnlControlsTable.RowStyles.Add(new RowStyle(SizeType.Absolute, 54F));  // Radar Beacon Card
+            pnlControlsTable.RowStyles.Add(new RowStyle(SizeType.Absolute, 58F));  // Squawk 7700 Button
+            pnlControlsTable.RowStyles.Add(new RowStyle(SizeType.Absolute, 72F));  // Diversion Airport Selector
+            pnlControlsTable.RowStyles.Add(new RowStyle(SizeType.Absolute, 82F));  // Fuel Gauge & Jettison (Expanded to 82F for 100% button visibility!)
+            pnlControlsTable.RowStyles.Add(new RowStyle(SizeType.Absolute, 58F));  // Fire Extinguishers
             pnlControlsTable.RowStyles.Add(new RowStyle(SizeType.Percent, 100F)); // Cockpit Telemetry Card
 
             // Row 0: Live Radar / Transponder Beacon Card
@@ -250,7 +250,7 @@ namespace AirlineApp.Forms
 
             pnlRadarBeacon = new Panel
             {
-                Location = new Point(12, 12),
+                Location = new Point(12, 14),
                 Size = new Size(20, 20),
                 BackColor = Color.FromArgb(16, 185, 129)
             };
@@ -260,7 +260,7 @@ namespace AirlineApp.Forms
                 Text = "LIVE RADAR BEACON: SQUAWK 7000 MONITORED (NORMAL)",
                 Font = new Font("Segoe UI", 9.5F, FontStyle.Bold),
                 ForeColor = Color.FromArgb(16, 185, 129),
-                Location = new Point(42, 12),
+                Location = new Point(42, 14),
                 AutoSize = true
             };
 
@@ -298,7 +298,7 @@ namespace AirlineApp.Forms
                 Font = new Font("Segoe UI", 9.5F, FontStyle.Bold),
                 ForeColor = Color.FromArgb(226, 232, 240),
                 Dock = DockStyle.Top,
-                Height = 20
+                Height = 22
             };
 
             comboDiversionAirport = new ComboBox
@@ -325,12 +325,12 @@ namespace AirlineApp.Forms
             pnlDiversionCard.Controls.Add(comboDiversionAirport);
             pnlDiversionCard.Controls.Add(lblDiversion);
 
-            // Row 3: Fuel Gauge & Jettison Controls Panel
+            // Row 3: Fuel Gauge & Jettison Controls Panel (Expanded 82F Height)
             var pnlFuelCard = new Panel
             {
                 Dock = DockStyle.Fill,
                 BackColor = Color.FromArgb(15, 23, 42),
-                Padding = new Padding(10),
+                Padding = new Padding(12, 8, 12, 8),
                 BorderStyle = BorderStyle.FixedSingle,
                 Margin = new Padding(0, 0, 0, 8)
             };
@@ -341,7 +341,7 @@ namespace AirlineApp.Forms
                 Font = new Font("Segoe UI", 9.5F, FontStyle.Bold),
                 ForeColor = Color.FromArgb(245, 158, 11),
                 Dock = DockStyle.Top,
-                Height = 20
+                Height = 24
             };
 
             var pnlFuelControls = new TableLayoutPanel
@@ -349,10 +349,11 @@ namespace AirlineApp.Forms
                 Dock = DockStyle.Fill,
                 ColumnCount = 2,
                 RowCount = 1,
-                BackColor = Color.FromArgb(15, 23, 42)
+                BackColor = Color.FromArgb(15, 23, 42),
+                Margin = new Padding(0, 4, 0, 0)
             };
-            pnlFuelControls.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 68F));
-            pnlFuelControls.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 32F));
+            pnlFuelControls.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 65F));
+            pnlFuelControls.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 35F));
 
             pbFuelGauge = new ProgressBar
             {
@@ -370,6 +371,7 @@ namespace AirlineApp.Forms
                 BackColor = Color.FromArgb(245, 158, 11),
                 FlatStyle = FlatStyle.Flat,
                 Dock = DockStyle.Fill,
+                Margin = new Padding(0),
                 Cursor = Cursors.Hand
             };
             btnDumpFuel.FlatAppearance.BorderSize = 0;
@@ -424,7 +426,7 @@ namespace AirlineApp.Forms
             pnlEngControls.Controls.Add(btnExtinguishEng1, 0, 0);
             pnlEngControls.Controls.Add(btnExtinguishEng2, 1, 0);
 
-            // Row 5: Emergency Cockpit Telemetry Log Card (Fills 100% bottom area matching console height!)
+            // Row 5: Emergency Cockpit Telemetry Log Card
             var pnlTelemetryCard = new Panel
             {
                 Dock = DockStyle.Fill,
