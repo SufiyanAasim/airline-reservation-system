@@ -6,9 +6,9 @@
 
 **A Windows desktop reservation, yield analytics, and emergency telemetry platform for airline operations**
 
-[![.NET](https://img.shields.io/badge/.NET-8.0--windows-512BD4?style=flat&logo=dotnet&logoColor=white)](docs/Development.md)
+[![.NET](https://img.shields.io/badge/.NET-8.0--windows-512BD4?style=flat&logo=dotnet&logoColor=white)](docs/development/Development.md)
 [![Version](https://img.shields.io/badge/version-6.0.0%20Mayday-ef4444?style=flat)](docs/releases/v6.0.0.md)
-[![Database](https://img.shields.io/badge/Database-SQLite-003B57?style=flat&logo=sqlite&logoColor=white)](docs/Database.md)
+[![Database](https://img.shields.io/badge/Database-SQLite-003B57?style=flat&logo=sqlite&logoColor=white)](docs/database/Database.md)
 [![License: MIT](https://img.shields.io/badge/License-MIT-22c55e?style=flat)](LICENSE)
 [![Platform](https://img.shields.io/badge/platform-Windows-64748b?style=flat)]()
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-0ea5e9?style=flat)](CONTRIBUTING.md)
@@ -48,7 +48,7 @@ Registers passengers, manages interactive 2-2 aircraft seating, calculates bagga
 - Exporting support to formatted text (.TXT) and spreadsheet (.CSV) files
 
 ### 🗄️ SQLite Database Persistence (`AirlineSystem.db`)
-- Embedded ACID database transaction logging for all bookings, PNR references, fare structures, and flight phases
+- Embedded ACID database transaction logging for all bookings, PNR references, fare structures, and flight phases via `DatabaseService`
 
 ### 🔊 Synthesized PCM Audio Feedback
 - Custom 44.1kHz 16-bit PCM WAV audio synthesizer supplying tactile button tap clicks and emergency sirens
@@ -80,7 +80,7 @@ Registers passengers, manages interactive 2-2 aircraft seating, calculates bagga
                                 BookingHistoryService (AirlineSystem.db)
 ```
 
-Full breakdown in [docs/Architecture.md](docs/Architecture.md).
+Full breakdown in [docs/architecture/Architecture.md](docs/architecture/Architecture.md).
 
 ---
 
@@ -119,7 +119,7 @@ dotnet build "src/AirlineApp/AirlineApp.csproj" -c Release
 
 Or download a packaged build from [docs/releases/v6.0.0.md](docs/releases/v6.0.0.md).
 
-The app saves database transactions to `AirlineSystem.db` and audit text logs to `<app directory>/Airline Reservation History/`. Full setup details in [docs/Development.md](docs/Development.md).
+The app saves database transactions to `AirlineSystem.db` and audit text logs to `<app directory>/Airline Reservation History/`. Full setup details in [docs/development/Development.md](docs/development/Development.md).
 
 ---
 
@@ -127,26 +127,31 @@ The app saves database transactions to `AirlineSystem.db` and audit text logs to
 
 ```
 airline-reservation-system/
-├── .github/                # CI/CD workflows, issue/PR templates
-├── assets/                 # Application branding logo and icons
+├── .github/                 # CI/CD workflows, issue/PR templates
+│   ├── ISSUE_TEMPLATE/      # Bug report and feature request forms
+│   ├── workflows/           # GitHub Actions build and release workflows
+│   ├── CODEOWNERS
+│   └── PULL_REQUEST_TEMPLATE.md
+├── assets/                  # Application branding logo and icon resources
 ├── docs/
-│   ├── Architecture.md
-│   ├── Database.md
-│   ├── Development.md
-│   ├── Troubleshooting.md
+│   ├── architecture/        # Architecture specification (Architecture.md)
+│   ├── database/            # SQLite database schema (Database.md)
+│   ├── deployment/          # Deployment and publishing guide (Deployment.md)
+│   ├── development/         # Developer build setup (Development.md)
+│   ├── troubleshooting/     # FAQs & diagnostic resolution (Troubleshooting.md)
 │   └── releases/            # Per-version release notes (v1.0.0 to v6.0.0)
 ├── scripts/
 │   ├── package-release.ps1  # Windows release packaging script
-│   └── publish-releases.ps1  # Release publishing script
+│   └── publish-releases.ps1 # GitHub Release publishing automation script
 ├── src/
 │   └── AirlineApp/
 │       ├── AirlineApp.csproj
 │       ├── Program.cs
-│       ├── Forms/           # 8 Aviation phase forms and custom dialogs
+│       ├── Forms/           # 9 Aviation phase forms & custom dialogs
 │       ├── Models/          # Flight, Passenger, Booking, User, Analytics models
-│       ├── Services/        # FlightService, AuthService, BookingHistoryService, FormNavigator, IconHelper
+│       ├── Services/        # DatabaseService (SQLite), SoundHelper (PCM), FlightService, AuthService, BookingHistoryService, FormNavigator, IconHelper
 │       └── Resources/       # Embedded app icon and logo assets
-├── tests/                    # Testing guidance
+├── tests/                   # Manual test guidance
 ├── CHANGELOG.md
 ├── CODE_OF_CONDUCT.md
 ├── CONTRIBUTING.md
@@ -187,13 +192,13 @@ There is no automated test suite yet — the wizard flow is validated manually a
 ./scripts/package-release.ps1 -Version "6.0.0"
 ```
 
-Builds in Release mode and stages `AirlineApp.exe` plus its config, runtime DLLs, SQLite dependencies, and docs into `AirlineReservationSystem-v6.0.0.zip`. See [docs/Development.md](docs/Development.md).
+Builds in Release mode and stages `AirlineApp.exe` plus its config, runtime DLLs, SQLite dependencies, and docs into `AirlineReservationSystem-v6.0.0.zip`. See [docs/deployment/Deployment.md](docs/deployment/Deployment.md).
 
 ---
 
 ## 🛡️ Security
 
-This is a fully offline, single-user desktop app — no network calls, no external server database. Data is stored locally in `AirlineSystem.db` (SQLite) and local travel-history text logs (see [docs/Architecture.md](docs/Architecture.md) and [docs/Database.md](docs/Database.md)). See [SECURITY.md](SECURITY.md) to report a vulnerability.
+This is a fully offline, single-user desktop app — no network calls, no external server database. Data is stored locally in `AirlineSystem.db` (SQLite) and local travel-history text logs (see [docs/architecture/Architecture.md](docs/architecture/Architecture.md) and [docs/database/Database.md](docs/database/Database.md)). See [SECURITY.md](SECURITY.md) to report a vulnerability.
 
 ---
 
