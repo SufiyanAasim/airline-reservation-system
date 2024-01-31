@@ -1,0 +1,24 @@
+name: Dependency Update
+
+on:
+  schedule:
+    - cron: '0 9 * * 1'   # Every Monday at 09:00 UTC
+  workflow_dispatch:
+
+jobs:
+  dependency-update:
+    name: Check NuGet Outdated Packages
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore src/AirlineApp/AirlineApp.csproj
+
+      - name: List outdated packages
+        run: dotnet list src/AirlineApp/AirlineApp.csproj package --outdated

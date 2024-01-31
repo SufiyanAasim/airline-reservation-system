@@ -127,31 +127,78 @@ The app saves database transactions to `AirlineSystem.db` and audit text logs to
 
 ```
 airline-reservation-system/
-├── .github/                 # CI/CD workflows, issue/PR templates
-│   ├── ISSUE_TEMPLATE/      # Bug report and feature request forms
-│   ├── workflows/           # GitHub Actions build and release workflows
+├── .github/
+│   ├── ISSUE_TEMPLATE/
+│   │   ├── bug_report.md          # Bug report form
+│   │   ├── feature_request.md     # Feature request form
+│   │   ├── documentation.md       # Documentation issue form
+│   │   ├── question.md            # General question form
+│   │   └── security_report.md     # Security vulnerability report
+│   ├── workflows/
+│   │   ├── build.yml              # CI build on push/PR
+│   │   ├── lint.yml               # Format & style check
+│   │   ├── test.yml               # Build verification
+│   │   ├── security.yml           # NuGet vulnerability audit
+│   │   ├── release.yml            # Tag-triggered release packaging
+│   │   └── dependency-update.yml  # Weekly outdated package report
 │   ├── CODEOWNERS
+│   ├── dependabot.yml             # Weekly NuGet dependency updates
 │   └── PULL_REQUEST_TEMPLATE.md
-├── assets/                  # Application branding logo and icon resources
+├── assets/                        # Application branding logo and icon resources
 ├── docs/
-│   ├── architecture/        # Architecture specification (Architecture.md)
-│   ├── database/            # SQLite database schema (Database.md)
-│   ├── deployment/          # Deployment and publishing guide (Deployment.md)
-│   ├── development/         # Developer build setup (Development.md)
-│   ├── troubleshooting/     # FAQs & diagnostic resolution (Troubleshooting.md)
-│   └── releases/            # Per-version release notes (v1.0.0 to v6.0.0)
+│   ├── architecture/
+│   │   └── Architecture.md        # Multi-tier architecture specification
+│   ├── database/
+│   │   └── Database.md            # SQLite schema & persistence design
+│   ├── deployment/
+│   │   └── Deployment.md          # Release packaging & publishing guide
+│   ├── development/
+│   │   └── Development.md         # Developer build & setup guide
+│   ├── troubleshooting/
+│   │   └── Troubleshooting.md     # FAQs & diagnostic resolution
+│   └── releases/
+│       ├── v1.0.0.md              # Release notes — Clearance
+│       ├── v2.0.0.md              # Release notes — Taxi
+│       ├── v3.0.0.md              # Release notes — Ascent
+│       ├── v4.0.0.md              # Release notes — Cruising
+│       ├── v5.0.0.md              # Release notes — Touchdown
+│       └── v6.0.0.md              # Release notes — Mayday
 ├── scripts/
-│   ├── package-release.ps1  # Windows release packaging script
-│   └── publish-releases.ps1 # GitHub Release publishing automation script
+│   ├── package-release.ps1        # Windows release packaging script
+│   └── publish-releases.ps1       # GitHub Release asset publishing script
 ├── src/
 │   └── AirlineApp/
 │       ├── AirlineApp.csproj
 │       ├── Program.cs
-│       ├── Forms/           # 9 Aviation phase forms & custom dialogs
-│       ├── Models/          # Flight, Passenger, Booking, User, Analytics models
-│       ├── Services/        # DatabaseService (SQLite), SoundHelper (PCM), FlightService, AuthService, BookingHistoryService, FormNavigator, IconHelper
-│       └── Resources/       # Embedded app icon and logo assets
-├── tests/                   # Manual test guidance
+│       ├── Forms/
+│       │   ├── LoginForm.cs           # Login & signup entry point
+│       │   ├── SignupForm.cs          # Passenger self-registration
+│       │   ├── WelcomeClearanceForm.cs # Flight search & departure clearance
+│       │   ├── SeatTaxiForm.cs        # Interactive 2-2 cabin seating map
+│       │   ├── BaggageAscentForm.cs   # Baggage calculator & in-flight amenities
+│       │   ├── AnalyticsCruisingForm.cs # Live telemetry & yield analytics
+│       │   ├── ReportGenerationForm.cs  # TXT/CSV audit report exporter
+│       │   ├── ReceiptTouchdownForm.cs  # Boarding pass generator & printer
+│       │   ├── MaydayForm.cs           # Emergency Squawk 7700 control deck
+│       │   ├── CreditsForm.cs          # Project author credits
+│       │   ├── MaydayCreditsForm.cs    # Mayday/credits composite entry
+│       │   └── CustomMessageBox.cs    # Dark-themed modal dialog
+│       ├── Models/
+│       │   ├── Booking.cs             # PNR, fare, cabin, seat, baggage data
+│       │   ├── Flight.cs              # Route, airline, schedule info
+│       │   ├── Passenger.cs           # Name, passport, email fields
+│       │   ├── User.cs                # Auth credentials & role
+│       │   └── AnalyticsMetrics.cs    # Load factor & revenue metrics
+│       ├── Services/
+│       │   ├── DatabaseService.cs     # SQLite init, schema & PNR inserts (AirlineSystem.db)
+│       │   ├── BookingHistoryService.cs # Dual-write: SQLite + flat-file audit log
+│       │   ├── FlightService.cs        # Flight catalogue & route data
+│       │   ├── AuthService.cs          # Login validation & session management
+│       │   ├── SoundHelper.cs          # 44.1kHz PCM WAV audio synthesizer
+│       │   ├── FormNavigator.cs        # Centralized form transition engine
+│       │   └── IconHelper.cs           # Embedded icon extraction for titlebar
+│       └── Resources/                 # Embedded app icon and logo assets
+├── tests/
 ├── CHANGELOG.md
 ├── CODE_OF_CONDUCT.md
 ├── CONTRIBUTING.md

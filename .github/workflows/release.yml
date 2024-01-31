@@ -1,18 +1,52 @@
-name: Cut GitHub Release
+name: Release
 
 on:
   push:
     tags:
-      - 'v*'
+      - 'v*.*.*'
 
 jobs:
   release:
+    name: Package & Publish Release
     runs-on: windows-latest
+    permissions:
+      contents: write
+
     steps:
-    - uses: actions/checkout@v4
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: '8.0.x'
-    - name: Build & Package Release
-      run: powershell ./scripts/package-release.ps1 -Version ${{ github.ref_name }}
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Extract version from tag
+        id: version
+        run: |
+          $tag = "${{ github.ref_name }}"
+          $version = $tag.TrimStart('v')
+          echo "VERSION=$version" >> $env:GITHUB_OUTPUT
+        shell: pwsh
+
+      - name: Restore & build
+        run: dotnet build src/AirlineApp/AirlineApp.csproj -c Release
+
+      - name: Package release
+        run: |
+          $version = "${{ steps.version.outputs.VERSION }}"
+          $stagingDir = "temp_release_stage"
+          $zipName = "AirlineReservationSystem-v$version.zip"
+          New-Item -ItemType Directory -Force -Path $stagingDir | Out-Null
+          Copy-Item -Path "src/AirlineApp/bin/Release/net8.0-windows/*" -Destination $stagingDir -Recurse -Force
+          Copy-Item "README.md" $stagingDir -Force
+          Copy-Item "LICENSE" $stagingDir -Force
+          Compress-Archive -Path "$stagingDir/*" -DestinationPath $zipName -Force
+          Remove-Item -Recurse -Force $stagingDir
+          Write-Host "Packaged: $zipName"
+        shell: pwsh
+
+      - name: Upload to GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: AirlineReservationSystem-v${{ steps.version.outputs.VERSION }}.zip
+          generate_release_notes: false

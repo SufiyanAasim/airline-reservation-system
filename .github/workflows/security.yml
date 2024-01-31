@@ -1,0 +1,27 @@
+name: Security Scan
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    - cron: '0 2 * * 1'   # Every Monday at 02:00 UTC
+
+jobs:
+  security:
+    name: Vulnerability Audit
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore src/AirlineApp/AirlineApp.csproj
+
+      - name: Audit NuGet packages for vulnerabilities
+        run: dotnet list src/AirlineApp/AirlineApp.csproj package --vulnerable --include-transitive
