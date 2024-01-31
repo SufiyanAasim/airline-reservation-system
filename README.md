@@ -4,15 +4,16 @@
 
 # Airline Reservation System
 
-**A Windows desktop reservation and yield analytics platform for airline operations**
+**A Windows desktop reservation, yield analytics, and emergency telemetry platform for airline operations**
 
 [![.NET](https://img.shields.io/badge/.NET-8.0--windows-512BD4?style=flat&logo=dotnet&logoColor=white)](docs/Development.md)
 [![Version](https://img.shields.io/badge/version-6.0.0%20Mayday-ef4444?style=flat)](docs/releases/v6.0.0.md)
+[![Database](https://img.shields.io/badge/Database-SQLite-003B57?style=flat&logo=sqlite&logoColor=white)](docs/Database.md)
 [![License: MIT](https://img.shields.io/badge/License-MIT-22c55e?style=flat)](LICENSE)
 [![Platform](https://img.shields.io/badge/platform-Windows-64748b?style=flat)]()
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-0ea5e9?style=flat)](CONTRIBUTING.md)
 
-Registers passengers, manages interactive 2-2 aircraft seating, calculates baggage allowances, renders live load factor & revenue analytics charts, exports audit reports, prints boarding passes, and triggers emergency Mayday protocols — all offline, no installer, no accounts.
+Registers passengers, manages interactive 2-2 aircraft seating, calculates baggage allowances, renders live load factor & revenue analytics charts, exports audit reports, logs transactions to SQLite database (`AirlineSystem.db`), plays PCM synth audio, prints boarding passes, and triggers emergency Mayday protocols — all offline with zero external server dependencies.
 
 [**Download .exe**](docs/releases/v6.0.0.md) · [**Changelog**](CHANGELOG.md) · [**Roadmap**](ROADMAP.md) · [**Report a Bug**](.github/ISSUE_TEMPLATE/bug_report.md)
 
@@ -28,7 +29,7 @@ Registers passengers, manages interactive 2-2 aircraft seating, calculates bagga
 
 ### 🛫 Flight Clearance Engine
 - Flight search across 7 major domestic and international routes (KHI, LHE, ISB, DXB, LHR, KDU, DOH)
-- Departure clearance verification and aircraft route details lookup
+- Departure clearance verification and live marquee status ticker animation
 
 ### 🛞 Interactive Cabin Seating Map
 - 2-2 aircraft seating grid (24 seats) with real-time seat availability status colors
@@ -39,39 +40,44 @@ Registers passengers, manages interactive 2-2 aircraft seating, calculates bagga
 - Excess baggage rate calculation ($12.50 / kg) and optional in-flight amenity add-on toggles
 
 ### 📊 Cruising Telemetry & Yield Analytics
-- Live telemetry metrics (FL380 altitude, Mach 0.82 airspeed, fuel burn rate, cabin pressure)
+- Live telemetry metrics (FL380 altitude micro-flicker, Mach 0.82 airspeed, fuel burn rate, cabin pressure)
 - Custom GDI+ double-buffered canvas rendering cabin load factor capacity bar charts
 
 ### 📄 Executive Report Generation
 - Dedicated audit report builder filtering passenger manifests, financial revenue, and safety logs
 - Exporting support to formatted text (.TXT) and spreadsheet (.CSV) files
 
+### 🗄️ SQLite Database Persistence (`AirlineSystem.db`)
+- Embedded ACID database transaction logging for all bookings, PNR references, fare structures, and flight phases
+
+### 🔊 Synthesized PCM Audio Feedback
+- Custom 44.1kHz 16-bit PCM WAV audio synthesizer supplying tactile button tap clicks and emergency sirens
+
 ### 🎫 Printable Boarding Pass & Local History
 - Electronic Boarding Pass card with PNR barcode aesthetic and Windows print spooler integration
-- Auto-saves every booking to a local travel history text log (`Airline Reservation History/`)
+- Auto-saves every booking to both the SQLite database (`AirlineSystem.db`) and local text audit logs (`Airline Reservation History/`)
 
-### 🚨 Mayday Emergency Protocol
-- Emergency Squawk 7700 flight abort trigger and real-time aircraft health telemetry
-- Project author credits section
+### 🚨 Mayday Emergency Protocol & System Credits
+- Emergency Squawk 7700 flight abort trigger with live pulsing radar beacon, fuel jettison progress animation, and cockpit telemetry deck
+- Project author credits screen (`CreditsForm`)
 
 ---
 
 ## 🏗️ Architecture
 
 ```
-┌──────────────────────────────────────────────────────────┐
-│                      WinForms UI                          │
-│ Login ➔ Signup ➔ Clearance ➔ Taxi ➔ Ascent ➔ Cruising ➔ │
-│            Report ➔ Touchdown ➔ Mayday                   │
-└───────┬───────────────┬──────────────┬───────────────────┘
-        │               │              │
-        ▼               ▼              ▼
- FormNavigator     SoundHelper    FlightService & AuthService
- (screen swap)    (tap feedback)  (pricing & seats engine)
-                                        │
-                                        ▼
-                                BookingHistoryService
-                                (local text-file log)
+┌──────────────────────────────────────────────────────────────────────────┐
+│                             WinForms UI                                  │
+│ Login ➔ Signup ➔ Clearance ➔ Taxi ➔ Ascent ➔ Cruising ➔ Reports ➔        │
+│                    Touchdown ➔ Mayday ➔ Credits                          │
+└────────┬───────────────┬──────────────┬──────────────────┬───────────────┘
+         │               │              │                  │
+         ▼               ▼              ▼                  ▼
+  FormNavigator     SoundHelper    FlightService     DatabaseService
+  (screen swap)    (PCM audio)     & AuthService      (SQLite engine)
+                                        │                  │
+                                        ▼                  ▼
+                                BookingHistoryService (AirlineSystem.db)
 ```
 
 Full breakdown in [docs/Architecture.md](docs/Architecture.md).
@@ -84,10 +90,11 @@ Full breakdown in [docs/Architecture.md](docs/Architecture.md).
 
 | Namespace / Package | Purpose |
 |---------------------|---------|
-| `System.Windows.Forms` | GUI framework — forms, controls, dialogs, DPI awareness |
+| `Microsoft.Data.Sqlite` | Embedded SQLite database engine (`AirlineSystem.db`) for transaction logging |
+| `System.Windows.Forms` | GUI framework — forms, controls, dialogs, DPI awareness, multithreaded timers |
 | `System.Drawing` | Custom GDI+ double-buffered chart graphics and icons |
 | `System.IO` | Travel history file persistence and CSV report exporter |
-| `System.Media` | Audio tap sound feedback |
+| `System.Media` | Synthesized 44.1kHz PCM WAV audio playback |
 
 ---
 
@@ -112,7 +119,7 @@ dotnet build "src/AirlineApp/AirlineApp.csproj" -c Release
 
 Or download a packaged build from [docs/releases/v6.0.0.md](docs/releases/v6.0.0.md).
 
-The app saves travel history to `<app directory>/Airline Reservation History/`. Full setup details in [docs/Development.md](docs/Development.md).
+The app saves database transactions to `AirlineSystem.db` and audit text logs to `<app directory>/Airline Reservation History/`. Full setup details in [docs/Development.md](docs/Development.md).
 
 ---
 
@@ -155,7 +162,7 @@ airline-reservation-system/
 
 ## 🚉 Flight Routes
 
-The app models 7 flight routes:
+The app models 7 commercial flight routes:
 
 | # | Origin | Destination | Flight No | Airline | Base Fare |
 |---|--------|-------------|-----------|---------|-----------|
@@ -180,13 +187,13 @@ There is no automated test suite yet — the wizard flow is validated manually a
 ./scripts/package-release.ps1 -Version "6.0.0"
 ```
 
-Builds in Release mode and stages `AirlineApp.exe` plus its config, runtime DLLs, and docs into `AirlineReservationSystem-v6.0.0.zip`. See [docs/Development.md](docs/Development.md).
+Builds in Release mode and stages `AirlineApp.exe` plus its config, runtime DLLs, SQLite dependencies, and docs into `AirlineReservationSystem-v6.0.0.zip`. See [docs/Development.md](docs/Development.md).
 
 ---
 
 ## 🛡️ Security
 
-This is a fully offline, single-user desktop app — no network calls, no external server database (see [docs/Architecture.md](docs/Architecture.md) and [docs/Database.md](docs/Database.md)). The only persisted state is a local travel-history text log. See [SECURITY.md](SECURITY.md) to report a vulnerability.
+This is a fully offline, single-user desktop app — no network calls, no external server database. Data is stored locally in `AirlineSystem.db` (SQLite) and local travel-history text logs (see [docs/Architecture.md](docs/Architecture.md) and [docs/Database.md](docs/Database.md)). See [SECURITY.md](SECURITY.md) to report a vulnerability.
 
 ---
 
