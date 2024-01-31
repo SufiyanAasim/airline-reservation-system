@@ -459,12 +459,12 @@ namespace AirlineApp.Forms
             decimal cabinSurcharge = currentFlight.BaseFare * (mult - 1.0m);
             decimal total = currentFlight.BaseFare + cabinSurcharge;
 
-            lblSelectedSeatDisplay.Text = 
+            lblSelectedSeatDisplay.Text =
                 $"SELECTED SEAT : {selectedSeat}\n\n" +
                 $"PASSENGER     : {currentPassenger.FullName}\n\n" +
                 $"CABIN CLASS   : {selectedCabin}";
 
-            lblFarePreview.Text = 
+            lblFarePreview.Text =
                 $"BASE FARE RATE  : ${currentFlight.BaseFare:F2}\n\n" +
                 $"CABIN SURCHARGE : ${cabinSurcharge:F2}\n\n" +
                 $"SUBTOTAL FARE   : ${total:F2}";

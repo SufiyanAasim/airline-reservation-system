@@ -243,7 +243,7 @@ namespace AirlineApp.Forms
                 Padding = new Padding(20)
             };
 
-            lblSpecsBody.Text = 
+            lblSpecsBody.Text =
                 "PROJECT NAME    : Airline Reservation System\n\n" +
                 "FRAMEWORK       : .NET 8.0 Windows Desktop (WinForms)\n\n" +
                 "VERSION TAG     : v6.0.0 Mayday Release\n\n" +

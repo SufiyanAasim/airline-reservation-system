@@ -368,7 +368,7 @@ namespace AirlineApp.Forms
             if (comboFlights.SelectedIndex >= 0 && comboFlights.SelectedIndex < flights.Count)
             {
                 var f = flights[comboFlights.SelectedIndex];
-                lblFlightDetails.Text = 
+                lblFlightDetails.Text =
                     $"AIRLINE        : {f.Airline}\n\n" +
                     $"FLIGHT NUMBER  : {f.FlightNumber}\n\n" +
                     $"AIRCRAFT MODEL : {f.AircraftType}\n\n" +

@@ -21,7 +21,7 @@ namespace AirlineApp.Services
 
         public static Flight GetFlightByNumber(string flightNumber)
         {
-            return AvailableFlights.FirstOrDefault(f => f.FlightNumber.Equals(flightNumber, StringComparison.OrdinalIgnoreCase)) 
+            return AvailableFlights.FirstOrDefault(f => f.FlightNumber.Equals(flightNumber, StringComparison.OrdinalIgnoreCase))
                    ?? AvailableFlights[0];
         }
 

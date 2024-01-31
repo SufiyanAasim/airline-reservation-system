@@ -282,7 +282,7 @@ namespace AirlineApp.Forms
 
         private void UpdateTelemetryDisplay()
         {
-            lblTelemetryData.Text = 
+            lblTelemetryData.Text =
                 $"CRUISING ALTITUDE : {altitude:N0} FT (FL380)\n\n" +
                 $"AIRSPEED          : {machSpeed * 1085:F0} KM/H (MACH {machSpeed:F2})\n\n" +
                 $"OUTSIDE AIR TEMP  : {oat} °C\n\n" +

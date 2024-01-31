@@ -296,7 +296,7 @@ namespace AirlineApp.Forms
 
             if (selected == 0)
             {
-                txtReportPreview.Text = 
+                txtReportPreview.Text =
                     "==========================================================================================" + nl +
                     "               AIRLINE RESERVATION SYSTEM — PASSENGER MANIFEST REPORT" + nl +
                     "==========================================================================================" + nl +
@@ -316,7 +316,7 @@ namespace AirlineApp.Forms
             }
             else if (selected == 1)
             {
-                txtReportPreview.Text = 
+                txtReportPreview.Text =
                     "==========================================================================================" + nl +
                     "          AIRLINE RESERVATION SYSTEM — FINANCIAL REVENUE AUDIT LEDGER" + nl +
                     "==========================================================================================" + nl +
@@ -335,7 +335,7 @@ namespace AirlineApp.Forms
             }
             else
             {
-                txtReportPreview.Text = 
+                txtReportPreview.Text =
                     "==========================================================================================" + nl +
                     "            AIRLINE RESERVATION SYSTEM — SAFETY & TELEMETRY AUDIT REPORT" + nl +
                     "==========================================================================================" + nl +

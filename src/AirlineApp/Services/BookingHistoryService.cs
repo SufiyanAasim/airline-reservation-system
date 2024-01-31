@@ -85,7 +85,7 @@ namespace AirlineApp.Services
                 metrics.TotalBookings += 1;
                 metrics.GrossRevenue += currentBooking.TotalFare;
                 metrics.TotalBaggageWeightKg += currentBooking.PassengerDetails.BaggageWeightKg;
-                
+
                 switch (currentBooking.PassengerDetails.Cabin)
                 {
                     case CabinClass.Economy: metrics.EconomyCount++; break;

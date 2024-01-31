@@ -309,11 +309,11 @@ namespace AirlineApp.Forms
                 BackColor = Color.FromArgb(30, 41, 59),
                 ForeColor = Color.White
             };
-            comboDiversionAirport.Items.AddRange(new object[] { 
-                "ISB — Islamabad International (Head: 045° | Dist: 180 KM)", 
-                "KHI — Jinnah International Karachi (Head: 210° | Dist: 420 KM)", 
-                "LHE — Allama Iqbal International Lahore (Head: 090° | Dist: 290 KM)", 
-                "DXB — Dubai International (Head: 260° | Dist: 1120 KM)" 
+            comboDiversionAirport.Items.AddRange(new object[] {
+                "ISB — Islamabad International (Head: 045° | Dist: 180 KM)",
+                "KHI — Jinnah International Karachi (Head: 210° | Dist: 420 KM)",
+                "LHE — Allama Iqbal International Lahore (Head: 090° | Dist: 290 KM)",
+                "DXB — Dubai International (Head: 260° | Dist: 1120 KM)"
             });
             comboDiversionAirport.SelectedIndex = 0;
             comboDiversionAirport.SelectedIndexChanged += (s, e) =>
@@ -496,7 +496,7 @@ namespace AirlineApp.Forms
             var f = currentBooking.FlightDetails;
             var p = currentBooking.PassengerDetails;
 
-            lblTelemetryCard.Text = 
+            lblTelemetryCard.Text =
                 $"EMERGENCY DECK  : OPERATIONAL\n\n" +
                 $"FLIGHT / ROUTE  : {f.FlightNumber} ({f.OriginCode} ➔ {f.DestinationCode})\n\n" +
                 $"PASSENGER PNR   : {currentBooking.PnrReference} ({p.FullName})\n\n" +

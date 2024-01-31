@@ -414,7 +414,7 @@ namespace AirlineApp.Forms
             if (chkLounge.Checked) addonTotal += 45.00m;
             if (chkPriority.Checked) addonTotal += 20.00m;
 
-            lblBaggageSummary.Text = 
+            lblBaggageSummary.Text =
                 $"CABIN ALLOWANCE : {allowance} KG\n\n" +
                 $"CHECKED WEIGHT  : {currentPassenger.BaggageWeightKg:F1} KG\n\n" +
                 $"EXCESS WEIGHT   : {excess:F1} KG\n\n" +
@@ -426,7 +426,7 @@ namespace AirlineApp.Forms
             decimal subtotal = currentFlight.BaseFare * baseMult;
             decimal grandTotal = subtotal + excessFee + addonTotal;
 
-            lblTotalPreview.Text = 
+            lblTotalPreview.Text =
                 $"CABIN SUB-FARE  : ${subtotal:F2}\n\n" +
                 $"EXCESS BAGGAGE  : ${excessFee:F2}\n\n" +
                 $"SERVICE ADD-ONS : ${addonTotal:F2}\n\n" +

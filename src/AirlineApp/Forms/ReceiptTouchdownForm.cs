@@ -189,7 +189,7 @@ namespace AirlineApp.Forms
                 Padding = new Padding(30, 25, 30, 20)
             };
 
-            lblTicketBody.Text = 
+            lblTicketBody.Text =
                 $"PASSENGER NAME : {booking.PassengerDetails.FullName.ToUpper()}\n\n" +
                 $"PASSPORT / CNIC: {booking.PassengerDetails.PassportOrId}\n\n" +
                 $"FLIGHT NUMBER  : {booking.FlightDetails.FlightNumber} ({booking.FlightDetails.AircraftType})\n\n" +

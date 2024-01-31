@@ -35,7 +35,7 @@ namespace AirlineApp.Services
                     // Aviation Cockpit Dual-Tone Alert Chime (880 Hz + 440 Hz)
                     byte[] wav1 = GenerateToneWav(880, 120, 0.4f);
                     byte[] wav2 = GenerateToneWav(440, 150, 0.4f);
-                    
+
                     using (var ms = new MemoryStream(wav1))
                     using (var player = new SoundPlayer(ms))
                     {
