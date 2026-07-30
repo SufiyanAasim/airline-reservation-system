@@ -18,6 +18,7 @@ namespace AirlineApp.Forms
         public LoginForm()
         {
             InitializeComponent();
+            IconHelper.ApplyIcon(this);
         }
 
         private void InitializeComponent()

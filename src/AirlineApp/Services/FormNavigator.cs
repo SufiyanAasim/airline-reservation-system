@@ -6,6 +6,7 @@ namespace AirlineApp.Services
     {
         public static void Navigate(Form current, Form next)
         {
+            IconHelper.ApplyIcon(next);
             next.StartPosition = FormStartPosition.CenterScreen;
             next.Show();
             current.Hide();
