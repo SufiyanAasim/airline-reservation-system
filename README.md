@@ -52,7 +52,7 @@ Registers passengers, manages interactive 2-2 aircraft seating, calculates bagga
 
 ### 🚨 Mayday Emergency Protocol
 - Emergency Squawk 7700 flight abort trigger and real-time aircraft health telemetry
-- Symmetrical project contributor credits card section
+- Solo project contributor credits section
 
 ---
 
@@ -190,23 +190,16 @@ This is a fully offline, single-user desktop app — no network calls, no extern
 
 ---
 
-## 🤝 Contributors
+## 👤 Standalone Contributor
 
 <table>
   <tr>
     <td align="center">
       <a href="https://github.com/SufiyanAasim">
-        <img src="https://github.com/SufiyanAasim.png" width="72" alt="SufiyanAasim"/><br/>
+        <img src="https://github.com/SufiyanAasim.png" width="80" alt="SufiyanAasim"/><br/>
         <sub><b>Mohammad Sufiyan Aasim</b></sub>
       </a><br/>
-      <sub>System Architect · AI/MLOps · Docs</sub>
-    </td>
-    <td align="center">
-      <a href="https://github.com/FahadBinNasir">
-        <img src="https://github.com/FahadBinNasir.png" width="72" alt="FahadBinNasir"/><br/>
-        <sub><b>Fahad Bin Nasir</b></sub>
-      </a><br/>
-      <sub>Front-end Development</sub>
+      <sub>Sole System Architect & Developer</sub>
     </td>
   </tr>
 </table>

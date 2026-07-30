@@ -2,7 +2,6 @@ namespace AirlineApp.Forms
 {
     using System;
     using System.Drawing;
-    using System.IO;
     using System.Windows.Forms;
     using AirlineApp.Models;
     using AirlineApp.Services;
@@ -51,7 +50,7 @@ namespace AirlineApp.Forms
 
             var lblHeader = new Label
             {
-                Text = "Emergency Fail-Safe System & Project Contributors",
+                Text = "Emergency Fail-Safe System & Project Author",
                 Font = new Font("Segoe UI", 15F, FontStyle.Bold),
                 ForeColor = Color.White,
                 Location = new Point(22, 42),
@@ -109,10 +108,10 @@ namespace AirlineApp.Forms
             grpMayday.Controls.Add(lblMaydayStatus);
             grpMayday.Controls.Add(btnTriggerMayday);
 
-            // Right Panel: Project Credits & Contributor Badges
+            // Right Panel: Project Credits & Sole Author
             var grpCredits = new GroupBox
             {
-                Text = "Project Architectural Credits & Contributors",
+                Text = "System Author & Architecture Credits",
                 Font = new Font("Segoe UI", 10.5F, FontStyle.Bold),
                 ForeColor = Color.FromArgb(148, 163, 184),
                 Location = new Point(485, 105),
@@ -120,65 +119,35 @@ namespace AirlineApp.Forms
                 BackColor = Color.FromArgb(30, 41, 59)
             };
 
-            // Contributor 1 Box
-            var pnlContrib1 = new Panel
+            // Contributor Panel (Sole Standalone Author)
+            var pnlContrib = new Panel
             {
-                Location = new Point(20, 35),
-                Size = new Size(435, 120),
+                Location = new Point(20, 45),
+                Size = new Size(435, 220),
                 BackColor = Color.FromArgb(15, 23, 42),
                 BorderStyle = BorderStyle.FixedSingle
             };
 
-            var lblContrib1Name = new Label
+            var lblContribName = new Label
             {
                 Text = "Mohammad Sufiyan Aasim",
-                Font = new Font("Segoe UI", 12F, FontStyle.Bold),
+                Font = new Font("Segoe UI", 14F, FontStyle.Bold),
                 ForeColor = Color.FromArgb(14, 165, 233),
-                Location = new Point(15, 15),
+                Location = new Point(20, 20),
                 AutoSize = true
             };
 
-            var lblContrib1Role = new Label
+            var lblContribRole = new Label
             {
-                Text = "System Architect · AI/MLOps · Core WinForms & Docs\nGitHub: github.com/SufiyanAasim",
-                Font = new Font("Segoe UI", 9.5F),
+                Text = "Sole System Architect & Lead Developer\nAI/MLOps · Full-Stack C# WinForms Engineer\n\nGitHub Profile : github.com/SufiyanAasim\nEmail Contact  : sufiyanaasim@outlook.com",
+                Font = new Font("Segoe UI", 10F),
                 ForeColor = Color.FromArgb(226, 232, 240),
-                Location = new Point(15, 45),
+                Location = new Point(20, 60),
                 AutoSize = true
             };
 
-            pnlContrib1.Controls.Add(lblContrib1Name);
-            pnlContrib1.Controls.Add(lblContrib1Role);
-
-            // Contributor 2 Box
-            var pnlContrib2 = new Panel
-            {
-                Location = new Point(20, 170),
-                Size = new Size(435, 120),
-                BackColor = Color.FromArgb(15, 23, 42),
-                BorderStyle = BorderStyle.FixedSingle
-            };
-
-            var lblContrib2Name = new Label
-            {
-                Text = "Fahad Bin Nasir",
-                Font = new Font("Segoe UI", 12F, FontStyle.Bold),
-                ForeColor = Color.FromArgb(245, 158, 11),
-                Location = new Point(15, 15),
-                AutoSize = true
-            };
-
-            var lblContrib2Role = new Label
-            {
-                Text = "Front-end Development · Aviation UI & Graphics\nGitHub: github.com/FahadBinNasir",
-                Font = new Font("Segoe UI", 9.5F),
-                ForeColor = Color.FromArgb(226, 232, 240),
-                Location = new Point(15, 45),
-                AutoSize = true
-            };
-
-            pnlContrib2.Controls.Add(lblContrib2Name);
-            pnlContrib2.Controls.Add(lblContrib2Role);
+            pnlContrib.Controls.Add(lblContribName);
+            pnlContrib.Controls.Add(lblContribRole);
 
             var lblTechDetails = new Label
             {
@@ -190,8 +159,7 @@ namespace AirlineApp.Forms
                 TextAlign = ContentAlignment.MiddleCenter
             };
 
-            grpCredits.Controls.Add(pnlContrib1);
-            grpCredits.Controls.Add(pnlContrib2);
+            grpCredits.Controls.Add(pnlContrib);
             grpCredits.Controls.Add(lblTechDetails);
 
             // Footer Navigation

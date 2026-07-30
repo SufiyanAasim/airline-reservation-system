@@ -9,8 +9,7 @@ namespace AirlineApp.Services
     {
         private static readonly List<User> RegisteredUsers = new()
         {
-            new User { FullName = "Capt. Sufiyan Aasim", Email = "sufiyanaasim@outlook.com", Password = "admin123", Role = "Flight Operations Manager" },
-            new User { FullName = "Fahad Bin Nasir", Email = "fahad@outlook.com", Password = "user123", Role = "Passenger" }
+            new User { FullName = "Capt. Sufiyan Aasim", Email = "sufiyanaasim@outlook.com", Password = "admin123", Role = "Flight Operations Manager" }
         };
 
         public static User? CurrentUser { get; set; } = RegisteredUsers[0];

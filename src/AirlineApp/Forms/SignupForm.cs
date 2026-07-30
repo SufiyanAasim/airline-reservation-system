@@ -76,13 +76,13 @@ namespace AirlineApp.Forms
 
             // Full Name
             AddInputLabel(container, "Full Name:", y);
-            txtFullName = CreateTextBox("Capt. Fahad Bin Nasir", y + 25, 400);
+            txtFullName = CreateTextBox("Capt. Sufiyan Aasim", y + 25, 400);
             container.Controls.Add(txtFullName);
             y += 65;
 
             // Email
             AddInputLabel(container, "Email Address:", y);
-            txtEmail = CreateTextBox("fahad@outlook.com", y + 25, 400);
+            txtEmail = CreateTextBox("sufiyanaasim@outlook.com", y + 25, 400);
             container.Controls.Add(txtEmail);
             y += 65;
 
