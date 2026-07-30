@@ -3,6 +3,7 @@ namespace AirlineApp.Forms
     using System;
     using System.Drawing;
     using System.Windows.Forms;
+    using AirlineApp.Models;
     using AirlineApp.Services;
 
     public class SignupForm : Form
@@ -64,8 +65,29 @@ namespace AirlineApp.Forms
                 AutoSize = true
             };
 
+            var btnCreditsHeader = new Button
+            {
+                Text = "⭐ SYSTEM CREDITS",
+                Font = new Font("Segoe UI", 9.5F, FontStyle.Bold),
+                ForeColor = Color.White,
+                BackColor = Color.FromArgb(139, 92, 246),
+                FlatStyle = FlatStyle.Flat,
+                Size = new Size(170, 38),
+                Anchor = AnchorStyles.Right | AnchorStyles.Top,
+                Location = new Point(940, 28),
+                Cursor = Cursors.Hand
+            };
+            btnCreditsHeader.FlatAppearance.BorderSize = 0;
+            btnCreditsHeader.Click += (s, e) =>
+            {
+                var dummyFlight = FlightService.GetFlights()[0];
+                var dummyPassenger = new Passenger { FullName = "Capt. Sufiyan Aasim", PassportOrId = "PK-98234109" };
+                FormNavigator.Navigate(this, new MaydayCreditsForm(FlightService.CalculateFullBooking(dummyFlight, dummyPassenger)));
+            };
+
             headerPanel.Controls.Add(lblBadge);
             headerPanel.Controls.Add(lblHeader);
+            headerPanel.Controls.Add(btnCreditsHeader);
 
             // Centered Main Content Panel
             var pnlMain = new Panel
@@ -76,7 +98,7 @@ namespace AirlineApp.Forms
 
             container = new Panel
             {
-                Size = new Size(520, 540),
+                Size = new Size(530, 540),
                 BackColor = Color.FromArgb(30, 41, 59),
                 BorderStyle = BorderStyle.FixedSingle
             };
@@ -85,13 +107,13 @@ namespace AirlineApp.Forms
 
             // Full Name
             AddInputLabel(container, "Full Name:", y);
-            txtFullName = CreateTextBox("Capt. Sufiyan Aasim", y + 24, 460);
+            txtFullName = CreateTextBox("Capt. Sufiyan Aasim", y + 24, 470);
             container.Controls.Add(txtFullName);
             y += 65;
 
             // Email
             AddInputLabel(container, "Email Address:", y);
-            txtEmail = CreateTextBox("sufiyanaasim@outlook.com", y + 24, 460);
+            txtEmail = CreateTextBox("sufiyanaasim@outlook.com", y + 24, 470);
             container.Controls.Add(txtEmail);
             y += 65;
 
@@ -100,7 +122,7 @@ namespace AirlineApp.Forms
             comboRole = new ComboBox
             {
                 Location = new Point(30, y + 24),
-                Size = new Size(460, 30),
+                Size = new Size(470, 30),
                 Font = new Font("Segoe UI", 10F),
                 DropDownStyle = ComboBoxStyle.DropDownList,
                 BackColor = Color.FromArgb(15, 23, 42),
@@ -111,12 +133,12 @@ namespace AirlineApp.Forms
             container.Controls.Add(comboRole);
             y += 65;
 
-            // Password + Eye Button 1
+            // Password + Eye Button 1 (ALIGNED INLINE!)
             AddInputLabel(container, "Password:", y);
-            txtPassword = CreateTextBox("pass123", y + 24, 400);
+            txtPassword = CreateTextBox("pass123", y + 24, 410);
             txtPassword.UseSystemPasswordChar = true;
 
-            btnEyePassword1 = CreateEyeButton(y + 24, 438);
+            btnEyePassword1 = CreateEyeButton(y + 24, 446);
             btnEyePassword1.Click += (s, e) =>
             {
                 SoundHelper.PlayTap();
@@ -129,12 +151,12 @@ namespace AirlineApp.Forms
             container.Controls.Add(btnEyePassword1);
             y += 65;
 
-            // Confirm Password + Eye Button 2
+            // Confirm Password + Eye Button 2 (ALIGNED INLINE!)
             AddInputLabel(container, "Confirm Password:", y);
-            txtConfirmPassword = CreateTextBox("pass123", y + 24, 400);
+            txtConfirmPassword = CreateTextBox("pass123", y + 24, 410);
             txtConfirmPassword.UseSystemPasswordChar = true;
 
-            btnEyePassword2 = CreateEyeButton(y + 24, 438);
+            btnEyePassword2 = CreateEyeButton(y + 24, 446);
             btnEyePassword2.Click += (s, e) =>
             {
                 SoundHelper.PlayTap();
@@ -155,7 +177,7 @@ namespace AirlineApp.Forms
                 ForeColor = Color.White,
                 BackColor = Color.FromArgb(16, 185, 129),
                 FlatStyle = FlatStyle.Flat,
-                Size = new Size(460, 44),
+                Size = new Size(470, 44),
                 Location = new Point(30, y),
                 Cursor = Cursors.Hand
             };
@@ -172,7 +194,7 @@ namespace AirlineApp.Forms
                 ForeColor = Color.FromArgb(148, 163, 184),
                 BackColor = Color.FromArgb(15, 23, 42),
                 FlatStyle = FlatStyle.Flat,
-                Size = new Size(460, 36),
+                Size = new Size(470, 36),
                 Location = new Point(30, y),
                 Cursor = Cursors.Hand
             };
@@ -234,7 +256,7 @@ namespace AirlineApp.Forms
                 ForeColor = Color.FromArgb(14, 165, 233),
                 BackColor = Color.FromArgb(15, 23, 42),
                 FlatStyle = FlatStyle.Flat,
-                Size = new Size(52, 30),
+                Size = new Size(54, 30),
                 Location = new Point(x, y),
                 Cursor = Cursors.Hand
             };

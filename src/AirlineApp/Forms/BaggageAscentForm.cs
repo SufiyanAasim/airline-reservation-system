@@ -64,8 +64,69 @@ namespace AirlineApp.Forms
                 AutoSize = true
             };
 
+            var btnCreditsHeader = new Button
+            {
+                Text = "⭐ SYSTEM CREDITS",
+                Font = new Font("Segoe UI", 9.5F, FontStyle.Bold),
+                ForeColor = Color.White,
+                BackColor = Color.FromArgb(139, 92, 246),
+                FlatStyle = FlatStyle.Flat,
+                Size = new Size(170, 38),
+                Anchor = AnchorStyles.Right | AnchorStyles.Top,
+                Location = new Point(940, 25),
+                Cursor = Cursors.Hand
+            };
+            btnCreditsHeader.FlatAppearance.BorderSize = 0;
+            btnCreditsHeader.Click += (s, e) => FormNavigator.Navigate(this, new MaydayCreditsForm(FlightService.CalculateFullBooking(currentFlight, currentPassenger)));
+
             headerPanel.Controls.Add(lblBadge);
             headerPanel.Controls.Add(lblHeader);
+            headerPanel.Controls.Add(btnCreditsHeader);
+
+            // Footer Navigation Bar
+            var pnlFooter = new Panel
+            {
+                Dock = DockStyle.Bottom,
+                Height = 85,
+                BackColor = Color.FromArgb(30, 41, 59)
+            };
+
+            var btnBack = new Button
+            {
+                Text = "⇦ BACK TO TAXI",
+                Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                ForeColor = Color.White,
+                BackColor = Color.FromArgb(51, 65, 85),
+                FlatStyle = FlatStyle.Flat,
+                Size = new Size(190, 45),
+                Location = new Point(25, 20),
+                Cursor = Cursors.Hand
+            };
+            btnBack.FlatAppearance.BorderSize = 0;
+            btnBack.Click += (s, e) => FormNavigator.Navigate(this, new SeatTaxiForm(currentFlight, currentPassenger));
+
+            var btnProceed = new Button
+            {
+                Text = "PROCEED TO CRUISING & ANALYTICS ➔",
+                Font = new Font("Segoe UI", 10.5F, FontStyle.Bold),
+                ForeColor = Color.White,
+                BackColor = Color.FromArgb(16, 185, 129),
+                FlatStyle = FlatStyle.Flat,
+                Size = new Size(330, 45),
+                Anchor = AnchorStyles.Right | AnchorStyles.Top,
+                Location = new Point(780, 20),
+                Cursor = Cursors.Hand
+            };
+            btnProceed.FlatAppearance.BorderSize = 0;
+            btnProceed.Click += BtnProceed_Click;
+
+            pnlFooter.Resize += (s, e) =>
+            {
+                btnProceed.Location = new Point(pnlFooter.Width - btnProceed.Width - 30, 20);
+            };
+
+            pnlFooter.Controls.Add(btnBack);
+            pnlFooter.Controls.Add(btnProceed);
 
             // Main Content Layout
             var pnlMain = new TableLayoutPanel
@@ -117,7 +178,7 @@ namespace AirlineApp.Forms
                 Font = new Font("Consolas", 10.5F),
                 ForeColor = Color.FromArgb(56, 189, 248),
                 Location = new Point(25, 120),
-                Size = new Size(450, 240),
+                Size = new Size(450, 220),
                 Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right
             };
 
@@ -167,7 +228,7 @@ namespace AirlineApp.Forms
                 Font = new Font("Consolas", 11F, FontStyle.Bold),
                 ForeColor = Color.FromArgb(16, 185, 129),
                 Location = new Point(25, 260),
-                Size = new Size(420, 110),
+                Size = new Size(420, 100),
                 Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right
             };
 
@@ -180,46 +241,6 @@ namespace AirlineApp.Forms
 
             pnlMain.Controls.Add(grpBaggage, 0, 0);
             pnlMain.Controls.Add(grpServices, 1, 0);
-
-            // Footer Navigation Bar
-            var pnlFooter = new Panel
-            {
-                Dock = DockStyle.Bottom,
-                Height = 90,
-                BackColor = Color.FromArgb(30, 41, 59)
-            };
-
-            var btnBack = new Button
-            {
-                Text = "⇦ BACK TO TAXI",
-                Font = new Font("Segoe UI", 10F, FontStyle.Bold),
-                ForeColor = Color.White,
-                BackColor = Color.FromArgb(51, 65, 85),
-                FlatStyle = FlatStyle.Flat,
-                Size = new Size(180, 45),
-                Location = new Point(25, 20),
-                Cursor = Cursors.Hand
-            };
-            btnBack.FlatAppearance.BorderSize = 0;
-            btnBack.Click += (s, e) => FormNavigator.Navigate(this, new SeatTaxiForm(currentFlight, currentPassenger));
-
-            var btnProceed = new Button
-            {
-                Text = "PROCEED TO CRUISING & ANALYTICS ➔",
-                Font = new Font("Segoe UI", 10.5F, FontStyle.Bold),
-                ForeColor = Color.White,
-                BackColor = Color.FromArgb(16, 185, 129),
-                FlatStyle = FlatStyle.Flat,
-                Size = new Size(310, 45),
-                Anchor = AnchorStyles.Right | AnchorStyles.Top,
-                Location = new Point(790, 20),
-                Cursor = Cursors.Hand
-            };
-            btnProceed.FlatAppearance.BorderSize = 0;
-            btnProceed.Click += BtnProceed_Click;
-
-            pnlFooter.Controls.Add(btnBack);
-            pnlFooter.Controls.Add(btnProceed);
 
             this.Controls.Add(pnlMain);
             this.Controls.Add(pnlFooter);

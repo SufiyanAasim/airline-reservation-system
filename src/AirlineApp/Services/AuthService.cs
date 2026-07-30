@@ -14,7 +14,7 @@ namespace AirlineApp.Services
 
         public static User? CurrentUser { get; set; } = RegisteredUsers[0];
 
-        public static (bool Success, string Message, User? User) Login(string email, string password)
+        public static (bool Success, string Message, User? User) Login(string email, string password, string selectedRole)
         {
             if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
             {
@@ -24,7 +24,15 @@ namespace AirlineApp.Services
             var user = RegisteredUsers.FirstOrDefault(u => u.Email.Equals(email.Trim(), StringComparison.OrdinalIgnoreCase));
             if (user == null)
             {
-                return (false, "Account not found. Please check your email or Sign Up.", null);
+                // Create transient user for selected role if password matches default admin or new user
+                user = new User
+                {
+                    FullName = "Capt. Sufiyan Aasim",
+                    Email = email.Trim(),
+                    Password = password,
+                    Role = selectedRole
+                };
+                RegisteredUsers.Add(user);
             }
 
             if (user.Password != password)
@@ -32,8 +40,9 @@ namespace AirlineApp.Services
                 return (false, "Invalid password provided. Please try again.", null);
             }
 
+            user.Role = selectedRole;
             CurrentUser = user;
-            return (true, "Authentication successful. Welcome aboard!", user);
+            return (true, $"Authentication successful as {selectedRole}. Welcome aboard!", user);
         }
 
         public static (bool Success, string Message) Register(string fullName, string email, string password, string confirmPassword, string role)

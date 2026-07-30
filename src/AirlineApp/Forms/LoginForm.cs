@@ -3,6 +3,7 @@ namespace AirlineApp.Forms
     using System;
     using System.Drawing;
     using System.Windows.Forms;
+    using AirlineApp.Models;
     using AirlineApp.Services;
 
     public class LoginForm : Form
@@ -59,8 +60,30 @@ namespace AirlineApp.Forms
                 AutoSize = true
             };
 
+            // Credits Button on Login Screen Header Banner!
+            var btnCreditsHeader = new Button
+            {
+                Text = "⭐ SYSTEM CREDITS",
+                Font = new Font("Segoe UI", 9.5F, FontStyle.Bold),
+                ForeColor = Color.White,
+                BackColor = Color.FromArgb(139, 92, 246),
+                FlatStyle = FlatStyle.Flat,
+                Size = new Size(170, 38),
+                Anchor = AnchorStyles.Right | AnchorStyles.Top,
+                Location = new Point(940, 28),
+                Cursor = Cursors.Hand
+            };
+            btnCreditsHeader.FlatAppearance.BorderSize = 0;
+            btnCreditsHeader.Click += (s, e) =>
+            {
+                var dummyFlight = FlightService.GetFlights()[0];
+                var dummyPassenger = new Passenger { FullName = "Capt. Sufiyan Aasim", PassportOrId = "PK-98234109" };
+                FormNavigator.Navigate(this, new MaydayCreditsForm(FlightService.CalculateFullBooking(dummyFlight, dummyPassenger)));
+            };
+
             headerPanel.Controls.Add(lblBadge);
             headerPanel.Controls.Add(lblHeader);
+            headerPanel.Controls.Add(btnCreditsHeader);
 
             // Centered Main Content Panel
             var pnlMain = new Panel
@@ -71,19 +94,19 @@ namespace AirlineApp.Forms
 
             container = new Panel
             {
-                Size = new Size(480, 480),
+                Size = new Size(490, 490),
                 BackColor = Color.FromArgb(30, 41, 59),
                 BorderStyle = BorderStyle.FixedSingle
             };
 
             int y = 25;
 
-            // Role Selector
-            AddInputLabel(container, "Select System Access Role:", y);
+            // Role Selector (RBAC)
+            AddInputLabel(container, "Select System Access Role (RBAC):", y);
             comboRole = new ComboBox
             {
                 Location = new Point(30, y + 26),
-                Size = new Size(420, 32),
+                Size = new Size(430, 32),
                 Font = new Font("Segoe UI", 10.5F),
                 DropDownStyle = ComboBoxStyle.DropDownList,
                 BackColor = Color.FromArgb(15, 23, 42),
@@ -92,28 +115,38 @@ namespace AirlineApp.Forms
             comboRole.Items.AddRange(new object[] { "Flight Operations Manager", "Passenger / Customer" });
             comboRole.SelectedIndex = 0;
             container.Controls.Add(comboRole);
-            y += 70;
+            y += 75;
 
             // Email Field
             AddInputLabel(container, "Email Address:", y);
-            txtEmail = CreateTextBox("sufiyanaasim@outlook.com", y + 26, 420);
+            txtEmail = CreateTextBox("sufiyanaasim@outlook.com", y + 26, 430);
             container.Controls.Add(txtEmail);
-            y += 70;
+            y += 75;
 
-            // Password Field + Interactive Eye Toggle Button
+            // Password Field + Eye Toggle Button (PERFECTLY ALIGNED VERTICALLY & HORIZONTALLY!)
             AddInputLabel(container, "Account Password:", y);
-            txtPassword = CreateTextBox("admin123", y + 26, 360);
+
+            txtPassword = new TextBox
+            {
+                Text = "admin123",
+                Font = new Font("Segoe UI", 11F),
+                Location = new Point(30, y + 26),
+                Size = new Size(372, 32),
+                BackColor = Color.FromArgb(15, 23, 42),
+                ForeColor = Color.White,
+                BorderStyle = BorderStyle.FixedSingle
+            };
             txtPassword.UseSystemPasswordChar = true;
 
             btnEyePassword = new Button
             {
                 Text = "👁",
-                Font = new Font("Segoe UI", 12F, FontStyle.Bold),
+                Font = new Font("Segoe UI", 11F, FontStyle.Bold),
                 ForeColor = Color.FromArgb(14, 165, 233),
                 BackColor = Color.FromArgb(15, 23, 42),
                 FlatStyle = FlatStyle.Flat,
-                Size = new Size(52, 32),
-                Location = new Point(398, y + 26),
+                Size = new Size(54, 32),
+                Location = new Point(406, y + 26),
                 Cursor = Cursors.Hand
             };
             btnEyePassword.FlatAppearance.BorderSize = 1;
@@ -122,7 +155,7 @@ namespace AirlineApp.Forms
 
             container.Controls.Add(txtPassword);
             container.Controls.Add(btnEyePassword);
-            y += 80;
+            y += 85;
 
             // Login Button
             var btnLogin = new Button
@@ -132,7 +165,7 @@ namespace AirlineApp.Forms
                 ForeColor = Color.White,
                 BackColor = Color.FromArgb(14, 165, 233),
                 FlatStyle = FlatStyle.Flat,
-                Size = new Size(420, 48),
+                Size = new Size(430, 48),
                 Location = new Point(30, y),
                 Cursor = Cursors.Hand
             };
@@ -149,7 +182,7 @@ namespace AirlineApp.Forms
                 ForeColor = Color.FromArgb(148, 163, 184),
                 BackColor = Color.FromArgb(15, 23, 42),
                 FlatStyle = FlatStyle.Flat,
-                Size = new Size(420, 38),
+                Size = new Size(430, 38),
                 Location = new Point(30, y),
                 Cursor = Cursors.Hand
             };
@@ -213,13 +246,15 @@ namespace AirlineApp.Forms
         private void BtnLogin_Click(object? sender, EventArgs e)
         {
             SoundHelper.PlayTap();
-            var res = AuthService.Login(txtEmail.Text, txtPassword.Text);
+            string selectedRole = comboRole.SelectedItem?.ToString() ?? "Passenger / Customer";
+            var res = AuthService.Login(txtEmail.Text, txtPassword.Text, selectedRole);
             if (!res.Success)
             {
                 CustomMessageBox.Show("AUTHENTICATION FAILURE", res.Message, true);
                 return;
             }
 
+            CustomMessageBox.Show("WELCOME ABOARD", $"Authenticated as {selectedRole}.\nRedirecting to Flight Departure Clearance Engine.");
             FormNavigator.Navigate(this, new WelcomeClearanceForm());
         }
     }

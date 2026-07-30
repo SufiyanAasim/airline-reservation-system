@@ -26,7 +26,7 @@ namespace AirlineApp.Forms
         private void InitializeComponent()
         {
             this.Text = "Airline Reservation System — v2.0.0 [Taxi Phase - Seat Allocation]";
-            this.Size = new Size(1100, 720);
+            this.Size = new Size(1150, 750);
             this.WindowState = FormWindowState.Maximized;
             this.StartPosition = FormStartPosition.CenterScreen;
             this.BackColor = Color.FromArgb(15, 23, 42);
@@ -34,7 +34,7 @@ namespace AirlineApp.Forms
             this.FormBorderStyle = FormBorderStyle.Sizable;
             this.MaximizeBox = true;
 
-            // Header Banner
+            // Header Banner (Dock = Top)
             var headerPanel = new Panel
             {
                 Dock = DockStyle.Top,
@@ -62,10 +62,71 @@ namespace AirlineApp.Forms
                 AutoSize = true
             };
 
+            var btnCreditsHeader = new Button
+            {
+                Text = "⭐ SYSTEM CREDITS",
+                Font = new Font("Segoe UI", 9.5F, FontStyle.Bold),
+                ForeColor = Color.White,
+                BackColor = Color.FromArgb(139, 92, 246),
+                FlatStyle = FlatStyle.Flat,
+                Size = new Size(170, 38),
+                Anchor = AnchorStyles.Right | AnchorStyles.Top,
+                Location = new Point(940, 25),
+                Cursor = Cursors.Hand
+            };
+            btnCreditsHeader.FlatAppearance.BorderSize = 0;
+            btnCreditsHeader.Click += (s, e) => FormNavigator.Navigate(this, new MaydayCreditsForm(FlightService.CalculateFullBooking(currentFlight, currentPassenger)));
+
             headerPanel.Controls.Add(lblBadge);
             headerPanel.Controls.Add(lblHeader);
+            headerPanel.Controls.Add(btnCreditsHeader);
 
-            // Main Layout Container
+            // Footer Navigation (Dock = Bottom)
+            var pnlFooter = new Panel
+            {
+                Dock = DockStyle.Bottom,
+                Height = 85,
+                BackColor = Color.FromArgb(30, 41, 59)
+            };
+
+            var btnBack = new Button
+            {
+                Text = "⇦ BACK TO CLEARANCE",
+                Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                ForeColor = Color.White,
+                BackColor = Color.FromArgb(51, 65, 85),
+                FlatStyle = FlatStyle.Flat,
+                Size = new Size(220, 45),
+                Location = new Point(25, 20),
+                Cursor = Cursors.Hand
+            };
+            btnBack.FlatAppearance.BorderSize = 0;
+            btnBack.Click += (s, e) => FormNavigator.Navigate(this, new WelcomeClearanceForm());
+
+            var btnProceed = new Button
+            {
+                Text = "PROCEED TO ASCENT & BAGGAGE ➔",
+                Font = new Font("Segoe UI", 10.5F, FontStyle.Bold),
+                ForeColor = Color.White,
+                BackColor = Color.FromArgb(245, 158, 11),
+                FlatStyle = FlatStyle.Flat,
+                Size = new Size(310, 45),
+                Anchor = AnchorStyles.Right | AnchorStyles.Top,
+                Location = new Point(780, 20),
+                Cursor = Cursors.Hand
+            };
+            btnProceed.FlatAppearance.BorderSize = 0;
+            btnProceed.Click += BtnProceed_Click;
+
+            pnlFooter.Resize += (s, e) =>
+            {
+                btnProceed.Location = new Point(pnlFooter.Width - btnProceed.Width - 30, 20);
+            };
+
+            pnlFooter.Controls.Add(btnBack);
+            pnlFooter.Controls.Add(btnProceed);
+
+            // Main Layout Container (Dock = Fill)
             var pnlMain = new TableLayoutPanel
             {
                 Dock = DockStyle.Fill,
@@ -159,7 +220,7 @@ namespace AirlineApp.Forms
             var pnlGrid = new Panel
             {
                 Location = new Point(20, 35),
-                Size = new Size(500, 400),
+                Size = new Size(500, 380),
                 Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right,
                 BackColor = Color.FromArgb(15, 23, 42)
             };
@@ -212,46 +273,6 @@ namespace AirlineApp.Forms
 
             pnlMain.Controls.Add(grpCabin, 0, 0);
             pnlMain.Controls.Add(grpSeatMap, 1, 0);
-
-            // Footer Navigation
-            var pnlFooter = new Panel
-            {
-                Dock = DockStyle.Bottom,
-                Height = 90,
-                BackColor = Color.FromArgb(30, 41, 59)
-            };
-
-            var btnBack = new Button
-            {
-                Text = "⇦ BACK TO CLEARANCE",
-                Font = new Font("Segoe UI", 10F, FontStyle.Bold),
-                ForeColor = Color.White,
-                BackColor = Color.FromArgb(51, 65, 85),
-                FlatStyle = FlatStyle.Flat,
-                Size = new Size(210, 45),
-                Location = new Point(25, 20),
-                Cursor = Cursors.Hand
-            };
-            btnBack.FlatAppearance.BorderSize = 0;
-            btnBack.Click += (s, e) => FormNavigator.Navigate(this, new WelcomeClearanceForm());
-
-            var btnProceed = new Button
-            {
-                Text = "PROCEED TO ASCENT & BAGGAGE ➔",
-                Font = new Font("Segoe UI", 10.5F, FontStyle.Bold),
-                ForeColor = Color.White,
-                BackColor = Color.FromArgb(245, 158, 11),
-                FlatStyle = FlatStyle.Flat,
-                Size = new Size(290, 45),
-                Anchor = AnchorStyles.Right | AnchorStyles.Top,
-                Location = new Point(770, 20),
-                Cursor = Cursors.Hand
-            };
-            btnProceed.FlatAppearance.BorderSize = 0;
-            btnProceed.Click += BtnProceed_Click;
-
-            pnlFooter.Controls.Add(btnBack);
-            pnlFooter.Controls.Add(btnProceed);
 
             this.Controls.Add(pnlMain);
             this.Controls.Add(pnlFooter);

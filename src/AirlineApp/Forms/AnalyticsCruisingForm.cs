@@ -59,8 +59,84 @@ namespace AirlineApp.Forms
                 AutoSize = true
             };
 
+            var btnCreditsHeader = new Button
+            {
+                Text = "⭐ SYSTEM CREDITS",
+                Font = new Font("Segoe UI", 9.5F, FontStyle.Bold),
+                ForeColor = Color.White,
+                BackColor = Color.FromArgb(139, 92, 246),
+                FlatStyle = FlatStyle.Flat,
+                Size = new Size(170, 38),
+                Anchor = AnchorStyles.Right | AnchorStyles.Top,
+                Location = new Point(940, 25),
+                Cursor = Cursors.Hand
+            };
+            btnCreditsHeader.FlatAppearance.BorderSize = 0;
+            btnCreditsHeader.Click += (s, e) => FormNavigator.Navigate(this, new MaydayCreditsForm(FlightService.CalculateFullBooking(currentFlight, currentPassenger)));
+
             headerPanel.Controls.Add(lblBadge);
             headerPanel.Controls.Add(lblHeader);
+            headerPanel.Controls.Add(btnCreditsHeader);
+
+            // Footer Navigation
+            var pnlFooter = new Panel
+            {
+                Dock = DockStyle.Bottom,
+                Height = 85,
+                BackColor = Color.FromArgb(30, 41, 59)
+            };
+
+            var btnBack = new Button
+            {
+                Text = "⇦ BACK TO ASCENT",
+                Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                ForeColor = Color.White,
+                BackColor = Color.FromArgb(51, 65, 85),
+                FlatStyle = FlatStyle.Flat,
+                Size = new Size(190, 45),
+                Location = new Point(25, 20),
+                Cursor = Cursors.Hand
+            };
+            btnBack.FlatAppearance.BorderSize = 0;
+            btnBack.Click += (s, e) => FormNavigator.Navigate(this, new BaggageAscentForm(currentFlight, currentPassenger));
+
+            var btnReports = new Button
+            {
+                Text = "EXECUTIVE REPORT BUILDER 📊",
+                Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                ForeColor = Color.White,
+                BackColor = Color.FromArgb(139, 92, 246),
+                FlatStyle = FlatStyle.Flat,
+                Size = new Size(270, 45),
+                Location = new Point(230, 20),
+                Cursor = Cursors.Hand
+            };
+            btnReports.FlatAppearance.BorderSize = 0;
+            btnReports.Click += (s, e) => FormNavigator.Navigate(this, new ReportGenerationForm(FlightService.CalculateFullBooking(currentFlight, currentPassenger)));
+
+            var btnProceed = new Button
+            {
+                Text = "PROCEED TO TOUCHDOWN ➔",
+                Font = new Font("Segoe UI", 10.5F, FontStyle.Bold),
+                ForeColor = Color.White,
+                BackColor = Color.FromArgb(14, 165, 233),
+                FlatStyle = FlatStyle.Flat,
+                Size = new Size(260, 45),
+                Anchor = AnchorStyles.Right | AnchorStyles.Top,
+                Location = new Point(780, 20),
+                Cursor = Cursors.Hand
+            };
+            btnProceed.FlatAppearance.BorderSize = 0;
+            btnProceed.Click += BtnProceed_Click;
+
+            pnlFooter.Resize += (s, e) =>
+            {
+                btnProceed.Location = new Point(pnlFooter.Width - btnProceed.Width - 30, 20);
+            };
+
+            pnlFooter.Controls.Add(btnBack);
+            pnlFooter.Controls.Add(btnReports);
+            pnlFooter.Controls.Add(btnProceed);
 
             // Main Content Layout
             var pnlMain = new TableLayoutPanel
@@ -90,7 +166,7 @@ namespace AirlineApp.Forms
                 Font = new Font("Consolas", 10.5F),
                 ForeColor = Color.FromArgb(56, 189, 248),
                 Location = new Point(20, 35),
-                Size = new Size(410, 380),
+                Size = new Size(410, 360),
                 Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right
             };
 
@@ -122,7 +198,7 @@ namespace AirlineApp.Forms
             pnlChartCanvas = new Panel
             {
                 Location = new Point(20, 35),
-                Size = new Size(500, 380),
+                Size = new Size(500, 360),
                 Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right,
                 BackColor = Color.FromArgb(15, 23, 42),
                 BorderStyle = BorderStyle.FixedSingle
@@ -133,62 +209,6 @@ namespace AirlineApp.Forms
 
             pnlMain.Controls.Add(grpTelemetry, 0, 0);
             pnlMain.Controls.Add(grpChart, 1, 0);
-
-            // Footer Navigation
-            var pnlFooter = new Panel
-            {
-                Dock = DockStyle.Bottom,
-                Height = 90,
-                BackColor = Color.FromArgb(30, 41, 59)
-            };
-
-            var btnBack = new Button
-            {
-                Text = "⇦ BACK TO ASCENT",
-                Font = new Font("Segoe UI", 10F, FontStyle.Bold),
-                ForeColor = Color.White,
-                BackColor = Color.FromArgb(51, 65, 85),
-                FlatStyle = FlatStyle.Flat,
-                Size = new Size(180, 45),
-                Location = new Point(25, 20),
-                Cursor = Cursors.Hand
-            };
-            btnBack.FlatAppearance.BorderSize = 0;
-            btnBack.Click += (s, e) => FormNavigator.Navigate(this, new BaggageAscentForm(currentFlight, currentPassenger));
-
-            var btnReports = new Button
-            {
-                Text = "OPEN EXECUTIVE REPORT BUILDER 📊",
-                Font = new Font("Segoe UI", 10F, FontStyle.Bold),
-                ForeColor = Color.White,
-                BackColor = Color.FromArgb(139, 92, 246),
-                FlatStyle = FlatStyle.Flat,
-                Size = new Size(290, 45),
-                Anchor = AnchorStyles.Right | AnchorStyles.Top,
-                Location = new Point(480, 20),
-                Cursor = Cursors.Hand
-            };
-            btnReports.FlatAppearance.BorderSize = 0;
-            btnReports.Click += (s, e) => FormNavigator.Navigate(this, new ReportGenerationForm(FlightService.CalculateFullBooking(currentFlight, currentPassenger)));
-
-            var btnProceed = new Button
-            {
-                Text = "PROCEED TO TOUCHDOWN ➔",
-                Font = new Font("Segoe UI", 10.5F, FontStyle.Bold),
-                ForeColor = Color.White,
-                BackColor = Color.FromArgb(14, 165, 233),
-                FlatStyle = FlatStyle.Flat,
-                Size = new Size(240, 45),
-                Anchor = AnchorStyles.Right | AnchorStyles.Top,
-                Location = new Point(780, 20),
-                Cursor = Cursors.Hand
-            };
-            btnProceed.FlatAppearance.BorderSize = 0;
-            btnProceed.Click += BtnProceed_Click;
-
-            pnlFooter.Controls.Add(btnBack);
-            pnlFooter.Controls.Add(btnReports);
-            pnlFooter.Controls.Add(btnProceed);
 
             this.Controls.Add(pnlMain);
             this.Controls.Add(pnlFooter);
@@ -203,7 +223,6 @@ namespace AirlineApp.Forms
             int width = pnlChartCanvas.Width;
             int height = pnlChartCanvas.Height;
 
-            // Draw Bar Chart: Seat Occupancy per Flight Route
             string[] routes = { "PK-301", "PK-302", "PA-200", "ER-501", "EK-605", "QR-611" };
             int[] loadFactors = { 88, 75, 92, 64, 98, 82 };
             Color[] barColors = {
@@ -220,7 +239,6 @@ namespace AirlineApp.Forms
             int startX = 50;
             int maxBarHeight = height - 100;
 
-            // Title text
             using (Font fTitle = new Font("Segoe UI", 10F, FontStyle.Bold))
             using (Brush bTitle = new SolidBrush(Color.FromArgb(226, 232, 240)))
             {
@@ -234,13 +252,11 @@ namespace AirlineApp.Forms
                 int x = startX + i * (barWidth + gap);
                 int y = height - 50 - bHeight;
 
-                // Draw Bar
                 using (Brush bBar = new SolidBrush(barColors[i]))
                 {
                     g.FillRectangle(bBar, x, y, barWidth, bHeight);
                 }
 
-                // Draw Label & %
                 using (Font font = new Font("Segoe UI", 8.5F, FontStyle.Bold))
                 using (Brush bText = new SolidBrush(Color.White))
                 {

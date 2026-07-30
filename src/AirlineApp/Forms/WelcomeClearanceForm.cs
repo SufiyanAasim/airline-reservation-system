@@ -32,7 +32,7 @@ namespace AirlineApp.Forms
             this.FormBorderStyle = FormBorderStyle.Sizable;
             this.MaximizeBox = true;
 
-            // Header Banner
+            // Header Banner (Dock = Top)
             var headerPanel = new Panel
             {
                 Dock = DockStyle.Top,
@@ -67,7 +67,7 @@ namespace AirlineApp.Forms
                 ForeColor = Color.White,
                 BackColor = Color.FromArgb(139, 92, 246),
                 FlatStyle = FlatStyle.Flat,
-                Size = new Size(170, 36),
+                Size = new Size(170, 38),
                 Anchor = AnchorStyles.Right | AnchorStyles.Top,
                 Location = new Point(940, 25),
                 Cursor = Cursors.Hand
@@ -84,7 +84,52 @@ namespace AirlineApp.Forms
             headerPanel.Controls.Add(lblHeader);
             headerPanel.Controls.Add(btnCreditsHeader);
 
-            // Main Content Panel (Resizable)
+            // Navigation Bar / Action Button Footer (Dock = Bottom)
+            var pnlFooter = new Panel
+            {
+                Dock = DockStyle.Bottom,
+                Height = 85,
+                BackColor = Color.FromArgb(30, 41, 59)
+            };
+
+            var btnLogout = new Button
+            {
+                Text = "⇦ LOGOUT / PORTAL HOME",
+                Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                ForeColor = Color.White,
+                BackColor = Color.FromArgb(51, 65, 85),
+                FlatStyle = FlatStyle.Flat,
+                Size = new Size(230, 45),
+                Location = new Point(25, 20),
+                Cursor = Cursors.Hand
+            };
+            btnLogout.FlatAppearance.BorderSize = 0;
+            btnLogout.Click += (s, e) => FormNavigator.Navigate(this, new LoginForm());
+
+            var btnProceed = new Button
+            {
+                Text = "PROCEED TO TAXI & SEAT SELECTION ➔",
+                Font = new Font("Segoe UI", 11F, FontStyle.Bold),
+                ForeColor = Color.White,
+                BackColor = Color.FromArgb(14, 165, 233),
+                FlatStyle = FlatStyle.Flat,
+                Size = new Size(340, 45),
+                Anchor = AnchorStyles.Right | AnchorStyles.Top,
+                Location = new Point(760, 20),
+                Cursor = Cursors.Hand
+            };
+            btnProceed.FlatAppearance.BorderSize = 0;
+            btnProceed.Click += BtnProceed_Click;
+
+            pnlFooter.Resize += (s, e) =>
+            {
+                btnProceed.Location = new Point(pnlFooter.Width - btnProceed.Width - 30, 20);
+            };
+
+            pnlFooter.Controls.Add(btnLogout);
+            pnlFooter.Controls.Add(btnProceed);
+
+            // Main Content Panel (Dock = Fill - Must be added after Top & Bottom Docked Panels!)
             var pnlMain = new TableLayoutPanel
             {
                 Dock = DockStyle.Fill,
@@ -154,7 +199,7 @@ namespace AirlineApp.Forms
             pnlFlightDetails = new Panel
             {
                 Location = new Point(20, 115),
-                Size = new Size(460, 320),
+                Size = new Size(460, 300),
                 Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right,
                 BackColor = Color.FromArgb(15, 23, 42),
                 BorderStyle = BorderStyle.FixedSingle
@@ -176,46 +221,10 @@ namespace AirlineApp.Forms
             pnlMain.Controls.Add(grpPassenger, 0, 0);
             pnlMain.Controls.Add(grpFlight, 1, 0);
 
-            // Footer Navigation Bar (Clean Back & Next Action Buttons!)
-            var pnlFooter = new Panel
-            {
-                Dock = DockStyle.Bottom,
-                Height = 85,
-                BackColor = Color.FromArgb(30, 41, 59)
-            };
-
-            var btnLogout = new Button
-            {
-                Text = "⇦ LOGOUT / PORTAL HOME",
-                Font = new Font("Segoe UI", 10F, FontStyle.Bold),
-                ForeColor = Color.White,
-                BackColor = Color.FromArgb(51, 65, 85),
-                FlatStyle = FlatStyle.Flat,
-                Size = new Size(230, 45),
-                Location = new Point(25, 20),
-                Cursor = Cursors.Hand
-            };
-            btnLogout.FlatAppearance.BorderSize = 0;
-            btnLogout.Click += (s, e) => FormNavigator.Navigate(this, new LoginForm());
-
-            var btnProceed = new Button
-            {
-                Text = "PROCEED TO TAXI & SEAT SELECTION ➔",
-                Font = new Font("Segoe UI", 11F, FontStyle.Bold),
-                ForeColor = Color.White,
-                BackColor = Color.FromArgb(14, 165, 233),
-                FlatStyle = FlatStyle.Flat,
-                Size = new Size(340, 45),
-                Anchor = AnchorStyles.Right | AnchorStyles.Top,
-                Location = new Point(760, 20),
-                Cursor = Cursors.Hand
-            };
-            btnProceed.FlatAppearance.BorderSize = 0;
-            btnProceed.Click += BtnProceed_Click;
-
-            pnlFooter.Controls.Add(btnLogout);
-            pnlFooter.Controls.Add(btnProceed);
-
+            // Correct Z-Order for WinForms Docking Layout:
+            // 1. Header (Top)
+            // 2. Footer (Bottom)
+            // 3. Main (Fill)
             this.Controls.Add(pnlMain);
             this.Controls.Add(pnlFooter);
             this.Controls.Add(headerPanel);
@@ -246,7 +255,7 @@ namespace AirlineApp.Forms
             };
             parent.Controls.Add(lbl);
             parent.Controls.Add(txt);
-            y += 70;
+            y += 68;
         }
 
         private void ComboFlights_SelectedIndexChanged(object? sender, EventArgs e)
