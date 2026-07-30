@@ -13,12 +13,12 @@ namespace AirlineApp.Forms
         private TextBox txtPassport = null!;
         private TextBox txtPhone = null!;
         private TextBox txtEmail = null!;
-        private Panel pnlFlightDetails = null!;
         private Label lblRouteDetails = null!;
 
         public WelcomeClearanceForm()
         {
             InitializeComponent();
+            IconHelper.ApplyIcon(this);
         }
 
         private void InitializeComponent()
@@ -27,7 +27,7 @@ namespace AirlineApp.Forms
             this.Size = new Size(1150, 750);
             this.WindowState = FormWindowState.Maximized;
             this.StartPosition = FormStartPosition.CenterScreen;
-            this.BackColor = Color.FromArgb(15, 23, 42); // Navy
+            this.BackColor = Color.FromArgb(15, 23, 42);
             this.ForeColor = Color.White;
             this.FormBorderStyle = FormBorderStyle.Sizable;
             this.MaximizeBox = true;
@@ -129,7 +129,7 @@ namespace AirlineApp.Forms
             pnlFooter.Controls.Add(btnLogout);
             pnlFooter.Controls.Add(btnProceed);
 
-            // Main Content Panel (Dock = Fill - Must be added after Top & Bottom Docked Panels!)
+            // Main Content Panel (Dock = Fill)
             var pnlMain = new TableLayoutPanel
             {
                 Dock = DockStyle.Fill,
@@ -149,6 +149,7 @@ namespace AirlineApp.Forms
                 ForeColor = Color.FromArgb(148, 163, 184),
                 Dock = DockStyle.Fill,
                 Margin = new Padding(0, 0, 15, 0),
+                Padding = new Padding(20),
                 BackColor = Color.FromArgb(30, 41, 59)
             };
 
@@ -166,6 +167,13 @@ namespace AirlineApp.Forms
                 ForeColor = Color.FromArgb(148, 163, 184),
                 Dock = DockStyle.Fill,
                 Margin = new Padding(15, 0, 0, 0),
+                Padding = new Padding(20),
+                BackColor = Color.FromArgb(30, 41, 59)
+            };
+
+            var pnlFlightContainer = new Panel
+            {
+                Dock = DockStyle.Fill,
                 BackColor = Color.FromArgb(30, 41, 59)
             };
 
@@ -174,16 +182,15 @@ namespace AirlineApp.Forms
                 Text = "Select Available Flight:",
                 Font = new Font("Segoe UI", 10F, FontStyle.Bold),
                 ForeColor = Color.FromArgb(226, 232, 240),
-                Location = new Point(20, 35),
-                AutoSize = true
+                Dock = DockStyle.Top,
+                Height = 25
             };
 
             comboFlights = new ComboBox
             {
-                Location = new Point(20, 65),
-                Size = new Size(460, 30),
-                Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right,
-                Font = new Font("Segoe UI", 10F),
+                Dock = DockStyle.Top,
+                Height = 32,
+                Font = new Font("Segoe UI", 10.5F),
                 DropDownStyle = ComboBoxStyle.DropDownList,
                 BackColor = Color.FromArgb(15, 23, 42),
                 ForeColor = Color.White
@@ -196,35 +203,36 @@ namespace AirlineApp.Forms
             comboFlights.SelectedIndex = 0;
             comboFlights.SelectedIndexChanged += ComboFlights_SelectedIndexChanged;
 
-            pnlFlightDetails = new Panel
+            // Spacing label
+            var pnlSpacer = new Panel { Dock = DockStyle.Top, Height = 15, BackColor = Color.Transparent };
+
+            // Details Container (STRETCHES FULLY TO FILL RIGHT GROUPBOX!)
+            var pnlFlightDetails = new Panel
             {
-                Location = new Point(20, 115),
-                Size = new Size(460, 300),
-                Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right,
+                Dock = DockStyle.Fill,
                 BackColor = Color.FromArgb(15, 23, 42),
-                BorderStyle = BorderStyle.FixedSingle
+                BorderStyle = BorderStyle.FixedSingle,
+                Padding = new Padding(20)
             };
 
             lblRouteDetails = new Label
             {
                 Dock = DockStyle.Fill,
-                Font = new Font("Consolas", 11F),
-                ForeColor = Color.FromArgb(56, 189, 248),
-                Padding = new Padding(15)
+                Font = new Font("Consolas", 11.5F),
+                ForeColor = Color.FromArgb(56, 189, 248)
             };
             pnlFlightDetails.Controls.Add(lblRouteDetails);
 
-            grpFlight.Controls.Add(lblSelectFlight);
-            grpFlight.Controls.Add(comboFlights);
-            grpFlight.Controls.Add(pnlFlightDetails);
+            pnlFlightContainer.Controls.Add(pnlFlightDetails);
+            pnlFlightContainer.Controls.Add(pnlSpacer);
+            pnlFlightContainer.Controls.Add(comboFlights);
+            pnlFlightContainer.Controls.Add(lblSelectFlight);
+
+            grpFlight.Controls.Add(pnlFlightContainer);
 
             pnlMain.Controls.Add(grpPassenger, 0, 0);
             pnlMain.Controls.Add(grpFlight, 1, 0);
 
-            // Correct Z-Order for WinForms Docking Layout:
-            // 1. Header (Top)
-            // 2. Footer (Bottom)
-            // 3. Main (Fill)
             this.Controls.Add(pnlMain);
             this.Controls.Add(pnlFooter);
             this.Controls.Add(headerPanel);
@@ -237,7 +245,7 @@ namespace AirlineApp.Forms
             var lbl = new Label
             {
                 Text = labelText,
-                Font = new Font("Segoe UI", 9.5F, FontStyle.Bold),
+                Font = new Font("Segoe UI", 10F, FontStyle.Bold),
                 ForeColor = Color.FromArgb(226, 232, 240),
                 Location = new Point(20, y),
                 AutoSize = true
@@ -245,9 +253,9 @@ namespace AirlineApp.Forms
             txt = new TextBox
             {
                 Text = defaultVal,
-                Font = new Font("Segoe UI", 10.5F),
-                Location = new Point(20, y + 24),
-                Size = new Size(410, 30),
+                Font = new Font("Segoe UI", 11F),
+                Location = new Point(20, y + 26),
+                Size = new Size( parent.Width - 40, 32),
                 Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right,
                 BackColor = Color.FromArgb(15, 23, 42),
                 ForeColor = Color.White,
@@ -255,7 +263,7 @@ namespace AirlineApp.Forms
             };
             parent.Controls.Add(lbl);
             parent.Controls.Add(txt);
-            y += 68;
+            y += 72;
         }
 
         private void ComboFlights_SelectedIndexChanged(object? sender, EventArgs e)
@@ -268,15 +276,15 @@ namespace AirlineApp.Forms
             if (comboFlights.SelectedItem is Flight f)
             {
                 lblRouteDetails.Text = 
-                    $"AIRLINE      : {f.Airline}\n" +
-                    $"FLIGHT NO    : {f.FlightNumber}\n" +
-                    $"ORIGIN       : {f.Origin} ({f.OriginCode})\n" +
-                    $"DESTINATION  : {f.Destination} ({f.DestinationCode})\n" +
-                    $"DEPARTURE    : {f.DepartureTime}\n" +
-                    $"AIRCRAFT     : {f.AircraftType}\n" +
-                    $"DISTANCE     : {f.DistanceKm} KM\n" +
-                    $"BASE FARE    : ${f.BaseFare:F2}\n" +
-                    $"CLEARANCE    : APPROVED / READY FOR TAXI";
+                    $"AIRLINE OPERATOR : {f.Airline}\n\n" +
+                    $"FLIGHT NUMBER    : {f.FlightNumber}\n\n" +
+                    $"ORIGIN DEPARTURE : {f.Origin} ({f.OriginCode})\n\n" +
+                    $"DESTINATION      : {f.Destination} ({f.DestinationCode})\n\n" +
+                    $"SCHEDULED DEPART : {f.DepartureTime}\n\n" +
+                    $"AIRCRAFT MODEL   : {f.AircraftType}\n\n" +
+                    $"FLIGHT DISTANCE  : {f.DistanceKm} KM\n\n" +
+                    $"BASE FARE RATE   : ${f.BaseFare:F2}\n\n" +
+                    $"DEPART CLEARANCE : APPROVED / READY FOR TAXI";
             }
         }
 

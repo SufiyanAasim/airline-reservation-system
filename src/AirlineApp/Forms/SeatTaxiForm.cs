@@ -21,6 +21,7 @@ namespace AirlineApp.Forms
             this.currentFlight = flight;
             this.currentPassenger = passenger;
             InitializeComponent();
+            IconHelper.ApplyIcon(this);
         }
 
         private void InitializeComponent()
@@ -34,7 +35,7 @@ namespace AirlineApp.Forms
             this.FormBorderStyle = FormBorderStyle.Sizable;
             this.MaximizeBox = true;
 
-            // Header Banner (Dock = Top)
+            // Header Banner
             var headerPanel = new Panel
             {
                 Dock = DockStyle.Top,
@@ -81,7 +82,7 @@ namespace AirlineApp.Forms
             headerPanel.Controls.Add(lblHeader);
             headerPanel.Controls.Add(btnCreditsHeader);
 
-            // Footer Navigation (Dock = Bottom)
+            // Footer Navigation
             var pnlFooter = new Panel
             {
                 Dock = DockStyle.Bottom,
@@ -126,7 +127,7 @@ namespace AirlineApp.Forms
             pnlFooter.Controls.Add(btnBack);
             pnlFooter.Controls.Add(btnProceed);
 
-            // Main Layout Container (Dock = Fill)
+            // Main Layout Container
             var pnlMain = new TableLayoutPanel
             {
                 Dock = DockStyle.Fill,
@@ -146,15 +147,16 @@ namespace AirlineApp.Forms
                 ForeColor = Color.FromArgb(148, 163, 184),
                 Dock = DockStyle.Fill,
                 Margin = new Padding(0, 0, 15, 0),
+                Padding = new Padding(20),
                 BackColor = Color.FromArgb(30, 41, 59)
             };
 
             var rbEconomy = new RadioButton
             {
                 Text = "Economy Class (1.0x Base Fare)",
-                Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                Font = new Font("Segoe UI", 10.5F, FontStyle.Bold),
                 ForeColor = Color.FromArgb(226, 232, 240),
-                Location = new Point(25, 40),
+                Location = new Point(25, 35),
                 AutoSize = true,
                 Checked = true
             };
@@ -163,9 +165,9 @@ namespace AirlineApp.Forms
             var rbBusiness = new RadioButton
             {
                 Text = "Business Class (1.85x Base Fare)",
-                Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                Font = new Font("Segoe UI", 10.5F, FontStyle.Bold),
                 ForeColor = Color.FromArgb(56, 189, 248),
-                Location = new Point(25, 80),
+                Location = new Point(25, 75),
                 AutoSize = true
             };
             rbBusiness.CheckedChanged += (s, e) => { if (rbBusiness.Checked) SetCabin(CabinClass.Business); };
@@ -173,9 +175,9 @@ namespace AirlineApp.Forms
             var rbFirst = new RadioButton
             {
                 Text = "First Class (3.20x Base Fare)",
-                Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                Font = new Font("Segoe UI", 10.5F, FontStyle.Bold),
                 ForeColor = Color.FromArgb(251, 191, 36),
-                Location = new Point(25, 120),
+                Location = new Point(25, 115),
                 AutoSize = true
             };
             rbFirst.CheckedChanged += (s, e) => { if (rbFirst.Checked) SetCabin(CabinClass.FirstClass); };
@@ -186,23 +188,21 @@ namespace AirlineApp.Forms
 
             lblSelectedSeatDisplay = new Label
             {
-                Text = $"SELECTED SEAT : {selectedSeat}\nPASSENGER     : {currentPassenger.FullName}\nDESTINATION   : {currentFlight.Destination}",
-                Font = new Font("Consolas", 11F),
+                Font = new Font("Consolas", 11.5F),
                 ForeColor = Color.FromArgb(14, 165, 233),
-                Location = new Point(25, 175),
-                Size = new Size(400, 85),
+                Location = new Point(25, 170),
+                Size = new Size(420, 100),
                 Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right
             };
             grpCabin.Controls.Add(lblSelectedSeatDisplay);
 
             lblFarePreview = new Label
             {
-                Text = $"BASE FARE   : ${currentFlight.BaseFare:F2}\nCABIN SURCHARGE: $0.00\nCURRENT TOTAL: ${currentFlight.BaseFare:F2}",
-                Font = new Font("Consolas", 11F, FontStyle.Bold),
+                Font = new Font("Consolas", 11.5F, FontStyle.Bold),
                 ForeColor = Color.FromArgb(16, 185, 129),
-                Location = new Point(25, 275),
-                Size = new Size(400, 110),
-                Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right
+                Location = new Point(25, 280),
+                Size = new Size(420, 140),
+                Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right
             };
             grpCabin.Controls.Add(lblFarePreview);
 
@@ -214,15 +214,15 @@ namespace AirlineApp.Forms
                 ForeColor = Color.FromArgb(148, 163, 184),
                 Dock = DockStyle.Fill,
                 Margin = new Padding(15, 0, 0, 0),
+                Padding = new Padding(20),
                 BackColor = Color.FromArgb(30, 41, 59)
             };
 
             var pnlGrid = new Panel
             {
-                Location = new Point(20, 35),
-                Size = new Size(500, 380),
-                Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right,
-                BackColor = Color.FromArgb(15, 23, 42)
+                Dock = DockStyle.Fill,
+                BackColor = Color.FromArgb(15, 23, 42),
+                Padding = new Padding(20)
             };
 
             string[] rowLetters = { "A", "B", "C", "D" };
@@ -237,9 +237,9 @@ namespace AirlineApp.Forms
                     var btnSeat = new Button
                     {
                         Text = seatName,
-                        Font = new Font("Segoe UI", 9.5F, FontStyle.Bold),
-                        Size = new Size(68, 46),
-                        Location = new Point(30 + c * 85 + (c >= 2 ? 40 : 0), 20 + (r - 1) * 58),
+                        Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                        Size = new Size(72, 48),
+                        Location = new Point(40 + c * 90 + (c >= 2 ? 45 : 0), 25 + (r - 1) * 60),
                         Tag = seatName,
                         Cursor = isOccupied ? Cursors.No : Cursors.Hand,
                         Enabled = !isOccupied
@@ -321,8 +321,8 @@ namespace AirlineApp.Forms
             decimal cabinSurcharge = currentFlight.BaseFare * (mult - 1.0m);
             decimal total = currentFlight.BaseFare + cabinSurcharge;
 
-            lblSelectedSeatDisplay.Text = $"SELECTED SEAT : {selectedSeat}\nPASSENGER     : {currentPassenger.FullName}\nCABIN CLASS   : {selectedCabin}";
-            lblFarePreview.Text = $"BASE FARE       : ${currentFlight.BaseFare:F2}\nCABIN SURCHARGE : ${cabinSurcharge:F2}\nSUBTOTAL FARE   : ${total:F2}";
+            lblSelectedSeatDisplay.Text = $"SELECTED SEAT : {selectedSeat}\n\nPASSENGER     : {currentPassenger.FullName}\n\nCABIN CLASS   : {selectedCabin}";
+            lblFarePreview.Text = $"BASE FARE       : ${currentFlight.BaseFare:F2}\n\nCABIN SURCHARGE : ${cabinSurcharge:F2}\n\nSUBTOTAL FARE   : ${total:F2}";
         }
 
         private void BtnProceed_Click(object? sender, EventArgs e)
