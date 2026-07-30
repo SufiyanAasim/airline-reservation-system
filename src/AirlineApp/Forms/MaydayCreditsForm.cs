@@ -1,6 +1,7 @@
 namespace AirlineApp.Forms
 {
     using System;
+    using System.Diagnostics;
     using System.Drawing;
     using System.Windows.Forms;
     using AirlineApp.Models;
@@ -17,6 +18,7 @@ namespace AirlineApp.Forms
         {
             this.currentBooking = booking;
             InitializeComponent();
+            IconHelper.ApplyIcon(this);
         }
 
         private void InitializeComponent()
@@ -61,7 +63,7 @@ namespace AirlineApp.Forms
             headerPanel.Controls.Add(lblBadge);
             headerPanel.Controls.Add(lblHeader);
 
-            // Main Content TableLayoutPanel (Stretches smoothly in Maximized mode!)
+            // Main Content TableLayoutPanel
             var pnlMain = new TableLayoutPanel
             {
                 Dock = DockStyle.Fill,
@@ -70,8 +72,8 @@ namespace AirlineApp.Forms
                 Padding = new Padding(25, 15, 25, 15),
                 BackColor = Color.FromArgb(15, 23, 42)
             };
-            pnlMain.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 48F));
-            pnlMain.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 52F));
+            pnlMain.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 45F));
+            pnlMain.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 55F));
 
             // Left Panel: Mayday Emergency Control
             var grpMayday = new GroupBox
@@ -81,13 +83,13 @@ namespace AirlineApp.Forms
                 ForeColor = Color.FromArgb(244, 63, 94),
                 Dock = DockStyle.Fill,
                 Margin = new Padding(0, 0, 15, 0),
+                Padding = new Padding(15),
                 BackColor = Color.FromArgb(30, 41, 59)
             };
 
             var pnlMaydayInner = new Panel
             {
                 Dock = DockStyle.Fill,
-                Padding = new Padding(15),
                 BackColor = Color.FromArgb(30, 41, 59)
             };
 
@@ -128,72 +130,54 @@ namespace AirlineApp.Forms
             pnlMaydayInner.Controls.Add(btnTriggerMayday);
             grpMayday.Controls.Add(pnlMaydayInner);
 
-            // Right Panel: Project Credits & Standalone Author
+            // Right Panel: Project Contributors with Clickable Buttons!
             var grpCredits = new GroupBox
             {
-                Text = "System Author & Architecture Credits",
+                Text = "System Author & Contributors",
                 Font = new Font("Segoe UI", 10.5F, FontStyle.Bold),
                 ForeColor = Color.FromArgb(148, 163, 184),
                 Dock = DockStyle.Fill,
                 Margin = new Padding(15, 0, 0, 0),
+                Padding = new Padding(15),
                 BackColor = Color.FromArgb(30, 41, 59)
             };
 
-            var pnlCreditsInner = new Panel
+            var pnlCreditsContainer = new TableLayoutPanel
             {
                 Dock = DockStyle.Fill,
-                Padding = new Padding(20),
+                RowCount = 2,
+                ColumnCount = 1,
                 BackColor = Color.FromArgb(30, 41, 59)
             };
+            pnlCreditsContainer.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
+            pnlCreditsContainer.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
 
-            var pnlContribCard = new Panel
-            {
-                Dock = DockStyle.Fill,
-                BackColor = Color.FromArgb(15, 23, 42),
-                Padding = new Padding(25),
-                BorderStyle = BorderStyle.FixedSingle
-            };
+            // Card 1: Mohammad Sufiyan Aasim
+            var card1 = CreateContributorCard(
+                "Mohammad Sufiyan Aasim",
+                "System Architect · AI/MLOps · Docs",
+                "https://github.com/SufiyanAasim",
+                "sufiyanaasim@outlook.com",
+                Color.FromArgb(14, 165, 233)
+            );
 
-            var lblContribName = new Label
-            {
-                Text = "Mohammad Sufiyan Aasim",
-                Font = new Font("Segoe UI", 18F, FontStyle.Bold),
-                ForeColor = Color.FromArgb(14, 165, 233),
-                Dock = DockStyle.Top,
-                Height = 45,
-                AutoSize = false
-            };
+            // Card 2: Fahad Bin Nasir
+            var card2 = CreateContributorCard(
+                "Fahad Bin Nasir",
+                "Front-end Development",
+                "https://github.com/FahadBinNasir",
+                "fahadbinnasir@outlook.com",
+                Color.FromArgb(16, 185, 129)
+            );
 
-            var lblContribRole = new Label
-            {
-                Text = "Sole System Architect & Lead Developer\nAI/MLOps · Full-Stack C# WinForms Engineer\n\nGitHub Profile : github.com/SufiyanAasim\nEmail Contact  : sufiyanaasim@outlook.com",
-                Font = new Font("Segoe UI", 11.5F),
-                ForeColor = Color.FromArgb(226, 232, 240),
-                Dock = DockStyle.Fill,
-                AutoSize = false
-            };
-
-            var lblTechDetails = new Label
-            {
-                Text = "Built with C# & .NET 8.0 Windows Desktop Framework\nTheme: Aviation & Flight Phases (v1.0.0 to v6.0.0)\nMIT License © 2023-2026 Airline Reservation System Contributors",
-                Font = new Font("Segoe UI", 10F, FontStyle.Italic),
-                ForeColor = Color.FromArgb(148, 163, 184),
-                Dock = DockStyle.Bottom,
-                Height = 60,
-                TextAlign = ContentAlignment.MiddleCenter
-            };
-
-            pnlContribCard.Controls.Add(lblContribRole);
-            pnlContribCard.Controls.Add(lblContribName);
-            pnlContribCard.Controls.Add(lblTechDetails);
-
-            pnlCreditsInner.Controls.Add(pnlContribCard);
-            grpCredits.Controls.Add(pnlCreditsInner);
+            pnlCreditsContainer.Controls.Add(card1, 0, 0);
+            pnlCreditsContainer.Controls.Add(card2, 0, 1);
+            grpCredits.Controls.Add(pnlCreditsContainer);
 
             pnlMain.Controls.Add(grpMayday, 0, 0);
             pnlMain.Controls.Add(grpCredits, 1, 0);
 
-            // Footer Navigation (Clean Back / Next buttons!)
+            // Footer Navigation Bar
             var pnlFooter = new Panel
             {
                 Dock = DockStyle.Bottom,
@@ -230,12 +214,109 @@ namespace AirlineApp.Forms
             btnRestart.FlatAppearance.BorderSize = 0;
             btnRestart.Click += (s, e) => FormNavigator.Navigate(this, new WelcomeClearanceForm());
 
+            pnlFooter.Resize += (s, e) =>
+            {
+                btnRestart.Location = new Point(pnlFooter.Width - btnRestart.Width - 30, 20);
+            };
+
             pnlFooter.Controls.Add(btnBack);
             pnlFooter.Controls.Add(btnRestart);
 
             this.Controls.Add(pnlMain);
             this.Controls.Add(pnlFooter);
             this.Controls.Add(headerPanel);
+        }
+
+        private Panel CreateContributorCard(string name, string role, string githubUrl, string email, Color accentColor)
+        {
+            var pnl = new Panel
+            {
+                Dock = DockStyle.Fill,
+                BackColor = Color.FromArgb(15, 23, 42),
+                Padding = new Padding(15),
+                Margin = new Padding(0, 5, 0, 5),
+                BorderStyle = BorderStyle.FixedSingle
+            };
+
+            var lblName = new Label
+            {
+                Text = name,
+                Font = new Font("Segoe UI", 14F, FontStyle.Bold),
+                ForeColor = accentColor,
+                Dock = DockStyle.Top,
+                Height = 30
+            };
+
+            var lblRole = new Label
+            {
+                Text = role,
+                Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                ForeColor = Color.FromArgb(226, 232, 240),
+                Dock = DockStyle.Top,
+                Height = 25
+            };
+
+            var pnlButtons = new FlowLayoutPanel
+            {
+                Dock = DockStyle.Fill,
+                FlowDirection = FlowDirection.LeftToRight,
+                Padding = new Padding(0, 10, 0, 0)
+            };
+
+            var btnGithub = new Button
+            {
+                Text = "🌐 GITHUB PROFILE",
+                Font = new Font("Segoe UI", 9.5F, FontStyle.Bold),
+                ForeColor = Color.White,
+                BackColor = Color.FromArgb(30, 41, 59),
+                FlatStyle = FlatStyle.Flat,
+                Size = new Size(185, 36),
+                Margin = new Padding(0, 0, 10, 0),
+                Cursor = Cursors.Hand
+            };
+            btnGithub.FlatAppearance.BorderSize = 1;
+            btnGithub.FlatAppearance.BorderColor = accentColor;
+            btnGithub.Click += (s, e) => OpenUrl(githubUrl);
+
+            var btnEmail = new Button
+            {
+                Text = "✉️ EMAIL CONTACT",
+                Font = new Font("Segoe UI", 9.5F, FontStyle.Bold),
+                ForeColor = Color.White,
+                BackColor = Color.FromArgb(30, 41, 59),
+                FlatStyle = FlatStyle.Flat,
+                Size = new Size(185, 36),
+                Cursor = Cursors.Hand
+            };
+            btnEmail.FlatAppearance.BorderSize = 1;
+            btnEmail.FlatAppearance.BorderColor = Color.FromArgb(148, 163, 184);
+            btnEmail.Click += (s, e) => OpenUrl($"mailto:{email}");
+
+            pnlButtons.Controls.Add(btnGithub);
+            pnlButtons.Controls.Add(btnEmail);
+
+            pnl.Controls.Add(pnlButtons);
+            pnl.Controls.Add(lblRole);
+            pnl.Controls.Add(lblName);
+
+            return pnl;
+        }
+
+        private void OpenUrl(string url)
+        {
+            try
+            {
+                SoundHelper.PlayTap();
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = url,
+                    UseShellExecute = true
+                });
+            }
+            catch (Exception ex)
+            {
+                CustomMessageBox.Show("LINK OPEN ERROR", ex.Message, true);
+            }
         }
 
         private void BtnTriggerMayday_Click(object? sender, EventArgs e)

@@ -52,7 +52,7 @@ Registers passengers, manages interactive 2-2 aircraft seating, calculates bagga
 
 ### 🚨 Mayday Emergency Protocol
 - Emergency Squawk 7700 flight abort trigger and real-time aircraft health telemetry
-- Solo project contributor credits section
+- Project author credits section
 
 ---
 
@@ -121,7 +121,7 @@ The app saves travel history to `<app directory>/Airline Reservation History/`. 
 ```
 airline-reservation-system/
 ├── .github/                # CI/CD workflows, issue/PR templates
-├── assets/                 # Application branding logo
+├── assets/                 # Application branding logo and icons
 ├── docs/
 │   ├── Architecture.md
 │   ├── Database.md
@@ -137,7 +137,7 @@ airline-reservation-system/
 │       ├── Program.cs
 │       ├── Forms/           # 8 Aviation phase forms and custom dialogs
 │       ├── Models/          # Flight, Passenger, Booking, User, Analytics models
-│       ├── Services/        # FlightService, AuthService, BookingHistoryService, FormNavigator
+│       ├── Services/        # FlightService, AuthService, BookingHistoryService, FormNavigator, IconHelper
 │       └── Resources/       # Embedded app icon and logo assets
 ├── tests/                    # Testing guidance
 ├── CHANGELOG.md
@@ -190,16 +190,23 @@ This is a fully offline, single-user desktop app — no network calls, no extern
 
 ---
 
-## 👤 Standalone Contributor
+## 🤝 Contributors
 
 <table>
   <tr>
     <td align="center">
       <a href="https://github.com/SufiyanAasim">
-        <img src="https://github.com/SufiyanAasim.png" width="80" alt="SufiyanAasim"/><br/>
+        <img src="https://github.com/SufiyanAasim.png" width="72" alt="SufiyanAasim"/><br/>
         <sub><b>Mohammad Sufiyan Aasim</b></sub>
       </a><br/>
-      <sub>Sole System Architect & Developer</sub>
+      <sub>System Architect · AI/MLOps · Docs</sub>
+    </td>
+    <td align="center">
+      <a href="https://github.com/FahadBinNasir">
+        <img src="https://github.com/FahadBinNasir.png" width="72" alt="FahadBinNasir"/><br/>
+        <sub><b>Fahad Bin Nasir</b></sub>
+      </a><br/>
+      <sub>Front-end Development</sub>
     </td>
   </tr>
 </table>
