@@ -130,10 +130,10 @@ namespace AirlineApp.Forms
             pnlMaydayInner.Controls.Add(btnTriggerMayday);
             grpMayday.Controls.Add(pnlMaydayInner);
 
-            // Right Panel: Project Contributors with Clickable Buttons!
+            // Right Panel: Project Author Credits
             var grpCredits = new GroupBox
             {
-                Text = "System Author & Contributors",
+                Text = "System Author & Architecture Credits",
                 Font = new Font("Segoe UI", 10.5F, FontStyle.Bold),
                 ForeColor = Color.FromArgb(148, 163, 184),
                 Dock = DockStyle.Fill,
@@ -142,37 +142,96 @@ namespace AirlineApp.Forms
                 BackColor = Color.FromArgb(30, 41, 59)
             };
 
-            var pnlCreditsContainer = new TableLayoutPanel
+            var pnlCreditsInner = new Panel
             {
                 Dock = DockStyle.Fill,
-                RowCount = 2,
-                ColumnCount = 1,
+                Padding = new Padding(20),
                 BackColor = Color.FromArgb(30, 41, 59)
             };
-            pnlCreditsContainer.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
-            pnlCreditsContainer.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
 
-            // Card 1: Mohammad Sufiyan Aasim
-            var card1 = CreateContributorCard(
-                "Mohammad Sufiyan Aasim",
-                "System Architect · AI/MLOps · Docs",
-                "https://github.com/SufiyanAasim",
-                "sufiyanaasim@outlook.com",
-                Color.FromArgb(14, 165, 233)
-            );
+            var pnlContribCard = new Panel
+            {
+                Dock = DockStyle.Fill,
+                BackColor = Color.FromArgb(15, 23, 42),
+                Padding = new Padding(25),
+                BorderStyle = BorderStyle.FixedSingle
+            };
 
-            // Card 2: Fahad Bin Nasir
-            var card2 = CreateContributorCard(
-                "Fahad Bin Nasir",
-                "Front-end Development",
-                "https://github.com/FahadBinNasir",
-                "fahadbinnasir@outlook.com",
-                Color.FromArgb(16, 185, 129)
-            );
+            var lblContribName = new Label
+            {
+                Text = "Mohammad Sufiyan Aasim",
+                Font = new Font("Segoe UI", 20F, FontStyle.Bold),
+                ForeColor = Color.FromArgb(14, 165, 233),
+                Dock = DockStyle.Top,
+                Height = 45
+            };
 
-            pnlCreditsContainer.Controls.Add(card1, 0, 0);
-            pnlCreditsContainer.Controls.Add(card2, 0, 1);
-            grpCredits.Controls.Add(pnlCreditsContainer);
+            var lblContribRole = new Label
+            {
+                Text = "System Architect · AI/MLOps · Docs\nFull-Stack C# .NET Desktop Engineer",
+                Font = new Font("Segoe UI", 12F, FontStyle.Bold),
+                ForeColor = Color.FromArgb(226, 232, 240),
+                Dock = DockStyle.Top,
+                Height = 60
+            };
+
+            var pnlButtons = new FlowLayoutPanel
+            {
+                Dock = DockStyle.Top,
+                Height = 55,
+                FlowDirection = FlowDirection.LeftToRight,
+                Padding = new Padding(0, 10, 0, 0)
+            };
+
+            var btnGithub = new Button
+            {
+                Text = "🌐 GITHUB PROFILE",
+                Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                ForeColor = Color.White,
+                BackColor = Color.FromArgb(30, 41, 59),
+                FlatStyle = FlatStyle.Flat,
+                Size = new Size(200, 40),
+                Margin = new Padding(0, 0, 15, 0),
+                Cursor = Cursors.Hand
+            };
+            btnGithub.FlatAppearance.BorderSize = 1;
+            btnGithub.FlatAppearance.BorderColor = Color.FromArgb(14, 165, 233);
+            btnGithub.Click += (s, e) => OpenUrl("https://github.com/SufiyanAasim");
+
+            var btnEmail = new Button
+            {
+                Text = "✉️ EMAIL CONTACT",
+                Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                ForeColor = Color.White,
+                BackColor = Color.FromArgb(30, 41, 59),
+                FlatStyle = FlatStyle.Flat,
+                Size = new Size(200, 40),
+                Cursor = Cursors.Hand
+            };
+            btnEmail.FlatAppearance.BorderSize = 1;
+            btnEmail.FlatAppearance.BorderColor = Color.FromArgb(16, 185, 129);
+            btnEmail.Click += (s, e) => OpenUrl("mailto:sufiyanaasim@outlook.com");
+
+            pnlButtons.Controls.Add(btnGithub);
+            pnlButtons.Controls.Add(btnEmail);
+
+            var lblTechDetails = new Label
+            {
+                Text = "Built with C# & .NET 8.0 Windows Desktop Framework\nTheme: Aviation & Flight Phases (v1.0.0 to v6.0.0)\nMIT License © 2023-2026 Airline Reservation System Contributors",
+                Font = new Font("Segoe UI", 10F, FontStyle.Italic),
+                ForeColor = Color.FromArgb(148, 163, 184),
+                Dock = DockStyle.Bottom,
+                Height = 70,
+                TextAlign = ContentAlignment.MiddleCenter
+            };
+
+            pnlContribCard.Controls.Add(lblTechDetails);
+            pnlContribCard.Controls.Add(pnlButtons);
+            pnlContribCard.Controls.Add(lblContribRole);
+            pnlContribCard.Controls.Add(lblContribName);
+
+            pnlCreditsInner.Controls.Add(pnlContribCard);
+            grpCredits.Controls.Add(pnlCreditsInner);
 
             pnlMain.Controls.Add(grpMayday, 0, 0);
             pnlMain.Controls.Add(grpCredits, 1, 0);
@@ -225,81 +284,6 @@ namespace AirlineApp.Forms
             this.Controls.Add(pnlMain);
             this.Controls.Add(pnlFooter);
             this.Controls.Add(headerPanel);
-        }
-
-        private Panel CreateContributorCard(string name, string role, string githubUrl, string email, Color accentColor)
-        {
-            var pnl = new Panel
-            {
-                Dock = DockStyle.Fill,
-                BackColor = Color.FromArgb(15, 23, 42),
-                Padding = new Padding(15),
-                Margin = new Padding(0, 5, 0, 5),
-                BorderStyle = BorderStyle.FixedSingle
-            };
-
-            var lblName = new Label
-            {
-                Text = name,
-                Font = new Font("Segoe UI", 14F, FontStyle.Bold),
-                ForeColor = accentColor,
-                Dock = DockStyle.Top,
-                Height = 30
-            };
-
-            var lblRole = new Label
-            {
-                Text = role,
-                Font = new Font("Segoe UI", 10F, FontStyle.Bold),
-                ForeColor = Color.FromArgb(226, 232, 240),
-                Dock = DockStyle.Top,
-                Height = 25
-            };
-
-            var pnlButtons = new FlowLayoutPanel
-            {
-                Dock = DockStyle.Fill,
-                FlowDirection = FlowDirection.LeftToRight,
-                Padding = new Padding(0, 10, 0, 0)
-            };
-
-            var btnGithub = new Button
-            {
-                Text = "🌐 GITHUB PROFILE",
-                Font = new Font("Segoe UI", 9.5F, FontStyle.Bold),
-                ForeColor = Color.White,
-                BackColor = Color.FromArgb(30, 41, 59),
-                FlatStyle = FlatStyle.Flat,
-                Size = new Size(185, 36),
-                Margin = new Padding(0, 0, 10, 0),
-                Cursor = Cursors.Hand
-            };
-            btnGithub.FlatAppearance.BorderSize = 1;
-            btnGithub.FlatAppearance.BorderColor = accentColor;
-            btnGithub.Click += (s, e) => OpenUrl(githubUrl);
-
-            var btnEmail = new Button
-            {
-                Text = "✉️ EMAIL CONTACT",
-                Font = new Font("Segoe UI", 9.5F, FontStyle.Bold),
-                ForeColor = Color.White,
-                BackColor = Color.FromArgb(30, 41, 59),
-                FlatStyle = FlatStyle.Flat,
-                Size = new Size(185, 36),
-                Cursor = Cursors.Hand
-            };
-            btnEmail.FlatAppearance.BorderSize = 1;
-            btnEmail.FlatAppearance.BorderColor = Color.FromArgb(148, 163, 184);
-            btnEmail.Click += (s, e) => OpenUrl($"mailto:{email}");
-
-            pnlButtons.Controls.Add(btnGithub);
-            pnlButtons.Controls.Add(btnEmail);
-
-            pnl.Controls.Add(pnlButtons);
-            pnl.Controls.Add(lblRole);
-            pnl.Controls.Add(lblName);
-
-            return pnl;
         }
 
         private void OpenUrl(string url)
