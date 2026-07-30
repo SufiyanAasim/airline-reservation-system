@@ -61,7 +61,7 @@ namespace AirlineApp.Forms
             headerPanel.Controls.Add(lblBadge);
             headerPanel.Controls.Add(lblHeader);
 
-            // Main Content Layout
+            // Main Content TableLayoutPanel (Stretches smoothly in Maximized mode!)
             var pnlMain = new TableLayoutPanel
             {
                 Dock = DockStyle.Fill,
@@ -84,15 +84,20 @@ namespace AirlineApp.Forms
                 BackColor = Color.FromArgb(30, 41, 59)
             };
 
+            var pnlMaydayInner = new Panel
+            {
+                Dock = DockStyle.Fill,
+                Padding = new Padding(15),
+                BackColor = Color.FromArgb(30, 41, 59)
+            };
+
             lblMaydayStatus = new Label
             {
-                Location = new Point(20, 35),
-                Size = new Size(440, 320),
-                Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right,
-                Font = new Font("Consolas", 10F),
+                Dock = DockStyle.Fill,
+                Font = new Font("Consolas", 10.5F),
                 ForeColor = Color.FromArgb(16, 185, 129),
                 BackColor = Color.FromArgb(15, 23, 42),
-                Padding = new Padding(12)
+                Padding = new Padding(15)
             };
 
             lblMaydayStatus.Text = 
@@ -108,22 +113,22 @@ namespace AirlineApp.Forms
             btnTriggerMayday = new Button
             {
                 Text = "TRIGGER MAYDAY EMERGENCY PROTOCOL 🚨",
-                Font = new Font("Segoe UI", 10.5F, FontStyle.Bold),
+                Font = new Font("Segoe UI", 11F, FontStyle.Bold),
                 ForeColor = Color.White,
                 BackColor = Color.FromArgb(225, 29, 72),
                 FlatStyle = FlatStyle.Flat,
-                Size = new Size(440, 45),
-                Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right,
-                Location = new Point(20, 370),
+                Dock = DockStyle.Bottom,
+                Height = 50,
                 Cursor = Cursors.Hand
             };
             btnTriggerMayday.FlatAppearance.BorderSize = 0;
             btnTriggerMayday.Click += BtnTriggerMayday_Click;
 
-            grpMayday.Controls.Add(lblMaydayStatus);
-            grpMayday.Controls.Add(btnTriggerMayday);
+            pnlMaydayInner.Controls.Add(lblMaydayStatus);
+            pnlMaydayInner.Controls.Add(btnTriggerMayday);
+            grpMayday.Controls.Add(pnlMaydayInner);
 
-            // Right Panel: Project Credits & Sole Author
+            // Right Panel: Project Credits & Standalone Author
             var grpCredits = new GroupBox
             {
                 Text = "System Author & Architecture Credits",
@@ -134,70 +139,76 @@ namespace AirlineApp.Forms
                 BackColor = Color.FromArgb(30, 41, 59)
             };
 
-            // Contributor Panel (Sole Standalone Author)
-            var pnlContrib = new Panel
+            var pnlCreditsInner = new Panel
             {
-                Location = new Point(20, 45),
-                Size = new Size(480, 240),
-                Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right,
+                Dock = DockStyle.Fill,
+                Padding = new Padding(20),
+                BackColor = Color.FromArgb(30, 41, 59)
+            };
+
+            var pnlContribCard = new Panel
+            {
+                Dock = DockStyle.Fill,
                 BackColor = Color.FromArgb(15, 23, 42),
+                Padding = new Padding(25),
                 BorderStyle = BorderStyle.FixedSingle
             };
 
             var lblContribName = new Label
             {
                 Text = "Mohammad Sufiyan Aasim",
-                Font = new Font("Segoe UI", 15F, FontStyle.Bold),
+                Font = new Font("Segoe UI", 18F, FontStyle.Bold),
                 ForeColor = Color.FromArgb(14, 165, 233),
-                Location = new Point(20, 20),
-                AutoSize = true
+                Dock = DockStyle.Top,
+                Height = 45,
+                AutoSize = false
             };
 
             var lblContribRole = new Label
             {
                 Text = "Sole System Architect & Lead Developer\nAI/MLOps · Full-Stack C# WinForms Engineer\n\nGitHub Profile : github.com/SufiyanAasim\nEmail Contact  : sufiyanaasim@outlook.com",
-                Font = new Font("Segoe UI", 10.5F),
+                Font = new Font("Segoe UI", 11.5F),
                 ForeColor = Color.FromArgb(226, 232, 240),
-                Location = new Point(20, 65),
-                AutoSize = true
+                Dock = DockStyle.Fill,
+                AutoSize = false
             };
-
-            pnlContrib.Controls.Add(lblContribName);
-            pnlContrib.Controls.Add(lblContribRole);
 
             var lblTechDetails = new Label
             {
                 Text = "Built with C# & .NET 8.0 Windows Desktop Framework\nTheme: Aviation & Flight Phases (v1.0.0 to v6.0.0)\nMIT License © 2023-2026 Airline Reservation System Contributors",
-                Font = new Font("Segoe UI", 9.5F, FontStyle.Italic),
+                Font = new Font("Segoe UI", 10F, FontStyle.Italic),
                 ForeColor = Color.FromArgb(148, 163, 184),
-                Location = new Point(20, 310),
-                Size = new Size(480, 60),
-                Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right,
+                Dock = DockStyle.Bottom,
+                Height = 60,
                 TextAlign = ContentAlignment.MiddleCenter
             };
 
-            grpCredits.Controls.Add(pnlContrib);
-            grpCredits.Controls.Add(lblTechDetails);
+            pnlContribCard.Controls.Add(lblContribRole);
+            pnlContribCard.Controls.Add(lblContribName);
+            pnlContribCard.Controls.Add(lblTechDetails);
+
+            pnlCreditsInner.Controls.Add(pnlContribCard);
+            grpCredits.Controls.Add(pnlCreditsInner);
 
             pnlMain.Controls.Add(grpMayday, 0, 0);
             pnlMain.Controls.Add(grpCredits, 1, 0);
 
-            // Footer Navigation
+            // Footer Navigation (Clean Back / Next buttons!)
             var pnlFooter = new Panel
             {
                 Dock = DockStyle.Bottom,
-                Height = 90,
+                Height = 85,
                 BackColor = Color.FromArgb(30, 41, 59)
             };
 
             var btnBack = new Button
             {
                 Text = "⇦ BACK TO TOUCHDOWN",
-                Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                Font = new Font("Segoe UI", 10.5F, FontStyle.Bold),
                 ForeColor = Color.White,
                 BackColor = Color.FromArgb(51, 65, 85),
                 FlatStyle = FlatStyle.Flat,
-                Size = new Size(220, 45),
+                Size = new Size(230, 45),
                 Location = new Point(25, 20),
                 Cursor = Cursors.Hand
             };
@@ -213,7 +224,7 @@ namespace AirlineApp.Forms
                 FlatStyle = FlatStyle.Flat,
                 Size = new Size(340, 45),
                 Anchor = AnchorStyles.Right | AnchorStyles.Top,
-                Location = new Point(740, 20),
+                Location = new Point(760, 20),
                 Cursor = Cursors.Hand
             };
             btnRestart.FlatAppearance.BorderSize = 0;

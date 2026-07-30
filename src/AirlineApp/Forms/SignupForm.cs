@@ -14,6 +14,7 @@ namespace AirlineApp.Forms
         private Button btnEyePassword1 = null!;
         private Button btnEyePassword2 = null!;
         private ComboBox comboRole = null!;
+        private Panel container = null!;
 
         private bool pass1Hidden = true;
         private bool pass2Hidden = true;
@@ -26,12 +27,14 @@ namespace AirlineApp.Forms
         private void InitializeComponent()
         {
             this.Text = "Airline Reservation System — New User Account Sign Up";
-            this.Size = new Size(540, 680);
+            this.Size = new Size(1150, 750);
+            this.WindowState = FormWindowState.Maximized;
             this.StartPosition = FormStartPosition.CenterScreen;
             this.BackColor = Color.FromArgb(15, 23, 42);
             this.ForeColor = Color.White;
-            this.FormBorderStyle = FormBorderStyle.FixedSingle;
-            this.MaximizeBox = false;
+            this.FormBorderStyle = FormBorderStyle.Sizable;
+            this.MaximizeBox = true;
+            this.Resize += (s, e) => CenterSignupCard();
 
             // Header Banner
             var headerPanel = new Panel
@@ -47,42 +50,48 @@ namespace AirlineApp.Forms
                 Font = new Font("Segoe UI", 9F, FontStyle.Bold),
                 ForeColor = Color.FromArgb(16, 185, 129),
                 BackColor = Color.FromArgb(6, 78, 59),
-                Location = new Point(25, 18),
+                Location = new Point(30, 18),
                 AutoSize = true,
                 Padding = new Padding(6, 3, 6, 3)
             };
 
             var lblHeader = new Label
             {
-                Text = "Register New Passenger / Staff Profile",
-                Font = new Font("Segoe UI", 15F, FontStyle.Bold),
+                Text = "Register New Passenger / Operations Staff Profile",
+                Font = new Font("Segoe UI", 16F, FontStyle.Bold),
                 ForeColor = Color.White,
-                Location = new Point(22, 48),
+                Location = new Point(27, 48),
                 AutoSize = true
             };
 
             headerPanel.Controls.Add(lblBadge);
             headerPanel.Controls.Add(lblHeader);
 
-            // Form Box
-            var container = new Panel
+            // Centered Main Content Panel
+            var pnlMain = new Panel
             {
-                Location = new Point(35, 118),
-                Size = new Size(455, 505),
-                BackColor = Color.FromArgb(30, 41, 59)
+                Dock = DockStyle.Fill,
+                BackColor = Color.FromArgb(15, 23, 42)
+            };
+
+            container = new Panel
+            {
+                Size = new Size(520, 540),
+                BackColor = Color.FromArgb(30, 41, 59),
+                BorderStyle = BorderStyle.FixedSingle
             };
 
             int y = 20;
 
             // Full Name
             AddInputLabel(container, "Full Name:", y);
-            txtFullName = CreateTextBox("Capt. Sufiyan Aasim", y + 25, 400);
+            txtFullName = CreateTextBox("Capt. Sufiyan Aasim", y + 24, 460);
             container.Controls.Add(txtFullName);
             y += 65;
 
             // Email
             AddInputLabel(container, "Email Address:", y);
-            txtEmail = CreateTextBox("sufiyanaasim@outlook.com", y + 25, 400);
+            txtEmail = CreateTextBox("sufiyanaasim@outlook.com", y + 24, 460);
             container.Controls.Add(txtEmail);
             y += 65;
 
@@ -90,8 +99,8 @@ namespace AirlineApp.Forms
             AddInputLabel(container, "User Role / Designation:", y);
             comboRole = new ComboBox
             {
-                Location = new Point(25, y + 25),
-                Size = new Size(400, 30),
+                Location = new Point(30, y + 24),
+                Size = new Size(460, 30),
                 Font = new Font("Segoe UI", 10F),
                 DropDownStyle = ComboBoxStyle.DropDownList,
                 BackColor = Color.FromArgb(15, 23, 42),
@@ -104,10 +113,10 @@ namespace AirlineApp.Forms
 
             // Password + Eye Button 1
             AddInputLabel(container, "Password:", y);
-            txtPassword = CreateTextBox("pass123", y + 25, 345);
+            txtPassword = CreateTextBox("pass123", y + 24, 400);
             txtPassword.UseSystemPasswordChar = true;
 
-            btnEyePassword1 = CreateEyeButton(y + 25, 375);
+            btnEyePassword1 = CreateEyeButton(y + 24, 438);
             btnEyePassword1.Click += (s, e) =>
             {
                 SoundHelper.PlayTap();
@@ -122,10 +131,10 @@ namespace AirlineApp.Forms
 
             // Confirm Password + Eye Button 2
             AddInputLabel(container, "Confirm Password:", y);
-            txtConfirmPassword = CreateTextBox("pass123", y + 25, 345);
+            txtConfirmPassword = CreateTextBox("pass123", y + 24, 400);
             txtConfirmPassword.UseSystemPasswordChar = true;
 
-            btnEyePassword2 = CreateEyeButton(y + 25, 375);
+            btnEyePassword2 = CreateEyeButton(y + 24, 438);
             btnEyePassword2.Click += (s, e) =>
             {
                 SoundHelper.PlayTap();
@@ -146,33 +155,47 @@ namespace AirlineApp.Forms
                 ForeColor = Color.White,
                 BackColor = Color.FromArgb(16, 185, 129),
                 FlatStyle = FlatStyle.Flat,
-                Size = new Size(400, 42),
-                Location = new Point(25, y),
+                Size = new Size(460, 44),
+                Location = new Point(30, y),
                 Cursor = Cursors.Hand
             };
             btnRegister.FlatAppearance.BorderSize = 0;
             btnRegister.Click += BtnRegister_Click;
             container.Controls.Add(btnRegister);
-            y += 50;
+            y += 55;
 
             // Back to Login Link
             var btnBackLogin = new Button
             {
                 Text = "ALREADY HAVE AN ACCOUNT? LOGIN HERE",
-                Font = new Font("Segoe UI", 9F, FontStyle.Bold),
+                Font = new Font("Segoe UI", 9.5F, FontStyle.Bold),
                 ForeColor = Color.FromArgb(148, 163, 184),
                 BackColor = Color.FromArgb(15, 23, 42),
                 FlatStyle = FlatStyle.Flat,
-                Size = new Size(400, 35),
-                Location = new Point(25, y),
+                Size = new Size(460, 36),
+                Location = new Point(30, y),
                 Cursor = Cursors.Hand
             };
             btnBackLogin.FlatAppearance.BorderSize = 0;
             btnBackLogin.Click += (s, e) => FormNavigator.Navigate(this, new LoginForm());
             container.Controls.Add(btnBackLogin);
 
-            this.Controls.Add(container);
+            pnlMain.Controls.Add(container);
+
+            this.Controls.Add(pnlMain);
             this.Controls.Add(headerPanel);
+
+            CenterSignupCard();
+        }
+
+        private void CenterSignupCard()
+        {
+            if (container != null && container.Parent != null)
+            {
+                int x = (container.Parent.ClientSize.Width - container.Width) / 2;
+                int y = (container.Parent.ClientSize.Height - container.Height) / 2;
+                container.Location = new Point(Math.Max(20, x), Math.Max(20, y));
+            }
         }
 
         private void AddInputLabel(Panel parent, string text, int y)
@@ -182,7 +205,7 @@ namespace AirlineApp.Forms
                 Text = text,
                 Font = new Font("Segoe UI", 9.5F, FontStyle.Bold),
                 ForeColor = Color.FromArgb(226, 232, 240),
-                Location = new Point(25, y),
+                Location = new Point(30, y),
                 AutoSize = true
             };
             parent.Controls.Add(lbl);
@@ -194,7 +217,7 @@ namespace AirlineApp.Forms
             {
                 Text = defaultVal,
                 Font = new Font("Segoe UI", 10.5F),
-                Location = new Point(25, y),
+                Location = new Point(30, y),
                 Size = new Size(width, 30),
                 BackColor = Color.FromArgb(15, 23, 42),
                 ForeColor = Color.White,
@@ -211,7 +234,7 @@ namespace AirlineApp.Forms
                 ForeColor = Color.FromArgb(14, 165, 233),
                 BackColor = Color.FromArgb(15, 23, 42),
                 FlatStyle = FlatStyle.Flat,
-                Size = new Size(48, 30),
+                Size = new Size(52, 30),
                 Location = new Point(x, y),
                 Cursor = Cursors.Hand
             };

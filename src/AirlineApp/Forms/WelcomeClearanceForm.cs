@@ -60,8 +60,29 @@ namespace AirlineApp.Forms
                 AutoSize = true
             };
 
+            var btnCreditsHeader = new Button
+            {
+                Text = "⭐ SYSTEM CREDITS",
+                Font = new Font("Segoe UI", 9.5F, FontStyle.Bold),
+                ForeColor = Color.White,
+                BackColor = Color.FromArgb(139, 92, 246),
+                FlatStyle = FlatStyle.Flat,
+                Size = new Size(170, 36),
+                Anchor = AnchorStyles.Right | AnchorStyles.Top,
+                Location = new Point(940, 25),
+                Cursor = Cursors.Hand
+            };
+            btnCreditsHeader.FlatAppearance.BorderSize = 0;
+            btnCreditsHeader.Click += (s, e) =>
+            {
+                var flight = (Flight)comboFlights.SelectedItem!;
+                var passenger = new Passenger { FullName = txtFullName.Text.Trim(), PassportOrId = txtPassport.Text.Trim() };
+                FormNavigator.Navigate(this, new MaydayCreditsForm(FlightService.CalculateFullBooking(flight, passenger)));
+            };
+
             headerPanel.Controls.Add(lblBadge);
             headerPanel.Controls.Add(lblHeader);
+            headerPanel.Controls.Add(btnCreditsHeader);
 
             // Main Content Panel (Resizable)
             var pnlMain = new TableLayoutPanel
@@ -155,13 +176,27 @@ namespace AirlineApp.Forms
             pnlMain.Controls.Add(grpPassenger, 0, 0);
             pnlMain.Controls.Add(grpFlight, 1, 0);
 
-            // Navigation Bar / Action Button Footer
+            // Footer Navigation Bar (Clean Back & Next Action Buttons!)
             var pnlFooter = new Panel
             {
                 Dock = DockStyle.Bottom,
-                Height = 90,
+                Height = 85,
                 BackColor = Color.FromArgb(30, 41, 59)
             };
+
+            var btnLogout = new Button
+            {
+                Text = "⇦ LOGOUT / PORTAL HOME",
+                Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                ForeColor = Color.White,
+                BackColor = Color.FromArgb(51, 65, 85),
+                FlatStyle = FlatStyle.Flat,
+                Size = new Size(230, 45),
+                Location = new Point(25, 20),
+                Cursor = Cursors.Hand
+            };
+            btnLogout.FlatAppearance.BorderSize = 0;
+            btnLogout.Click += (s, e) => FormNavigator.Navigate(this, new LoginForm());
 
             var btnProceed = new Button
             {
@@ -170,24 +205,15 @@ namespace AirlineApp.Forms
                 ForeColor = Color.White,
                 BackColor = Color.FromArgb(14, 165, 233),
                 FlatStyle = FlatStyle.Flat,
-                Size = new Size(320, 48),
+                Size = new Size(340, 45),
                 Anchor = AnchorStyles.Right | AnchorStyles.Top,
-                Location = new Point(780, 20),
+                Location = new Point(760, 20),
                 Cursor = Cursors.Hand
             };
             btnProceed.FlatAppearance.BorderSize = 0;
             btnProceed.Click += BtnProceed_Click;
 
-            // Nav Jump Buttons with generous widths (NO CLIPPING!)
-            int navX = 25;
-            AddNavButton(pnlFooter, "v1.0 Clearance", () => { }, ref navX, 115, true);
-            AddNavButton(pnlFooter, "v2.0 Taxi", () => NavigateNext(2), ref navX, 100);
-            AddNavButton(pnlFooter, "v3.0 Ascent", () => NavigateNext(3), ref navX, 105);
-            AddNavButton(pnlFooter, "v4.0 Cruising", () => NavigateNext(4), ref navX, 110);
-            AddNavButton(pnlFooter, "v5.0 Touchdown", () => NavigateNext(5), ref navX, 125);
-            AddNavButton(pnlFooter, "v6.0 Mayday", () => NavigateNext(6), ref navX, 110);
-            AddNavButton(pnlFooter, "⭐ CREDITS", () => NavigateNext(6), ref navX, 100);
-
+            pnlFooter.Controls.Add(btnLogout);
             pnlFooter.Controls.Add(btnProceed);
 
             this.Controls.Add(pnlMain);
@@ -221,25 +247,6 @@ namespace AirlineApp.Forms
             parent.Controls.Add(lbl);
             parent.Controls.Add(txt);
             y += 70;
-        }
-
-        private void AddNavButton(Panel footer, string text, Action onClick, ref int x, int width, bool isActive = false)
-        {
-            var btn = new Button
-            {
-                Text = text,
-                Font = new Font("Segoe UI", 9F, FontStyle.Bold),
-                ForeColor = isActive ? Color.White : Color.FromArgb(148, 163, 184),
-                BackColor = isActive ? Color.FromArgb(14, 165, 233) : Color.FromArgb(15, 23, 42),
-                FlatStyle = FlatStyle.Flat,
-                Size = new Size(width, 38),
-                Location = new Point(x, 25),
-                Cursor = Cursors.Hand
-            };
-            btn.FlatAppearance.BorderSize = 0;
-            btn.Click += (s, e) => { SoundHelper.PlayTap(); onClick(); };
-            footer.Controls.Add(btn);
-            x += width + 8;
         }
 
         private void ComboFlights_SelectedIndexChanged(object? sender, EventArgs e)
@@ -282,30 +289,6 @@ namespace AirlineApp.Forms
 
             var selectedFlight = (Flight)comboFlights.SelectedItem!;
             FormNavigator.Navigate(this, new SeatTaxiForm(selectedFlight, passenger));
-        }
-
-        private void NavigateNext(int phase)
-        {
-            var flight = (Flight)comboFlights.SelectedItem!;
-            var passenger = new Passenger
-            {
-                FullName = string.IsNullOrWhiteSpace(txtFullName.Text) ? "Capt. Sufiyan Aasim" : txtFullName.Text.Trim(),
-                PassportOrId = string.IsNullOrWhiteSpace(txtPassport.Text) ? "PK-98234109" : txtPassport.Text.Trim(),
-                Phone = txtPhone.Text.Trim(),
-                Email = txtEmail.Text.Trim()
-            };
-
-            Form nextForm = phase switch
-            {
-                2 => new SeatTaxiForm(flight, passenger),
-                3 => new BaggageAscentForm(flight, passenger),
-                4 => new AnalyticsCruisingForm(flight, passenger),
-                5 => new ReceiptTouchdownForm(FlightService.CalculateFullBooking(flight, passenger)),
-                6 => new MaydayCreditsForm(FlightService.CalculateFullBooking(flight, passenger)),
-                _ => this
-            };
-
-            FormNavigator.Navigate(this, nextForm);
         }
     }
 }

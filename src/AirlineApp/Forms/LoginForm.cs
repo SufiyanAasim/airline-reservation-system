@@ -11,6 +11,7 @@ namespace AirlineApp.Forms
         private TextBox txtPassword = null!;
         private Button btnEyePassword = null!;
         private ComboBox comboRole = null!;
+        private Panel container = null!;
         private bool isPasswordHidden = true;
 
         public LoginForm()
@@ -20,126 +21,69 @@ namespace AirlineApp.Forms
 
         private void InitializeComponent()
         {
-            this.Text = "Airline Reservation System — User Authentication & Login";
-            this.Size = new Size(520, 620);
+            this.Text = "Airline Reservation System — User Authentication & Clearance Portal";
+            this.Size = new Size(1150, 750);
+            this.WindowState = FormWindowState.Maximized;
             this.StartPosition = FormStartPosition.CenterScreen;
-            this.BackColor = Color.FromArgb(15, 23, 42); // Navy Dark
+            this.BackColor = Color.FromArgb(15, 23, 42);
             this.ForeColor = Color.White;
-            this.FormBorderStyle = FormBorderStyle.FixedSingle;
-            this.MaximizeBox = false;
+            this.FormBorderStyle = FormBorderStyle.Sizable;
+            this.MaximizeBox = true;
+            this.Resize += (s, e) => CenterLoginCard();
 
             // Header Banner
             var headerPanel = new Panel
             {
                 Dock = DockStyle.Top,
-                Height = 110,
+                Height = 100,
                 BackColor = Color.FromArgb(30, 41, 59)
             };
 
             var lblBadge = new Label
             {
-                Text = "SECURE AVIATION PORTAL",
+                Text = "AUTHENTICATION & CLEARANCE PORTAL",
                 Font = new Font("Segoe UI", 9F, FontStyle.Bold),
                 ForeColor = Color.FromArgb(14, 165, 233),
                 BackColor = Color.FromArgb(12, 74, 110),
-                Location = new Point(25, 20),
+                Location = new Point(30, 18),
                 AutoSize = true,
                 Padding = new Padding(6, 3, 6, 3)
             };
 
             var lblHeader = new Label
             {
-                Text = "Airline Reservation System Login",
+                Text = "Airline Reservation System — Operations & Passenger Portal",
                 Font = new Font("Segoe UI", 16F, FontStyle.Bold),
                 ForeColor = Color.White,
-                Location = new Point(22, 50),
+                Location = new Point(27, 48),
                 AutoSize = true
             };
 
             headerPanel.Controls.Add(lblBadge);
             headerPanel.Controls.Add(lblHeader);
 
-            // Container Panel
-            var container = new Panel
+            // Centered Main Content Panel
+            var pnlMain = new Panel
             {
-                Location = new Point(35, 130),
-                Size = new Size(435, 430),
-                BackColor = Color.FromArgb(30, 41, 59)
+                Dock = DockStyle.Fill,
+                BackColor = Color.FromArgb(15, 23, 42)
             };
 
-            // Email Field
-            var lblEmail = new Label
+            container = new Panel
             {
-                Text = "Email Address:",
-                Font = new Font("Segoe UI", 10F, FontStyle.Bold),
-                ForeColor = Color.FromArgb(226, 232, 240),
-                Location = new Point(25, 25),
-                AutoSize = true
-            };
-
-            txtEmail = new TextBox
-            {
-                Text = "sufiyanaasim@outlook.com",
-                Font = new Font("Segoe UI", 11F),
-                Location = new Point(25, 55),
-                Size = new Size(380, 32),
-                BackColor = Color.FromArgb(15, 23, 42),
-                ForeColor = Color.White,
+                Size = new Size(480, 480),
+                BackColor = Color.FromArgb(30, 41, 59),
                 BorderStyle = BorderStyle.FixedSingle
             };
 
-            // Password Field + Eye Button
-            var lblPassword = new Label
-            {
-                Text = "Password:",
-                Font = new Font("Segoe UI", 10F, FontStyle.Bold),
-                ForeColor = Color.FromArgb(226, 232, 240),
-                Location = new Point(25, 105),
-                AutoSize = true
-            };
-
-            txtPassword = new TextBox
-            {
-                Text = "admin123",
-                Font = new Font("Segoe UI", 11F),
-                Location = new Point(25, 135),
-                Size = new Size(330, 32),
-                UseSystemPasswordChar = true,
-                BackColor = Color.FromArgb(15, 23, 42),
-                ForeColor = Color.White,
-                BorderStyle = BorderStyle.FixedSingle
-            };
-
-            // Eye Toggle Button (👁 / 🙈)
-            btnEyePassword = new Button
-            {
-                Text = "👁",
-                Font = new Font("Segoe UI", 12F, FontStyle.Bold),
-                ForeColor = Color.FromArgb(14, 165, 233),
-                BackColor = Color.FromArgb(15, 23, 42),
-                FlatStyle = FlatStyle.Flat,
-                Size = new Size(46, 32),
-                Location = new Point(360, 135),
-                Cursor = Cursors.Hand
-            };
-            btnEyePassword.FlatAppearance.BorderSize = 1;
-            btnEyePassword.FlatAppearance.BorderColor = Color.FromArgb(51, 65, 85);
-            btnEyePassword.Click += BtnEyePassword_Click;
+            int y = 25;
 
             // Role Selector
-            var lblRole = new Label
-            {
-                Text = "Login Access Role:",
-                Font = new Font("Segoe UI", 10F, FontStyle.Bold),
-                ForeColor = Color.FromArgb(226, 232, 240),
-                Location = new Point(25, 185),
-                AutoSize = true
-            };
-
+            AddInputLabel(container, "Select System Access Role:", y);
             comboRole = new ComboBox
             {
-                Location = new Point(25, 215),
-                Size = new Size(380, 32),
+                Location = new Point(30, y + 26),
+                Size = new Size(420, 32),
                 Font = new Font("Segoe UI", 10.5F),
                 DropDownStyle = ComboBoxStyle.DropDownList,
                 BackColor = Color.FromArgb(15, 23, 42),
@@ -147,49 +91,115 @@ namespace AirlineApp.Forms
             };
             comboRole.Items.AddRange(new object[] { "Flight Operations Manager", "Passenger / Customer" });
             comboRole.SelectedIndex = 0;
+            container.Controls.Add(comboRole);
+            y += 70;
+
+            // Email Field
+            AddInputLabel(container, "Email Address:", y);
+            txtEmail = CreateTextBox("sufiyanaasim@outlook.com", y + 26, 420);
+            container.Controls.Add(txtEmail);
+            y += 70;
+
+            // Password Field + Interactive Eye Toggle Button
+            AddInputLabel(container, "Account Password:", y);
+            txtPassword = CreateTextBox("admin123", y + 26, 360);
+            txtPassword.UseSystemPasswordChar = true;
+
+            btnEyePassword = new Button
+            {
+                Text = "👁",
+                Font = new Font("Segoe UI", 12F, FontStyle.Bold),
+                ForeColor = Color.FromArgb(14, 165, 233),
+                BackColor = Color.FromArgb(15, 23, 42),
+                FlatStyle = FlatStyle.Flat,
+                Size = new Size(52, 32),
+                Location = new Point(398, y + 26),
+                Cursor = Cursors.Hand
+            };
+            btnEyePassword.FlatAppearance.BorderSize = 1;
+            btnEyePassword.FlatAppearance.BorderColor = Color.FromArgb(51, 65, 85);
+            btnEyePassword.Click += BtnEyePassword_Click;
+
+            container.Controls.Add(txtPassword);
+            container.Controls.Add(btnEyePassword);
+            y += 80;
 
             // Login Button
             var btnLogin = new Button
             {
-                Text = "LOGIN TO FLIGHT ENGINE ➔",
+                Text = "AUTHENTICATE & ENTER PORTAL ➔",
                 Font = new Font("Segoe UI", 11F, FontStyle.Bold),
                 ForeColor = Color.White,
                 BackColor = Color.FromArgb(14, 165, 233),
                 FlatStyle = FlatStyle.Flat,
-                Size = new Size(380, 45),
-                Location = new Point(25, 275),
+                Size = new Size(420, 48),
+                Location = new Point(30, y),
                 Cursor = Cursors.Hand
             };
             btnLogin.FlatAppearance.BorderSize = 0;
             btnLogin.Click += BtnLogin_Click;
+            container.Controls.Add(btnLogin);
+            y += 60;
 
-            // Signup Redirect Button
-            var btnSignupRedirect = new Button
+            // Register Link Button
+            var btnRegister = new Button
             {
-                Text = "NEW USER? CREATE AN ACCOUNT",
+                Text = "DONT HAVE AN ACCOUNT? REGISTER HERE",
                 Font = new Font("Segoe UI", 9.5F, FontStyle.Bold),
                 ForeColor = Color.FromArgb(148, 163, 184),
                 BackColor = Color.FromArgb(15, 23, 42),
                 FlatStyle = FlatStyle.Flat,
-                Size = new Size(380, 38),
-                Location = new Point(25, 335),
+                Size = new Size(420, 38),
+                Location = new Point(30, y),
                 Cursor = Cursors.Hand
             };
-            btnSignupRedirect.FlatAppearance.BorderSize = 0;
-            btnSignupRedirect.Click += (s, e) => FormNavigator.Navigate(this, new SignupForm());
+            btnRegister.FlatAppearance.BorderSize = 0;
+            btnRegister.Click += (s, e) => FormNavigator.Navigate(this, new SignupForm());
+            container.Controls.Add(btnRegister);
 
-            container.Controls.Add(lblEmail);
-            container.Controls.Add(txtEmail);
-            container.Controls.Add(lblPassword);
-            container.Controls.Add(txtPassword);
-            container.Controls.Add(btnEyePassword);
-            container.Controls.Add(lblRole);
-            container.Controls.Add(comboRole);
-            container.Controls.Add(btnLogin);
-            container.Controls.Add(btnSignupRedirect);
+            pnlMain.Controls.Add(container);
 
-            this.Controls.Add(container);
+            this.Controls.Add(pnlMain);
             this.Controls.Add(headerPanel);
+
+            CenterLoginCard();
+        }
+
+        private void CenterLoginCard()
+        {
+            if (container != null && container.Parent != null)
+            {
+                int x = (container.Parent.ClientSize.Width - container.Width) / 2;
+                int y = (container.Parent.ClientSize.Height - container.Height) / 2;
+                container.Location = new Point(Math.Max(20, x), Math.Max(20, y));
+            }
+        }
+
+        private void AddInputLabel(Panel parent, string text, int y)
+        {
+            var lbl = new Label
+            {
+                Text = text,
+                Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                ForeColor = Color.FromArgb(226, 232, 240),
+                Location = new Point(30, y),
+                AutoSize = true
+            };
+            parent.Controls.Add(lbl);
+        }
+
+        private TextBox CreateTextBox(string defaultVal, int y, int width)
+        {
+            return new TextBox
+            {
+                Text = defaultVal,
+                Font = new Font("Segoe UI", 11F),
+                Location = new Point(30, y),
+                Size = new Size(width, 32),
+                BackColor = Color.FromArgb(15, 23, 42),
+                ForeColor = Color.White,
+                BorderStyle = BorderStyle.FixedSingle
+            };
         }
 
         private void BtnEyePassword_Click(object? sender, EventArgs e)
@@ -206,11 +216,10 @@ namespace AirlineApp.Forms
             var res = AuthService.Login(txtEmail.Text, txtPassword.Text);
             if (!res.Success)
             {
-                CustomMessageBox.Show("AUTHENTICATION FAILED", res.Message, true);
+                CustomMessageBox.Show("AUTHENTICATION FAILURE", res.Message, true);
                 return;
             }
 
-            CustomMessageBox.Show("LOGIN SUCCESSFUL", $"Welcome back, {res.User?.FullName} ({res.User?.Role})! Initializing Clearance Phase.");
             FormNavigator.Navigate(this, new WelcomeClearanceForm());
         }
     }
