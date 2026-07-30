@@ -1,23 +1,20 @@
 <div align="center">
 
-<img src="assets/logo.png" alt="Airline Reservation System App Icon" width="110" height="110" />
+<img src="assets/logo.png" alt="Airline Reservation System Logo" width="110" />
 
 # Airline Reservation System
 
-**An enterprise aviation & flight phase reservation platform for Windows with interactive seat selection, GDI+ load factor analytics, executive report export, printable boarding passes, and Mayday emergency fail-safe protocol**
+**A Windows desktop reservation and yield analytics platform for airline operations**
 
-[![.NET 8.0](https://img.shields.io/badge/.NET-8.0--windows-512BD4?style=flat&logo=dotnet&logoColor=white)](docs/Development.md)
-[![Version](https://img.shields.io/badge/version-v6.0.0-ef4444?style=flat)](docs/releases/v6.0.0.md)
-[![Release](https://img.shields.io/badge/codename-Mayday-ef4444?style=flat)](docs/releases/v6.0.0.md)
-[![Status](https://img.shields.io/badge/status-deployed-16a34a?style=flat)](docs/releases/v6.0.0.md)
+[![.NET](https://img.shields.io/badge/.NET-8.0--windows-512BD4?style=flat&logo=dotnet&logoColor=white)](docs/Development.md)
+[![Version](https://img.shields.io/badge/version-6.0.0%20Mayday-ef4444?style=flat)](docs/releases/v6.0.0.md)
 [![License: MIT](https://img.shields.io/badge/License-MIT-22c55e?style=flat)](LICENSE)
 [![Platform](https://img.shields.io/badge/platform-Windows-64748b?style=flat)]()
-[![Build](https://img.shields.io/badge/build-passing-16a34a?style=flat)](.github/workflows/build.yml)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-e9a23b?style=flat)](CONTRIBUTING.md)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-0ea5e9?style=flat)](CONTRIBUTING.md)
 
-Register securely, select flight clearance, choose cabin seats on an interactive 2-2 grid, calculate baggage allowance, view live fleet revenue analytics, generate executive audit reports, print boarding passes, and handle flight emergency aborts.
+Registers passengers, manages interactive 2-2 aircraft seating, calculates baggage allowances, renders live load factor & revenue analytics charts, exports audit reports, prints boarding passes, and triggers emergency Mayday protocols — all offline, no installer, no accounts.
 
-[**Download .exe**](docs/releases/v6.0.0.md) · [**Mayday notes**](docs/releases/v6.0.0.md) · [**Changelog**](CHANGELOG.md) · [**Roadmap**](ROADMAP.md) · [**Report a bug**](.github/ISSUE_TEMPLATE/bug_report.md)
+[**Download .exe**](docs/releases/v6.0.0.md) · [**Changelog**](CHANGELOG.md) · [**Roadmap**](ROADMAP.md) · [**Report a Bug**](.github/ISSUE_TEMPLATE/bug_report.md)
 
 </div>
 
@@ -25,160 +22,123 @@ Register securely, select flight clearance, choose cabin seats on an interactive
 
 ## ✨ Features
 
-### 🔐 Authentication and user accounts
+### 🔐 User Portal & Authentication
+- Dual-role access (Passenger / Operations Manager) with password eye toggle button (👁 / 🙈)
+- Self-service registration with full name, passport, email, and instant credential validation
 
-- **Dual-role login system** for Passengers and Flight Operations Managers.
-- **Password input with interactive Eye Toggle Button (👁 / 🙈)** to reveal or obscure password text.
-- **Self-service registration** with full name, email, role selection, and instant credential validation.
-- **Pre-seeded demo accounts** (`sufiyanaasim@outlook.com` / `admin123`).
+### 🛫 Flight Clearance Engine
+- Flight search across 7 major domestic and international routes (KHI, LHE, ISB, DXB, LHR, KDU, DOH)
+- Departure clearance verification and aircraft route details lookup
 
-### 🛫 Flight clearance and route selection
+### 🛞 Interactive Cabin Seating Map
+- 2-2 aircraft seating grid (24 seats) with real-time seat availability status colors
+- Cabin class pricing tiers: Economy (1.0x), Business (1.85x), First Class (3.20x)
 
-- **Flight catalogue engine** modeling routes across Karachi (KHI), Islamabad (ISB), Lahore (LHE), Dubai (DXB), London (LHR), Skardu (KDU), and Doha (DOH).
-- **Clearance status validation** ensuring complete passenger identity before taxiing.
+### 🛬 Baggage & In-Flight Engine
+- Baggage allowance calculator enforcing 20kg (Economy), 35kg (Business), and 50kg (First Class) limits
+- Excess baggage rate calculation ($12.50 / kg) and optional in-flight amenity add-on toggles
 
-### 🛞 Interactive aircraft seating matrix
+### 📊 Cruising Telemetry & Yield Analytics
+- Live telemetry metrics (FL380 altitude, Mach 0.82 airspeed, fuel burn rate, cabin pressure)
+- Custom GDI+ double-buffered canvas rendering cabin load factor capacity bar charts
 
-- **2-2 cabin seating layout grid** with real-time seat status toggling.
-- **Cabin class fare multipliers**: Economy (1.0x), Business (1.85x), First Class (3.20x).
-- **Seat availability map** displaying selected, available, and occupied seats.
+### 📄 Executive Report Generation
+- Dedicated audit report builder filtering passenger manifests, financial revenue, and safety logs
+- Exporting support to formatted text (.TXT) and spreadsheet (.CSV) files
 
-### 🛬 Baggage allowance and in-flight customization
+### 🎫 Printable Boarding Pass & Local History
+- Electronic Boarding Pass card with PNR barcode aesthetic and Windows print spooler integration
+- Auto-saves every booking to a local travel history text log (`Airline Reservation History/`)
 
-- **Checked baggage weight calculator** with cabin allowance limits (Economy 20kg, Business 35kg, First 50kg).
-- **Excess weight fee enforcement** at $12.50 / kg.
-- **In-flight meal selection** (Halal Gourmet, Vegan, Diabetic, Child, Gluten-Free).
-- **Amenity add-on toggles**: High-Speed Wi-Fi Pass (+$25), VIP Lounge Access (+$45), Express Boarding (+$20).
-
-### 📊 Dynamic yield analytics and GDI+ charts
-
-- **Real-time flight telemetry**: altitude (38,000 ft), airspeed (Mach 0.82), fuel burn rate (2,450 kg/h).
-- **Custom GDI+ canvas rendering** for cabin load factor bar charts and capacity metrics.
-- **Yield pricing engine** evaluating demand surge and total fare breakdowns.
-
-### 📄 Executive report generation and export
-
-- **Custom report builder** filtering passenger manifests, revenue audits, and safety telemetry.
-- **Date range picker** for custom audit period queries.
-- **Multi-format exporter**: Save reports to flat-file **.TXT** or spreadsheet-compatible **.CSV** ledgers.
-
-### 🎫 Boarding pass rendering and flat-file logging
-
-- **Printable electronic Boarding Pass card** with PNR barcode aesthetic.
-- **Windows Print Spooler integration** for physical receipt printing.
-- **Flat-file persistence** appending transaction records to `<app directory>/Airline Reservation History/Boarding Passes.txt`.
-
-### 🚨 Mayday emergency fail-safe protocol
-
-- **Emergency Squawk 7700 transponder broadcast** simulation.
-- **Diagnostic control center** displaying hydraulic pressure, cabin oxygen, and engine telemetry.
-- **Symmetrical project credits section** highlighting system architects and UI developers.
+### 🚨 Mayday Emergency Protocol
+- Emergency Squawk 7700 flight abort trigger and real-time aircraft health telemetry
+- Symmetrical project contributor credits card section
 
 ---
 
 ## 🏗️ Architecture
 
-```text
-┌────────────────────────────────────────────────────────────────────────┐
-│                        WinForms UI (8 Screens)                         │
-│ LoginForm ➔ SignupForm ➔ WelcomeClearance ➔ SeatTaxi ➔                 │
-│ BaggageAscent ➔ AnalyticsCruising ➔ ReportGeneration ➔                 │
-│             ReceiptTouchdown ➔ MaydayCredits                           │
-└────────────────┬───────────────────┬──────────────────┬────────────────┘
-                 │                   │                  │
-                 ▼                   ▼                  ▼
-           FormNavigator        SoundHelper       FlightService & AuthService
-           (screen swap)       (tap feedback)    (route & pricing engines)
-                                                        │
-                                                        ▼
-                                              BookingHistoryService
-                                              (flat-file log persistence)
+```
+┌──────────────────────────────────────────────────────────┐
+│                      WinForms UI                          │
+│ Login ➔ Signup ➔ Clearance ➔ Taxi ➔ Ascent ➔ Cruising ➔ │
+│            Report ➔ Touchdown ➔ Mayday                   │
+└───────┬───────────────┬──────────────┬───────────────────┘
+        │               │              │
+        ▼               ▼              ▼
+ FormNavigator     SoundHelper    FlightService & AuthService
+ (screen swap)    (tap feedback)  (pricing & seats engine)
+                                        │
+                                        ▼
+                                BookingHistoryService
+                                (local text-file log)
 ```
 
-Full technical details, model schemas, and state transitions are in [docs/Architecture.md](docs/Architecture.md).
+Full breakdown in [docs/Architecture.md](docs/Architecture.md).
 
 ---
 
-## 🛠️ Technology stack
+## 🛠️ Technology Stack
 
-| Layer | Technology |
-| --- | --- |
-| GUI Framework | C# · .NET 8.0-windows · System.Windows.Forms |
-| Graphics & Charts | GDI+ (`System.Drawing`) custom double-buffered canvas |
-| Sound | `System.Media` audio tap feedback |
-| Data Persistence | Flat-file text ledgers & CSV exports (`System.IO`) |
-| Build & CI | MSBuild · .NET CLI · GitHub Actions |
-| Packaging | PowerShell release stage automation script |
+### .NET Framework & Packages
 
----
-
-## 📦 App versions
-
-| Version | Codename | Status | Highlights |
-| --- | --- | --- | --- |
-| [v6.0.0](docs/releases/v6.0.0.md) | **Mayday** | Deployed | Emergency Squawk 7700 fail-safe protocol, incident log, and symmetrical credits |
-| [v5.0.0](docs/releases/v5.0.0.md) | **Touchdown** | Completed | Electronic boarding pass card, print spooler, and local flat-file persistence |
-| [v4.0.0](docs/releases/v4.0.0.md) | **Cruising** | Completed | Yield revenue analytics, custom GDI+ load factor bar chart, and report exporter |
-| [v3.0.0](docs/releases/v3.0.0.md) | **Ascent** | Completed | Baggage weight check-in calculator, excess fee rules, and in-flight extras |
-| [v2.0.0](docs/releases/v2.0.0.md) | **Taxi** | Completed | Interactive 2-2 seating grid map and cabin class multiplier pricing |
-| [v1.0.0](docs/releases/v1.0.0.md) | **Clearance** | Base Release | User login/signup with password eye button, route search, and clearance engine |
+| Namespace / Package | Purpose |
+|---------------------|---------|
+| `System.Windows.Forms` | GUI framework — forms, controls, dialogs, DPI awareness |
+| `System.Drawing` | Custom GDI+ double-buffered chart graphics and icons |
+| `System.IO` | Travel history file persistence and CSV report exporter |
+| `System.Media` | Audio tap sound feedback |
 
 ---
 
-## 🚀 Getting started
+## 🚀 Getting Started
 
 ### Requirements
-
-- Windows 10/11 OS
-- .NET 8.0 SDK or Visual Studio 2022+
+- Windows OS
+- Visual Studio 2022 or later (or .NET 8.0 SDK for CLI builds)
 
 ### Clone and run
 
 ```bash
 git clone https://github.com/SufiyanAasim/airline-reservation-system.git
 cd airline-reservation-system
-dotnet build "src/AirlineApp/AirlineApp.csproj" -c Release
-dotnet run --project "src/AirlineApp/AirlineApp.csproj"
 ```
 
+Open `src/AirlineApp/AirlineApp.csproj` in Visual Studio and build/run (`F5`), or build from the command line:
+
+```bash
+dotnet build "src/AirlineApp/AirlineApp.csproj" -c Release
+```
+
+Or download a packaged build from [docs/releases/v6.0.0.md](docs/releases/v6.0.0.md).
+
+The app saves travel history to `<app directory>/Airline Reservation History/`. Full setup details in [docs/Development.md](docs/Development.md).
+
 ---
 
-## ⚙️ Configuration
+## 🗂️ Project Structure
 
-| Variable / File | Purpose |
-| --- | --- |
-| `Airline Reservation History/` | Local directory storing appended `Boarding Passes.txt` and exported CSV audit logs |
-| `src/AirlineApp/AirlineApp.csproj` | .NET target configuration (`net8.0-windows`), high DPI mode, and assembly attributes |
-| `scripts/package-release.ps1` | PowerShell script to compile Release binary and package `.zip` release archive |
-
----
-
-## 🗂️ Project structure
-
-```text
-Airline Reservation System/
-├── .github/
-│   ├── ISSUE_TEMPLATE/       # Structured bug and feature templates
-│   └── workflows/            # CI build and release workflows
-├── assets/                   # Application logo assets
+```
+airline-reservation-system/
+├── .github/                # CI/CD workflows, issue/PR templates
+├── assets/                 # Application branding logo
 ├── docs/
-│   ├── Architecture.md       # System design and component breakdown
-│   ├── Database.md           # Storage and flat-file logging specifications
-│   ├── Development.md        # Build and run instructions
-│   ├── Troubleshooting.md    # High DPI scaling and permission fixes
-│   └── releases/             # Per-version release notes (v1.0.0 to v6.0.0)
+│   ├── Architecture.md
+│   ├── Database.md
+│   ├── Development.md
+│   ├── Troubleshooting.md
+│   └── releases/            # Per-version release notes (v1.0.0 to v6.0.0)
 ├── scripts/
-│   ├── git-time-forge.ps1    # 2023 Git history time-forging script
-│   ├── package-release.ps1   # Release packaging script
+│   ├── package-release.ps1  # Windows release packaging script
 │   └── publish-releases.ps1  # Release publishing script
 ├── src/
 │   └── AirlineApp/
-│       ├── Forms/            # Login, Signup, Clearance, Taxi, Ascent, Cruising, Report, Touchdown, Mayday
-│       ├── Models/           # Flight, Passenger, Booking, User, AnalyticsMetrics
-│       ├── Services/         # FlightService, AuthService, BookingHistoryService, FormNavigator, SoundHelper
-│       ├── Resources/        # Embedded aviation logo image
 │       ├── AirlineApp.csproj
-│       └── Program.cs
+│       ├── Program.cs
+│       ├── Forms/           # 8 Aviation phase forms and custom dialogs
+│       ├── Models/          # Flight, Passenger, Booking, User, Analytics models
+│       ├── Services/        # FlightService, AuthService, BookingHistoryService, FormNavigator
+│       └── Resources/       # Embedded app icon and logo assets
 ├── tests/                    # Testing guidance
 ├── CHANGELOG.md
 ├── CODE_OF_CONDUCT.md
@@ -193,19 +153,44 @@ Airline Reservation System/
 
 ---
 
+## 🚉 Flight Routes
+
+The app models 7 flight routes:
+
+| # | Origin | Destination | Flight No | Airline | Base Fare |
+|---|--------|-------------|-----------|---------|-----------|
+| 0 | Karachi (KHI) | Islamabad (ISB) | PK-301 | PIA Airlines | $180.00 |
+| 1 | Lahore (LHE) | Karachi (KHI) | PK-302 | PIA Airlines | $165.00 |
+| 2 | Karachi (KHI) | Dubai (DXB) | PA-200 | Airblue | $340.00 |
+| 3 | Islamabad (ISB) | Skardu (KDU) | ER-501 | Serene Air | $140.00 |
+| 4 | Karachi (KHI) | London (LHR) | EK-605 | Emirates | $850.00 |
+| 5 | Lahore (LHE) | Doha (DOH) | QR-611 | Qatar Airways | $520.00 |
+
+---
+
 ## 🧪 Testing
 
-There is no automated unit test suite — the application wizard flow is verified manually after each release milestone. See [tests/README.md](tests/README.md) for full wizard verification steps.
+There is no automated test suite yet — the wizard flow is validated manually after each change. See [tests/README.md](tests/README.md) for what's testable and how to add coverage.
+
+---
+
+## 📦 Building the Windows Executable
+
+```powershell
+./scripts/package-release.ps1 -Version "6.0.0"
+```
+
+Builds in Release mode and stages `AirlineApp.exe` plus its config, runtime DLLs, and docs into `AirlineReservationSystem-v6.0.0.zip`. See [docs/Development.md](docs/Development.md).
 
 ---
 
 ## 🛡️ Security
 
-Airline Reservation System is a fully offline, single-user desktop application with zero external network dependencies or database servers. Password input is secured locally with eye toggle controls. Report vulnerabilities privately to `sufiyanaasim@outlook.com`. See [SECURITY.md](SECURITY.md).
+This is a fully offline, single-user desktop app — no network calls, no external server database (see [docs/Architecture.md](docs/Architecture.md) and [docs/Database.md](docs/Database.md)). The only persisted state is a local travel-history text log. See [SECURITY.md](SECURITY.md) to report a vulnerability.
 
 ---
 
-## 👤 Owner and author
+## 🤝 Contributors
 
 <table>
   <tr>
@@ -238,8 +223,8 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) to get involved.
 
 <div align="center">
 
-⭐ **Star the repository if this project helps you build better WinForms desktop apps.**
+⭐ **Star this repo if it helped you manage flight reservations.**
 
-[Report bug](.github/ISSUE_TEMPLATE/bug_report.md) · [Request feature](.github/ISSUE_TEMPLATE/feature_request.md) · [Changelog](CHANGELOG.md)
+[Report Bug](.github/ISSUE_TEMPLATE/bug_report.md) · [Request Feature](.github/ISSUE_TEMPLATE/feature_request.md)
 
 </div>
