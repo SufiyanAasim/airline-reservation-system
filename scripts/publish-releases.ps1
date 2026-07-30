@@ -1,4 +1,4 @@
-# PowerShell script to automatically create GitHub Releases for all version tags
+# PowerShell script to automatically create or update GitHub Release assets for all version tags
 
 $ErrorActionPreference = "Continue"
 
@@ -20,14 +20,17 @@ foreach ($t in $tags) {
 
     $zipFile = "AirlineReservationSystem-v$ver.zip"
     if (Test-Path $zipFile) {
-        Write-Host "Creating GitHub Release for $($t.Tag)..." -ForegroundColor Green
+        Write-Host "Uploading asset $zipFile to GitHub Release $($t.Tag)..." -ForegroundColor Green
         
-        if ($t.Prerelease) {
-            gh release create $t.Tag $zipFile -F $docFile --title $t.Name --prerelease
-        } else {
-            gh release create $t.Tag $zipFile -F $docFile --title $t.Name
+        gh release upload $t.Tag $zipFile --clobber 2>$null
+        if ($LASTEXITCODE -ne 0) {
+            if ($t.Prerelease) {
+                gh release create $t.Tag $zipFile -F $docFile --title $t.Name --prerelease
+            } else {
+                gh release create $t.Tag $zipFile -F $docFile --title $t.Name
+            }
         }
     }
 }
 
-Write-Host "All GitHub Releases processed successfully!" -ForegroundColor Green
+Write-Host "All GitHub Release assets uploaded successfully!" -ForegroundColor Green
