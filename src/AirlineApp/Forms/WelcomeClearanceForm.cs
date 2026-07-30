@@ -24,18 +24,19 @@ namespace AirlineApp.Forms
         private void InitializeComponent()
         {
             this.Text = "Airline Reservation System — v1.0.0 [Clearance Phase]";
-            this.Size = new Size(1000, 680);
+            this.Size = new Size(1150, 750);
+            this.WindowState = FormWindowState.Maximized;
             this.StartPosition = FormStartPosition.CenterScreen;
             this.BackColor = Color.FromArgb(15, 23, 42); // Navy
             this.ForeColor = Color.White;
-            this.FormBorderStyle = FormBorderStyle.FixedSingle;
-            this.MaximizeBox = false;
+            this.FormBorderStyle = FormBorderStyle.Sizable;
+            this.MaximizeBox = true;
 
             // Header Banner
             var headerPanel = new Panel
             {
                 Dock = DockStyle.Top,
-                Height = 85,
+                Height = 90,
                 BackColor = Color.FromArgb(30, 41, 59)
             };
 
@@ -55,12 +56,24 @@ namespace AirlineApp.Forms
                 Text = "Flight Registration & Departure Clearance Engine",
                 Font = new Font("Segoe UI", 16F, FontStyle.Bold),
                 ForeColor = Color.White,
-                Location = new Point(22, 42),
+                Location = new Point(22, 45),
                 AutoSize = true
             };
 
             headerPanel.Controls.Add(lblBadge);
             headerPanel.Controls.Add(lblHeader);
+
+            // Main Content Panel (Resizable)
+            var pnlMain = new TableLayoutPanel
+            {
+                Dock = DockStyle.Fill,
+                ColumnCount = 2,
+                RowCount = 1,
+                Padding = new Padding(25, 15, 25, 15),
+                BackColor = Color.FromArgb(15, 23, 42)
+            };
+            pnlMain.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 48F));
+            pnlMain.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 52F));
 
             // Left Section: Passenger Registration
             var grpPassenger = new GroupBox
@@ -68,8 +81,8 @@ namespace AirlineApp.Forms
                 Text = "Passenger Information",
                 Font = new Font("Segoe UI", 10.5F, FontStyle.Bold),
                 ForeColor = Color.FromArgb(148, 163, 184),
-                Location = new Point(25, 105),
-                Size = new Size(440, 430),
+                Dock = DockStyle.Fill,
+                Margin = new Padding(0, 0, 15, 0),
                 BackColor = Color.FromArgb(30, 41, 59)
             };
 
@@ -85,8 +98,8 @@ namespace AirlineApp.Forms
                 Text = "Flight Clearance & Aircraft Info",
                 Font = new Font("Segoe UI", 10.5F, FontStyle.Bold),
                 ForeColor = Color.FromArgb(148, 163, 184),
-                Location = new Point(485, 105),
-                Size = new Size(475, 430),
+                Dock = DockStyle.Fill,
+                Margin = new Padding(15, 0, 0, 0),
                 BackColor = Color.FromArgb(30, 41, 59)
             };
 
@@ -102,7 +115,8 @@ namespace AirlineApp.Forms
             comboFlights = new ComboBox
             {
                 Location = new Point(20, 65),
-                Size = new Size(435, 30),
+                Size = new Size(460, 30),
+                Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right,
                 Font = new Font("Segoe UI", 10F),
                 DropDownStyle = ComboBoxStyle.DropDownList,
                 BackColor = Color.FromArgb(15, 23, 42),
@@ -119,17 +133,18 @@ namespace AirlineApp.Forms
             pnlFlightDetails = new Panel
             {
                 Location = new Point(20, 115),
-                Size = new Size(435, 290),
+                Size = new Size(460, 320),
+                Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right,
                 BackColor = Color.FromArgb(15, 23, 42),
                 BorderStyle = BorderStyle.FixedSingle
             };
 
             lblRouteDetails = new Label
             {
-                Location = new Point(15, 15),
-                Size = new Size(405, 260),
-                Font = new Font("Consolas", 10F),
-                ForeColor = Color.FromArgb(56, 189, 248)
+                Dock = DockStyle.Fill,
+                Font = new Font("Consolas", 11F),
+                ForeColor = Color.FromArgb(56, 189, 248),
+                Padding = new Padding(15)
             };
             pnlFlightDetails.Controls.Add(lblRouteDetails);
 
@@ -137,11 +152,14 @@ namespace AirlineApp.Forms
             grpFlight.Controls.Add(comboFlights);
             grpFlight.Controls.Add(pnlFlightDetails);
 
+            pnlMain.Controls.Add(grpPassenger, 0, 0);
+            pnlMain.Controls.Add(grpFlight, 1, 0);
+
             // Navigation Bar / Action Button Footer
             var pnlFooter = new Panel
             {
                 Dock = DockStyle.Bottom,
-                Height = 100,
+                Height = 90,
                 BackColor = Color.FromArgb(30, 41, 59)
             };
 
@@ -152,26 +170,27 @@ namespace AirlineApp.Forms
                 ForeColor = Color.White,
                 BackColor = Color.FromArgb(14, 165, 233),
                 FlatStyle = FlatStyle.Flat,
-                Size = new Size(340, 45),
-                Location = new Point(620, 25),
+                Size = new Size(320, 48),
+                Anchor = AnchorStyles.Right | AnchorStyles.Top,
+                Location = new Point(780, 20),
                 Cursor = Cursors.Hand
             };
             btnProceed.FlatAppearance.BorderSize = 0;
             btnProceed.Click += BtnProceed_Click;
 
-            // Nav Jump Buttons
+            // Nav Jump Buttons with generous widths (NO CLIPPING!)
             int navX = 25;
-            AddNavButton(pnlFooter, "v1.0 Clearance", () => { }, ref navX, true);
-            AddNavButton(pnlFooter, "v2.0 Taxi", () => NavigateNext(2), ref navX);
-            AddNavButton(pnlFooter, "v3.0 Ascent", () => NavigateNext(3), ref navX);
-            AddNavButton(pnlFooter, "v4.0 Cruising", () => NavigateNext(4), ref navX);
-            AddNavButton(pnlFooter, "v5.0 Touchdown", () => NavigateNext(5), ref navX);
-            AddNavButton(pnlFooter, "v6.0 Mayday", () => NavigateNext(6), ref navX);
+            AddNavButton(pnlFooter, "v1.0 Clearance", () => { }, ref navX, 115, true);
+            AddNavButton(pnlFooter, "v2.0 Taxi", () => NavigateNext(2), ref navX, 100);
+            AddNavButton(pnlFooter, "v3.0 Ascent", () => NavigateNext(3), ref navX, 105);
+            AddNavButton(pnlFooter, "v4.0 Cruising", () => NavigateNext(4), ref navX, 110);
+            AddNavButton(pnlFooter, "v5.0 Touchdown", () => NavigateNext(5), ref navX, 125);
+            AddNavButton(pnlFooter, "v6.0 Mayday", () => NavigateNext(6), ref navX, 110);
+            AddNavButton(pnlFooter, "⭐ CREDITS", () => NavigateNext(6), ref navX, 100);
 
             pnlFooter.Controls.Add(btnProceed);
 
-            this.Controls.Add(grpPassenger);
-            this.Controls.Add(grpFlight);
+            this.Controls.Add(pnlMain);
             this.Controls.Add(pnlFooter);
             this.Controls.Add(headerPanel);
 
@@ -191,35 +210,36 @@ namespace AirlineApp.Forms
             txt = new TextBox
             {
                 Text = defaultVal,
-                Font = new Font("Segoe UI", 10F),
+                Font = new Font("Segoe UI", 10.5F),
                 Location = new Point(20, y + 24),
-                Size = new Size(395, 28),
+                Size = new Size(410, 30),
+                Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right,
                 BackColor = Color.FromArgb(15, 23, 42),
                 ForeColor = Color.White,
                 BorderStyle = BorderStyle.FixedSingle
             };
             parent.Controls.Add(lbl);
             parent.Controls.Add(txt);
-            y += 65;
+            y += 70;
         }
 
-        private void AddNavButton(Panel footer, string text, Action onClick, ref int x, bool isActive = false)
+        private void AddNavButton(Panel footer, string text, Action onClick, ref int x, int width, bool isActive = false)
         {
             var btn = new Button
             {
                 Text = text,
-                Font = new Font("Segoe UI", 8.5F, FontStyle.Bold),
+                Font = new Font("Segoe UI", 9F, FontStyle.Bold),
                 ForeColor = isActive ? Color.White : Color.FromArgb(148, 163, 184),
                 BackColor = isActive ? Color.FromArgb(14, 165, 233) : Color.FromArgb(15, 23, 42),
                 FlatStyle = FlatStyle.Flat,
-                Size = new Size(92, 32),
-                Location = new Point(x, 32),
+                Size = new Size(width, 38),
+                Location = new Point(x, 25),
                 Cursor = Cursors.Hand
             };
             btn.FlatAppearance.BorderSize = 0;
             btn.Click += (s, e) => { SoundHelper.PlayTap(); onClick(); };
             footer.Controls.Add(btn);
-            x += 96;
+            x += width + 8;
         }
 
         private void ComboFlights_SelectedIndexChanged(object? sender, EventArgs e)

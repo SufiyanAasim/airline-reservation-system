@@ -26,18 +26,19 @@ namespace AirlineApp.Forms
         private void InitializeComponent()
         {
             this.Text = "Airline Reservation System — v2.0.0 [Taxi Phase - Seat Allocation]";
-            this.Size = new Size(1000, 680);
+            this.Size = new Size(1100, 720);
+            this.WindowState = FormWindowState.Maximized;
             this.StartPosition = FormStartPosition.CenterScreen;
             this.BackColor = Color.FromArgb(15, 23, 42);
             this.ForeColor = Color.White;
-            this.FormBorderStyle = FormBorderStyle.FixedSingle;
-            this.MaximizeBox = false;
+            this.FormBorderStyle = FormBorderStyle.Sizable;
+            this.MaximizeBox = true;
 
             // Header Banner
             var headerPanel = new Panel
             {
                 Dock = DockStyle.Top,
-                Height = 85,
+                Height = 90,
                 BackColor = Color.FromArgb(30, 41, 59)
             };
 
@@ -57,12 +58,24 @@ namespace AirlineApp.Forms
                 Text = $"Cabin Class Selection & Interactive Aircraft Seat Grid ({currentFlight.FlightNumber})",
                 Font = new Font("Segoe UI", 15F, FontStyle.Bold),
                 ForeColor = Color.White,
-                Location = new Point(22, 42),
+                Location = new Point(22, 45),
                 AutoSize = true
             };
 
             headerPanel.Controls.Add(lblBadge);
             headerPanel.Controls.Add(lblHeader);
+
+            // Main Layout Container
+            var pnlMain = new TableLayoutPanel
+            {
+                Dock = DockStyle.Fill,
+                ColumnCount = 2,
+                RowCount = 1,
+                Padding = new Padding(25, 15, 25, 15),
+                BackColor = Color.FromArgb(15, 23, 42)
+            };
+            pnlMain.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 45F));
+            pnlMain.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 55F));
 
             // Left Section: Cabin Class & Seat Selector Summary
             var grpCabin = new GroupBox
@@ -70,8 +83,8 @@ namespace AirlineApp.Forms
                 Text = "Cabin Class & Selection Summary",
                 Font = new Font("Segoe UI", 10.5F, FontStyle.Bold),
                 ForeColor = Color.FromArgb(148, 163, 184),
-                Location = new Point(25, 105),
-                Size = new Size(400, 430),
+                Dock = DockStyle.Fill,
+                Margin = new Padding(0, 0, 15, 0),
                 BackColor = Color.FromArgb(30, 41, 59)
             };
 
@@ -113,20 +126,22 @@ namespace AirlineApp.Forms
             lblSelectedSeatDisplay = new Label
             {
                 Text = $"SELECTED SEAT : {selectedSeat}\nPASSENGER     : {currentPassenger.FullName}\nDESTINATION   : {currentFlight.Destination}",
-                Font = new Font("Consolas", 10.5F),
+                Font = new Font("Consolas", 11F),
                 ForeColor = Color.FromArgb(14, 165, 233),
                 Location = new Point(25, 175),
-                Size = new Size(350, 80)
+                Size = new Size(400, 85),
+                Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right
             };
             grpCabin.Controls.Add(lblSelectedSeatDisplay);
 
             lblFarePreview = new Label
             {
                 Text = $"BASE FARE   : ${currentFlight.BaseFare:F2}\nCABIN SURCHARGE: $0.00\nCURRENT TOTAL: ${currentFlight.BaseFare:F2}",
-                Font = new Font("Consolas", 10.5F, FontStyle.Bold),
+                Font = new Font("Consolas", 11F, FontStyle.Bold),
                 ForeColor = Color.FromArgb(16, 185, 129),
-                Location = new Point(25, 270),
-                Size = new Size(350, 100)
+                Location = new Point(25, 275),
+                Size = new Size(400, 110),
+                Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right
             };
             grpCabin.Controls.Add(lblFarePreview);
 
@@ -136,15 +151,16 @@ namespace AirlineApp.Forms
                 Text = "Aircraft Cabin Seating Map (2-2 Configuration)",
                 Font = new Font("Segoe UI", 10.5F, FontStyle.Bold),
                 ForeColor = Color.FromArgb(148, 163, 184),
-                Location = new Point(445, 105),
-                Size = new Size(515, 430),
+                Dock = DockStyle.Fill,
+                Margin = new Padding(15, 0, 0, 0),
                 BackColor = Color.FromArgb(30, 41, 59)
             };
 
             var pnlGrid = new Panel
             {
                 Location = new Point(20, 35),
-                Size = new Size(475, 375),
+                Size = new Size(500, 400),
+                Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right,
                 BackColor = Color.FromArgb(15, 23, 42)
             };
 
@@ -155,14 +171,14 @@ namespace AirlineApp.Forms
                 for (int c = 0; c < 4; c++)
                 {
                     string seatName = $"{r:D2}{rowLetters[c]}";
-                    bool isOccupied = (index == 2 || index == 9 || index == 17); // preset occupied seats
+                    bool isOccupied = (index == 2 || index == 9 || index == 17);
 
                     var btnSeat = new Button
                     {
                         Text = seatName,
-                        Font = new Font("Segoe UI", 9F, FontStyle.Bold),
-                        Size = new Size(62, 42),
-                        Location = new Point(25 + c * 75 + (c >= 2 ? 35 : 0), 20 + (r - 1) * 55),
+                        Font = new Font("Segoe UI", 9.5F, FontStyle.Bold),
+                        Size = new Size(68, 46),
+                        Location = new Point(30 + c * 85 + (c >= 2 ? 40 : 0), 20 + (r - 1) * 58),
                         Tag = seatName,
                         Cursor = isOccupied ? Cursors.No : Cursors.Hand,
                         Enabled = !isOccupied
@@ -170,17 +186,17 @@ namespace AirlineApp.Forms
 
                     if (isOccupied)
                     {
-                        btnSeat.BackColor = Color.FromArgb(225, 29, 72); // Crimson occupied
+                        btnSeat.BackColor = Color.FromArgb(225, 29, 72);
                         btnSeat.ForeColor = Color.White;
                     }
                     else if (seatName == selectedSeat)
                     {
-                        btnSeat.BackColor = Color.FromArgb(14, 165, 233); // Sky Blue selected
+                        btnSeat.BackColor = Color.FromArgb(14, 165, 233);
                         btnSeat.ForeColor = Color.White;
                     }
                     else
                     {
-                        btnSeat.BackColor = Color.FromArgb(51, 65, 85); // Slate available
+                        btnSeat.BackColor = Color.FromArgb(51, 65, 85);
                         btnSeat.ForeColor = Color.FromArgb(226, 232, 240);
                     }
 
@@ -194,11 +210,14 @@ namespace AirlineApp.Forms
 
             grpSeatMap.Controls.Add(pnlGrid);
 
+            pnlMain.Controls.Add(grpCabin, 0, 0);
+            pnlMain.Controls.Add(grpSeatMap, 1, 0);
+
             // Footer Navigation
             var pnlFooter = new Panel
             {
                 Dock = DockStyle.Bottom,
-                Height = 85,
+                Height = 90,
                 BackColor = Color.FromArgb(30, 41, 59)
             };
 
@@ -209,7 +228,7 @@ namespace AirlineApp.Forms
                 ForeColor = Color.White,
                 BackColor = Color.FromArgb(51, 65, 85),
                 FlatStyle = FlatStyle.Flat,
-                Size = new Size(210, 42),
+                Size = new Size(210, 45),
                 Location = new Point(25, 20),
                 Cursor = Cursors.Hand
             };
@@ -223,8 +242,9 @@ namespace AirlineApp.Forms
                 ForeColor = Color.White,
                 BackColor = Color.FromArgb(245, 158, 11),
                 FlatStyle = FlatStyle.Flat,
-                Size = new Size(290, 42),
-                Location = new Point(670, 20),
+                Size = new Size(290, 45),
+                Anchor = AnchorStyles.Right | AnchorStyles.Top,
+                Location = new Point(770, 20),
                 Cursor = Cursors.Hand
             };
             btnProceed.FlatAppearance.BorderSize = 0;
@@ -233,8 +253,7 @@ namespace AirlineApp.Forms
             pnlFooter.Controls.Add(btnBack);
             pnlFooter.Controls.Add(btnProceed);
 
-            this.Controls.Add(grpCabin);
-            this.Controls.Add(grpSeatMap);
+            this.Controls.Add(pnlMain);
             this.Controls.Add(pnlFooter);
             this.Controls.Add(headerPanel);
 

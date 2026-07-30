@@ -10,13 +10,13 @@ namespace AirlineApp.Forms
     {
         private readonly Flight currentFlight;
         private readonly Passenger currentPassenger;
-        private NumericUpDown numBaggage = null!;
+        private NumericUpDown numBaggageWeight = null!;
         private ComboBox comboMeal = null!;
         private CheckBox chkWifi = null!;
         private CheckBox chkLounge = null!;
         private CheckBox chkPriority = null!;
-        private Label lblBaggageStatus = null!;
-        private Label lblBreakdown = null!;
+        private Label lblBaggageSummary = null!;
+        private Label lblTotalPreview = null!;
 
         public BaggageAscentForm(Flight flight, Passenger passenger)
         {
@@ -27,19 +27,20 @@ namespace AirlineApp.Forms
 
         private void InitializeComponent()
         {
-            this.Text = "Airline Reservation System — v3.0.0 [Ascent Phase - Baggage & In-flight Engine]";
-            this.Size = new Size(1000, 680);
+            this.Text = "Airline Reservation System — v3.0.0 [Ascent Phase - Baggage & Amenities]";
+            this.Size = new Size(1150, 750);
+            this.WindowState = FormWindowState.Maximized;
             this.StartPosition = FormStartPosition.CenterScreen;
             this.BackColor = Color.FromArgb(15, 23, 42);
             this.ForeColor = Color.White;
-            this.FormBorderStyle = FormBorderStyle.FixedSingle;
-            this.MaximizeBox = false;
+            this.FormBorderStyle = FormBorderStyle.Sizable;
+            this.MaximizeBox = true;
 
             // Header Banner
             var headerPanel = new Panel
             {
                 Dock = DockStyle.Top,
-                Height = 85,
+                Height = 90,
                 BackColor = Color.FromArgb(30, 41, 59)
             };
 
@@ -56,58 +57,83 @@ namespace AirlineApp.Forms
 
             var lblHeader = new Label
             {
-                Text = $"Baggage Manifest, Weight Check & In-Flight Service Customization ({currentFlight.FlightNumber})",
+                Text = $"Baggage Allowance & In-Flight Amenity Add-Ons ({currentFlight.FlightNumber})",
                 Font = new Font("Segoe UI", 15F, FontStyle.Bold),
                 ForeColor = Color.White,
-                Location = new Point(22, 42),
+                Location = new Point(22, 45),
                 AutoSize = true
             };
 
             headerPanel.Controls.Add(lblBadge);
             headerPanel.Controls.Add(lblHeader);
 
-            // Left Panel: Baggage Calculator
+            // Main Content Layout
+            var pnlMain = new TableLayoutPanel
+            {
+                Dock = DockStyle.Fill,
+                ColumnCount = 2,
+                RowCount = 1,
+                Padding = new Padding(25, 15, 25, 15),
+                BackColor = Color.FromArgb(15, 23, 42)
+            };
+            pnlMain.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            pnlMain.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+
+            // Left Section: Checked Baggage Allowance Calculator
             var grpBaggage = new GroupBox
             {
-                Text = "Baggage Weight Check & Allowance",
+                Text = "Checked Baggage Weight Calculator",
                 Font = new Font("Segoe UI", 10.5F, FontStyle.Bold),
                 ForeColor = Color.FromArgb(148, 163, 184),
-                Location = new Point(25, 105),
-                Size = new Size(440, 430),
+                Dock = DockStyle.Fill,
+                Margin = new Padding(0, 0, 15, 0),
                 BackColor = Color.FromArgb(30, 41, 59)
             };
 
             var lblWeight = new Label
             {
-                Text = "Total Checked Baggage Weight (KG):",
+                Text = "Total Checked Baggage Weight (kg):",
                 Font = new Font("Segoe UI", 10F, FontStyle.Bold),
                 ForeColor = Color.FromArgb(226, 232, 240),
-                Location = new Point(20, 35),
+                Location = new Point(25, 40),
                 AutoSize = true
             };
 
-            numBaggage = new NumericUpDown
+            numBaggageWeight = new NumericUpDown
             {
-                Location = new Point(20, 65),
-                Size = new Size(200, 32),
-                Font = new Font("Segoe UI", 12F, FontStyle.Bold),
+                Location = new Point(25, 70),
+                Size = new Size(180, 30),
+                Font = new Font("Segoe UI", 11F, FontStyle.Bold),
                 Minimum = 0,
-                Maximum = 70,
-                Value = (decimal)currentPassenger.BaggageWeightKg,
-                DecimalPlaces = 1,
+                Maximum = 100,
+                Value = 28,
                 BackColor = Color.FromArgb(15, 23, 42),
                 ForeColor = Color.White
             };
-            numBaggage.ValueChanged += Recalculate;
+            numBaggageWeight.ValueChanged += (s, e) => Recalculate();
 
-            lblBaggageStatus = new Label
+            lblBaggageSummary = new Label
             {
-                Location = new Point(20, 115),
-                Size = new Size(395, 120),
-                Font = new Font("Consolas", 10F),
+                Font = new Font("Consolas", 10.5F),
                 ForeColor = Color.FromArgb(56, 189, 248),
-                BackColor = Color.FromArgb(15, 23, 42),
-                Padding = new Padding(10)
+                Location = new Point(25, 120),
+                Size = new Size(450, 240),
+                Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right
+            };
+
+            grpBaggage.Controls.Add(lblWeight);
+            grpBaggage.Controls.Add(numBaggageWeight);
+            grpBaggage.Controls.Add(lblBaggageSummary);
+
+            // Right Section: Meals & Amenity Toggles
+            var grpServices = new GroupBox
+            {
+                Text = "In-Flight Dining & Luxury Add-Ons",
+                Font = new Font("Segoe UI", 10.5F, FontStyle.Bold),
+                ForeColor = Color.FromArgb(148, 163, 184),
+                Dock = DockStyle.Fill,
+                Margin = new Padding(15, 0, 0, 0),
+                BackColor = Color.FromArgb(30, 41, 59)
             };
 
             var lblMeal = new Label
@@ -115,99 +141,51 @@ namespace AirlineApp.Forms
                 Text = "In-Flight Meal Preference:",
                 Font = new Font("Segoe UI", 10F, FontStyle.Bold),
                 ForeColor = Color.FromArgb(226, 232, 240),
-                Location = new Point(20, 250),
+                Location = new Point(25, 40),
                 AutoSize = true
             };
 
             comboMeal = new ComboBox
             {
-                Location = new Point(20, 280),
-                Size = new Size(395, 30),
+                Location = new Point(25, 70),
+                Size = new Size(420, 30),
+                Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right,
                 Font = new Font("Segoe UI", 10F),
                 DropDownStyle = ComboBoxStyle.DropDownList,
                 BackColor = Color.FromArgb(15, 23, 42),
                 ForeColor = Color.White
             };
-            comboMeal.Items.AddRange(new object[] {
-                "Standard Halal Gourmet",
-                "Vegetarian / Vegan Meal",
-                "Diabetic Friendly Special",
-                "Child / Infant Meal",
-                "Gluten-Free Executive Menu"
-            });
+            comboMeal.Items.AddRange(new object[] { "Executive Gourmet Halal Platter", "Vegan & Organic Salad Deluxe", "Diabetic & Low Sodium Option", "Gluten-Free Chef Special", "Child Friendly Meal Box" });
             comboMeal.SelectedIndex = 0;
-            comboMeal.SelectedIndexChanged += Recalculate;
 
-            grpBaggage.Controls.Add(lblWeight);
-            grpBaggage.Controls.Add(numBaggage);
-            grpBaggage.Controls.Add(lblBaggageStatus);
-            grpBaggage.Controls.Add(lblMeal);
-            grpBaggage.Controls.Add(comboMeal);
+            chkWifi = CreateCheckBox("High-Speed In-Flight Wi-Fi Pass (+$25.00)", 125);
+            chkLounge = CreateCheckBox("VIP Airport Lounge Access (+$45.00)", 165);
+            chkPriority = CreateCheckBox("Priority Express Boarding Pass (+$20.00)", 205);
 
-            // Right Panel: Add-on Services & Live Cost Breakdown
-            var grpAddons = new GroupBox
+            lblTotalPreview = new Label
             {
-                Text = "In-Flight Extras & Fare Breakdown",
-                Font = new Font("Segoe UI", 10.5F, FontStyle.Bold),
-                ForeColor = Color.FromArgb(148, 163, 184),
-                Location = new Point(485, 105),
-                Size = new Size(475, 430),
-                BackColor = Color.FromArgb(30, 41, 59)
-            };
-
-            chkWifi = new CheckBox
-            {
-                Text = "High-Speed Satellite Wi-Fi Pass (+$25.00)",
-                Font = new Font("Segoe UI", 10F, FontStyle.Bold),
-                ForeColor = Color.FromArgb(226, 232, 240),
-                Location = new Point(25, 40),
-                AutoSize = true,
-                Checked = currentPassenger.WifiPass
-            };
-            chkWifi.CheckedChanged += Recalculate;
-
-            chkLounge = new CheckBox
-            {
-                Text = "VIP Departure Executive Lounge Pass (+$45.00)",
-                Font = new Font("Segoe UI", 10F, FontStyle.Bold),
-                ForeColor = Color.FromArgb(226, 232, 240),
-                Location = new Point(25, 80),
-                AutoSize = true,
-                Checked = currentPassenger.LoungeAccess
-            };
-            chkLounge.CheckedChanged += Recalculate;
-
-            chkPriority = new CheckBox
-            {
-                Text = "Priority Express Boarding & Fast-Track (+$20.00)",
-                Font = new Font("Segoe UI", 10F, FontStyle.Bold),
-                ForeColor = Color.FromArgb(226, 232, 240),
-                Location = new Point(25, 120),
-                AutoSize = true,
-                Checked = currentPassenger.PriorityBoarding
-            };
-            chkPriority.CheckedChanged += Recalculate;
-
-            lblBreakdown = new Label
-            {
-                Location = new Point(20, 175),
-                Size = new Size(435, 235),
-                Font = new Font("Consolas", 10F),
+                Font = new Font("Consolas", 11F, FontStyle.Bold),
                 ForeColor = Color.FromArgb(16, 185, 129),
-                BackColor = Color.FromArgb(15, 23, 42),
-                Padding = new Padding(12)
+                Location = new Point(25, 260),
+                Size = new Size(420, 110),
+                Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right
             };
 
-            grpAddons.Controls.Add(chkWifi);
-            grpAddons.Controls.Add(chkLounge);
-            grpAddons.Controls.Add(chkPriority);
-            grpAddons.Controls.Add(lblBreakdown);
+            grpServices.Controls.Add(lblMeal);
+            grpServices.Controls.Add(comboMeal);
+            grpServices.Controls.Add(chkWifi);
+            grpServices.Controls.Add(chkLounge);
+            grpServices.Controls.Add(chkPriority);
+            grpServices.Controls.Add(lblTotalPreview);
 
-            // Footer Navigation
+            pnlMain.Controls.Add(grpBaggage, 0, 0);
+            pnlMain.Controls.Add(grpServices, 1, 0);
+
+            // Footer Navigation Bar
             var pnlFooter = new Panel
             {
                 Dock = DockStyle.Bottom,
-                Height = 85,
+                Height = 90,
                 BackColor = Color.FromArgb(30, 41, 59)
             };
 
@@ -218,7 +196,7 @@ namespace AirlineApp.Forms
                 ForeColor = Color.White,
                 BackColor = Color.FromArgb(51, 65, 85),
                 FlatStyle = FlatStyle.Flat,
-                Size = new Size(210, 42),
+                Size = new Size(180, 45),
                 Location = new Point(25, 20),
                 Cursor = Cursors.Hand
             };
@@ -227,13 +205,14 @@ namespace AirlineApp.Forms
 
             var btnProceed = new Button
             {
-                Text = "PROCEED TO CRUISING ANALYTICS ➔",
+                Text = "PROCEED TO CRUISING & ANALYTICS ➔",
                 Font = new Font("Segoe UI", 10.5F, FontStyle.Bold),
                 ForeColor = Color.White,
                 BackColor = Color.FromArgb(16, 185, 129),
                 FlatStyle = FlatStyle.Flat,
-                Size = new Size(310, 42),
-                Location = new Point(650, 20),
+                Size = new Size(310, 45),
+                Anchor = AnchorStyles.Right | AnchorStyles.Top,
+                Location = new Point(790, 20),
                 Cursor = Cursors.Hand
             };
             btnProceed.FlatAppearance.BorderSize = 0;
@@ -242,55 +221,69 @@ namespace AirlineApp.Forms
             pnlFooter.Controls.Add(btnBack);
             pnlFooter.Controls.Add(btnProceed);
 
-            this.Controls.Add(grpBaggage);
-            this.Controls.Add(grpAddons);
+            this.Controls.Add(pnlMain);
             this.Controls.Add(pnlFooter);
             this.Controls.Add(headerPanel);
 
-            UpdateSummary();
+            Recalculate();
         }
 
-        private void Recalculate(object? sender, EventArgs e)
+        private CheckBox CreateCheckBox(string text, int y)
         {
-            SoundHelper.PlayTap();
-            UpdateSummary();
+            var chk = new CheckBox
+            {
+                Text = text,
+                Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                ForeColor = Color.FromArgb(226, 232, 240),
+                Location = new Point(25, y),
+                AutoSize = true,
+                Cursor = Cursors.Hand
+            };
+            chk.CheckedChanged += (s, e) => Recalculate();
+            return chk;
         }
 
-        private void UpdateSummary()
+        private void Recalculate()
         {
-            currentPassenger.BaggageWeightKg = (double)numBaggage.Value;
-            currentPassenger.MealPreference = comboMeal.SelectedItem?.ToString() ?? "Standard Halal";
+            currentPassenger.BaggageWeightKg = (double)numBaggageWeight.Value;
+            currentPassenger.MealPreference = comboMeal.SelectedItem?.ToString() ?? "Gourmet Halal";
             currentPassenger.WifiPass = chkWifi.Checked;
             currentPassenger.LoungeAccess = chkLounge.Checked;
             currentPassenger.PriorityBoarding = chkPriority.Checked;
 
-            double allowed = currentPassenger.Cabin switch
+            int allowance = currentPassenger.Cabin switch
             {
-                CabinClass.Economy => 20.0,
-                CabinClass.Business => 35.0,
-                CabinClass.FirstClass => 50.0,
-                _ => 20.0
+                CabinClass.Economy => 20,
+                CabinClass.Business => 35,
+                CabinClass.FirstClass => 50,
+                _ => 20
             };
 
+            double excess = Math.Max(0.0, currentPassenger.BaggageWeightKg - allowance);
             decimal excessFee = FlightService.CalculateExcessBaggageFee(currentPassenger.BaggageWeightKg, currentPassenger.Cabin);
 
-            lblBaggageStatus.Text = 
-                $"CABIN CLASS ALLOWANCE : {allowed:F1} KG\n" +
-                $"CURRENT WEIGHT        : {currentPassenger.BaggageWeightKg:F1} KG\n" +
-                $"EXCESS WEIGHT         : {Math.Max(0, currentPassenger.BaggageWeightKg - allowed):F1} KG\n" +
+            decimal addonTotal = 0m;
+            if (chkWifi.Checked) addonTotal += 25.00m;
+            if (chkLounge.Checked) addonTotal += 45.00m;
+            if (chkPriority.Checked) addonTotal += 20.00m;
+
+            lblBaggageSummary.Text = 
+                $"CABIN CLASS ALLOWANCE : {allowance} KG\n" +
+                $"TOTAL CHECKED WEIGHT  : {currentPassenger.BaggageWeightKg:F1} KG\n" +
+                $"EXCESS WEIGHT WEIGHT  : {excess:F1} KG\n" +
                 $"EXCESS RATE           : $12.50 / KG\n" +
-                $"EXCESS BAGGAGE FEE    : ${excessFee:F2}";
+                $"EXCESS BAGGAGE FEE    : ${excessFee:F2}\n" +
+                $"STATUS                : {(excess > 0 ? "EXCESS CHARGE APPLIED" : "ALLOWANCE COMPLIANT")}";
 
-            var booking = FlightService.CalculateFullBooking(currentFlight, currentPassenger);
+            decimal baseMult = FlightService.GetCabinMultiplier(currentPassenger.Cabin);
+            decimal subtotal = currentFlight.BaseFare * baseMult;
+            decimal grandTotal = subtotal + excessFee + addonTotal;
 
-            lblBreakdown.Text = 
-                $"BASE FARE ({currentFlight.FlightNumber}): ${booking.BaseFare:F2}\n" +
-                $"CABIN SURCHARGE ({currentPassenger.Cabin}) : ${booking.CabinSurcharge:F2}\n" +
-                $"EXCESS BAGGAGE FEE        : ${booking.ExcessBaggageFee:F2}\n" +
-                $"IN-FLIGHT ADD-ONS TOTAL    : ${booking.AddonServicesFee:F2}\n" +
-                $"AIRPORT AVIATION TAX (12%): ${booking.AirportTax:F2}\n" +
-                $"----------------------------------------\n" +
-                $"ESTIMATED TOTAL FARE      : ${booking.TotalFare:F2}";
+            lblTotalPreview.Text = 
+                $"CABIN SUB-FARE   : ${subtotal:F2}\n" +
+                $"EXCESS BAGGAGE   : ${excessFee:F2}\n" +
+                $"SERVICE ADD-ONS  : ${addonTotal:F2}\n" +
+                $"RUNNING TOTAL    : ${grandTotal:F2}";
         }
 
         private void BtnProceed_Click(object? sender, EventArgs e)
