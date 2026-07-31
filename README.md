@@ -249,6 +249,20 @@ This is a fully offline, single-user desktop app — no network calls, no extern
 
 ---
 
+## 🗓️ Versions
+
+All releases are listed below — **latest on top**. Click a version to view its full release notes.
+
+| Version | Codename | Status |
+|---------|----------|--------|
+| [v6.0.0](docs/releases/v6.0.0.md) | ✈️ Mayday | ✅ Released |
+| [v5.0.0](docs/releases/v5.0.0.md) | 🛬 Touchdown | ✅ Released |
+| [v4.0.0](docs/releases/v4.0.0.md) | 🛩️ Cruising | ✅ Released |
+| [v2.0.0](docs/releases/v2.0.0.md) | 🛞 Taxi | ✅ Released |
+| [v1.0.0](docs/releases/v1.0.0.md) | 🔐 Clearance | 🚧 Pre-release |
+
+---
+
 ## 🤝 Contributor
 
 <table>
